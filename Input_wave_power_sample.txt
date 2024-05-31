@@ -1,0 +1,12 @@
+787.1
+600
+on
+-----
+791.3
+300
+off
+
+
+this should be two setting format, 
+the first one is wavelength of 787.1, with power of 600mw, and will be averaged
+the second one is wavelength of 791.3, with power of 300mw, and will not be averaged
