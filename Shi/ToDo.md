@@ -14,5 +14,13 @@ Inputs:
     the naming should be in the form of "#-wavelength-powermw-zoom#"
 4. color recognition and press "LSM Start", color of the scan codition, color of "tunning" and "OK"
 
-5. for now, this little coding project sould only focus on who the get the general setting done. 
+5. IR on or off
+
+6. The channel check, green or red or orange (check mark)
+
+7. color check for average, frame 2
+
+8. 
+
+for now, this little coding project sould only focus on who the get the general setting done. 
     Choosing which channel is not included yet, it should be a feature in the future.
