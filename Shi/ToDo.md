@@ -20,7 +20,8 @@ Inputs:
 
 7. color check for average, frame 2
 
-8. 
+8. change the power first, then change the wavelength
+
 
 for now, this little coding project sould only focus on who the get the general setting done. 
     Choosing which channel is not included yet, it should be a feature in the future.
