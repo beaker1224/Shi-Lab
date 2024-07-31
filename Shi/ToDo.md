@@ -25,3 +25,9 @@ Inputs:
 
 for now, this little coding project sould only focus on who the get the general setting done. 
     Choosing which channel is not included yet, it should be a feature in the future.
+
+Thoughts:
+take the inputs, wavelengths.....
+make arrays of wavelengths, power, and averages
+this will be in a loop, so each time the loop run, the iterator will increase by 1, thus change the name of the lsm file.
+
