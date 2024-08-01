@@ -8,5 +8,6 @@ class wavelengthSet(self):
         wavelength = str(self.wavelength)
         power = str(self.power)
         average = str(self.average)
-        name = order + '-' + wavelength + 'nm-' + power + 'mW-' + 
-        pyautogui.typewrite(name, interval=secs_between_keys)
+        zoom = str(self.zoom)
+        name = order + '-' + wavelength + 'nm-' + power + 'mW-avg' + average + "-zoom" + zoom
+        pyautogui.typewrite(name, interval=0.01) ## do I have to set this parameter up?
