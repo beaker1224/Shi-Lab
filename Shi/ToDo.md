@@ -31,3 +31,5 @@ take the inputs, wavelengths.....
 make arrays of wavelengths, power, and averages
 this will be in a loop, so each time the loop run, the iterator will increase by 1, thus change the name of the lsm file.
 
+color : #CCE4F6
+
