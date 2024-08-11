@@ -59,7 +59,7 @@ def main():
         'IR_on_color: ' + str(IR_on))
 
     
-    input("display for information, press 'enter' when you want to exist and finish updating")
+    input("display for information, press 'enter' when you want to exist and finish updating pico emerald layout setting")
 
 # this will make sure when the py script is called directly, the above function will run
 if __name__ == "__main__":
