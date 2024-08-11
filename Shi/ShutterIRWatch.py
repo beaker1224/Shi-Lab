@@ -2,8 +2,13 @@ import json
 import os
 # Check if necessary libraries are installed, if not, install them
 import pyautogui
-
 import time
+
+# this will return the current working directory with file you want to open
+def cwd(file_name):
+    current_path = os.getcwd()
+    print(current_path + "/" + file_name)
+    return current_path + "/" + file_name
 
 def get_shutter_position():
     input("Turn on Shutter. Hover your mouse over the BLUE PORTION(!!!) of the 'System Shutter' button and press 'Enter': ")
