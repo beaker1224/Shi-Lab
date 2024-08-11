@@ -25,7 +25,7 @@ def load_from_json(file_path):
         return json.load(file)
 
 def main():
-    json_file = 'monitor_config.json'
+    json_file = 'pico_emerald.json'
     if os.path.exists(json_file):
         user_choice = input("Update settings? (yes/no): ").lower()
         if user_choice == 'yes':
@@ -36,16 +36,17 @@ def main():
         update_required = True
 
     if update_required:
-        position = get_shutter_position()
-        shutter_on = get_pixel_color(*position)
-        save_to_json(json_file, {'shutter_position': position, 'shutter_on': shutter_on})
-        position = get_IR_position()
-        IR_on = get_pixel_color()
-        save_to_json(json_file, {'IR_position': position, 'IR_on': IR_on})
+        shutter_position = get_shutter_position()
+        shutter_on = get_pixel_color(*shutter_position)
+        IR_position = get_IR_position()
+        IR_on = get_pixel_color(*IR_position)
+        save_to_json(json_file, {'shutter_position': position, 'shutter_on_color': shutter_on, 'IR_position': position, 'IR_on_color': IR_on})
     else:
         config = load_from_json(json_file)
-        position = config['position']
-        shutter_on = tuple(config['shutter_on'])
+        shutter_position = config['shutter_position']
+        shutter_on = tuple(config['shutter_on_color'])
+        IR_position = cofig['IR_position']
+        IR_on = tuple(config['IR_on_color'])
 
     print("Monitoring for color change...")
 
@@ -66,5 +67,6 @@ def main():
          
         time.sleep(1)
 
+# this will make sure when the py script is called directly, the above function will run
 if __name__ == "__main__":
     main()
