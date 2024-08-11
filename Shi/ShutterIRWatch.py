@@ -21,18 +21,18 @@ def get_IR_position():
 def get_pixel_color(x, y):
     return pyautogui.pixel(x, y)
 
-def save_to_json(file_path, data):
-    with open(file_path, 'w') as file:
+def save_to_json(file_name, data):
+    with open(cwd(file_name), 'w') as file:
         json.dump(data, file)
 
-def load_from_json(file_path):
-    with open(file_path, 'r') as file:
+def load_from_json(file_name):
+    with open(file_name, 'r') as file:
         return json.load(file)
 
 def main():
     json_file = 'pico_emerald.json'
     if os.path.exists(json_file):
-        user_choice = input("Update settings? (yes/no): ").lower()
+        user_choice = input("Update settings on the Shutter position and IR position? (yes/no): ").lower()
         if user_choice == 'yes':
             update_required = True
         else:
@@ -52,6 +52,8 @@ def main():
         shutter_on = tuple(config['shutter_on_color'])
         IR_position = cofig['IR_position']
         IR_on = tuple(config['IR_on_color'])
+
+    input("display for information, press 'enter' when you want to exist and finish updating")
 
     print("Monitoring for color change...")
 
