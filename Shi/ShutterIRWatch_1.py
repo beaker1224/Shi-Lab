@@ -53,14 +53,13 @@ def main():
         IR_position = tuple(config['IR_position'])
         IR_on = tuple(config['IR_on_color'])
 
-    print(  'shutter_position:' + shutter_position,
-            'shutter_on_color:' + shutter_on,
-            'IR_position:' + IR_position,
-            'IR_on_color:' + IR_on)
+    print('shutter_position: ' + str(shutter_position),
+        'shutter_on_color: ' + str(shutter_on),
+        'IR_position: ' + str(IR_position),
+        'IR_on_color: ' + str(IR_on))
+
     
     input("display for information, press 'enter' when you want to exist and finish updating")
-
-    print("Monitoring for color change...")
 
 # this will make sure when the py script is called directly, the above function will run
 if __name__ == "__main__":
