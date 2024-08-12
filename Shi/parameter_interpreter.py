@@ -1,4 +1,5 @@
 import json
+import os
 
 def save_to_json(file_name, data):
     with open(file_name, 'w') as file:
@@ -11,7 +12,9 @@ def load_from_json(file_name):
 #def main():
 
 def interpreter():
-
+    json_file = "parameters.json"
+    if os.path.exist(json_file):
+        save_to_json(json_file,{})
 
 # this will directly ask how user want to set up things, should be avaliable in the future
 
