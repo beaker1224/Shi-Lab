@@ -1,5 +1,5 @@
 import pyautogui
-import sys, time
+
 class wavelengthSet(self):
     def __init__(self, order, wavelength, power, IR_status, average, zoom)
 
