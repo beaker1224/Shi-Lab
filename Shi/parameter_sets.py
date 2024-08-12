@@ -9,7 +9,7 @@ def load_from_json(file_name):
 
 
     
-class wavelengthSet():
+class inputSet():
     def __init__(self, order, wavelength, power, average, zoom):
         self.order = order
         self.wavelength = wavelength
@@ -33,7 +33,7 @@ class wavelengthSet():
 
 # test here
 '''
-set1 = wavelengthSet(1,791.3,300,2,5)
+set1 = inputSet(1,791.3,300,2,5)
 print(type(set1))
 set1.name_typer()
 '''
