@@ -33,3 +33,9 @@ this will be in a loop, so each time the loop run, the iterator will increase by
 
 color : #CCE4F6
 
+1. checked positions of pico emerald: IR, shutter
+2. checked positions of FV: lsm start, progression bar color and position, naming bar position
+
+still need:
+1. color checker
+2. name typewriter

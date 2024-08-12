@@ -15,7 +15,7 @@ def get_lsm_button_position():
     return pyautogui.position()
 
 def get_filename_position():
-    input("Hover your mouse on the file naming part (the part you enter the name of the image) \n and press 'enter'")
+    input("Hover your mouse on the end of file naming part (the part you enter the name of the image) \n and press 'enter'")
     return pyautogui.position()
 
 def save_to_json(file_name, data):

@@ -45,8 +45,6 @@ def interpreter():
             if i + 4 > len(lines):
                 input("there is a formatting error in 'parameters.txt', for more detail please see 'readMe.md', press 'enter' to exist")
 
-
-
             data['wavelength'].append(float(lines[i].strip()))
             data['power'].append(int(lines[i + 1].strip()))
             data['average'].append(lines[i + 2].strip())
