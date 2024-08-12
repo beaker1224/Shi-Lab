@@ -32,6 +32,9 @@ class wavelengthSet():
     
 
 # test here
+'''
 set1 = wavelengthSet(1,791.3,300,2,5)
 print(type(set1))
 set1.name_typer()
+'''
+
