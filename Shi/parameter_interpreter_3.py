@@ -35,7 +35,6 @@ def interpreter():
         lines = file.readlines()  # Read all lines at once
         i = 0  # Initialize line index
         section = 1
-        print(lines)
         while i < len(lines):
             line = lines[i].strip()  # Remove leading/trailing whitespace
             if line == '--':
@@ -55,6 +54,7 @@ def interpreter():
             i += 4
 
     print("total data input: ", data)
+    input("please double check the parameters you input, press 'enter' to advance")
     save_to_json(json_file,data)
 # this will directly ask how user want to set up things, should be avaliable in the future
 
