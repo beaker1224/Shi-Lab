@@ -4,13 +4,23 @@ import parameter_interpreter_3
 import parameter_sets
 import pico_emeraldWatch_1
 import time
+import json
 
 def load_from_json(file_name):
     with open(file_name, 'r') as file:
         return json.load(file)
 
 def main():
-    order = input("which order (#th) roi are you taking image of? number only!")
+    p = True
+    while p:
+        order = input("which order (#th) roi are you taking image of? number only!")
+        if type(order) != 'int':
+            print("Please enter number only!")
+            order = input("which order (#th) roi are you taking image of? number only!")
+        else:
+            p = False
+
+
     # interprete the data in parameters.txt
     parameter_interpreter_3.interpreter()
 
@@ -34,7 +44,7 @@ def main():
 
     input("Press 'enter' to start the auto lsm system")
 
-    while true:
+    while True:
         
         i = 1
         while i < len(wavelengths):
