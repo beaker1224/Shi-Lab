@@ -12,6 +12,14 @@ def get_IR_position():
     input("Turn on Laser IR. Hover your mouse over the BLUE PORTION(!!!) of the 'Laser IR 1031nm' button and press 'Enter': ")
     return pyautogui.position()
 
+def get_wavelength_position():
+    input("Hover your mouse over the wavelength adjust position, and press 'enter'")
+    return pyautogui.position()
+
+def get_power_position():
+    input("Hover your mouse over the power adjust position, and press 'enter'")
+    return pyautogui.position()
+
 def get_pixel_color(x, y):
     return pyautogui.pixel(x, y)
 
@@ -39,11 +47,15 @@ def main():
         shutter_on = get_pixel_color(*shutter_position)
         IR_position = get_IR_position()
         IR_on = get_pixel_color(*IR_position)
+        wavelength_position = get_wavelength_position()
+        power_position = get_power_position()
         save_to_json(json_file, {
             'shutter_position': shutter_position,
             'shutter_on_color': shutter_on,
             'IR_position': IR_position,
-            'IR_on_color': IR_on
+            'IR_on_color': IR_on,
+            'wavelength_position': wavelength_position,
+            'power_position': power_position
         })
 
     else:
@@ -52,6 +64,8 @@ def main():
         shutter_on = tuple(config['shutter_on_color'])
         IR_position = tuple(config['IR_position'])
         IR_on = tuple(config['IR_on_color'])
+        wavelength_position = tuple(config['wavelength_position'])
+        power_position = tuple(config['power_position'])
 
     print('shutter_position: ' + str(shutter_position),
         'shutter_on_color: ' + str(shutter_on),
@@ -60,6 +74,34 @@ def main():
 
     
     input("display for information, press 'enter' when you want to exist and finish updating pico emerald layout setting")
+
+def position_getter():
+        config = load_from_json("pico_emerald_layout.json")
+        shutter_position = tuple(config['shutter_position'])
+        shutter_on = tuple(config['shutter_on_color'])
+        IR_position = tuple(config['IR_position'])
+        IR_on = tuple(config['IR_on_color'])
+        wavelength_position = tuple(config['wavelength_position'])
+        power_position = tuple(config['power_position'])
+
+def turn_off_IR():
+    position_getter()
+    if tuple(get_pixel_color(*IR_position)) == IR_on:
+        pyautogui.click(IR_position)
+
+def change_wavelength_to(wavelength):
+    position_getter()
+    pyautogui.click(wavelength_position)
+    pyautogui.typewrite(wavelength)
+    pyautogui.PAUSE = 0.5
+    pyautogui.typewrite('enter')
+
+def change_power_to(power):
+    position_getter()
+    pyautogui.click(power_position)
+    pyautogui.typewrite(power)
+    pyautogui.PAUSE = 0.5
+    pyautogui.typewrite('enter')
 
 # this will make sure when the py script is called directly, the above function will run
 if __name__ == "__main__":

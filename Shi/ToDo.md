@@ -35,7 +35,7 @@ color : #CCE4F6
 
 1. checked positions of pico emerald: IR, shutter
 2. checked positions of FV: lsm start, progression bar color and position, naming bar position
+3. name typewriter finished
 
 still need:
 1. color checker
-2. name typewriter
