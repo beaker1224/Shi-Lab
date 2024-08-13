@@ -2,6 +2,7 @@ import json
 import os
 # Check if necessary libraries are installed, if not, install them
 import pyautogui
+import time
 
 
 def get_shutter_position():
@@ -96,10 +97,10 @@ def change_wavelength_to(wavelength):
     config = load_from_json("pico_emerald_layout.json")
     wavelength_position = tuple(config['wavelength_position'])
     pyautogui.click(wavelength_position)
-    pyautogui.PAUSE = 0.2
+    time.sleep(0.2)
     pyautogui.typewrite(['backspace','backspace','backspace','backspace','backspace'], interval = 0.2)
     pyautogui.typewrite(str(wavelength))
-    pyautogui.PAUSE = 0.2
+    time.sleep(0.2)
     pyautogui.typewrite('enter')
     
 # pass in must be numbers
@@ -107,10 +108,10 @@ def change_power_to(power):
     config = load_from_json("pico_emerald_layout.json")
     power_position = tuple(config['power_position'])
     pyautogui.click(power_position)
-    pyautogui.PAUSE = 0.2
+    time.sleep(0.2)
     pyautogui.typewrite(['backspace','backspace','backspace','backspace','backspace'], interval = 0.2)
     pyautogui.typewrite(str(power))
-    pyautogui.PAUSE = 0.2
+    time.sleep(0.2)
     pyautogui.typewrite(['enter'])
 
 # this will make sure when the py script is called directly, the above function will run

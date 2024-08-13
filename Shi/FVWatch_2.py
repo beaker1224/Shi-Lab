@@ -2,6 +2,7 @@ import pyautogui
 import os
 import json
 
+
 def get_lsm_colorbar_position():
     print("Hover your mouse on lsm PROGRESSION COLORBAR (the one that between lsm button and estimated time) \n just make sure to not touch the edge of the colorbar")
     input("press 'enter' to advance")
@@ -39,12 +40,14 @@ def main():
 
     if update_required:
         lsm_position = get_lsm_button_position()
+        lsm_off_color = get_pixel_color(*lsm_position)
         lsm_colorbar_position = get_lsm_colorbar_position()
         lsm_colorbar_off = get_pixel_color(*lsm_colorbar_position)
         lsm_filename_position = get_filename_position()
 
         save_to_json(json_file, {
             'lsm button position': lsm_position,
+            'lsm button off color': lsm_off_color,
             'lsm colorbar position': lsm_colorbar_position,
             'lsm colorbar off color': lsm_colorbar_off,
             'file name editor position': lsm_filename_position
@@ -53,11 +56,13 @@ def main():
     else:
         config = load_from_json(json_file)
         lsm_position = tuple(config['lsm button position'])
+        lsm_off_color = tuple(config['lsm button off color'])
         lsm_colorbar_position = tuple(config['lsm colorbar position'])
         lsm_colorbar_off = tuple(config['lsm_colorbar off color'])
         lsm_filename_position = tuple(config['file name editor position'])
 
     print('lsm button position: ' + str(lsm_position),
+        'lsm button off color: ' + str(lsm_off_color),
         'lsm colorbar position: ' + str(lsm_colorbar_position),
         'lsm_colorbar off color: ' + str(lsm_colorbar_off),
         'file name editor position: ' + str(lsm_filename_position))
