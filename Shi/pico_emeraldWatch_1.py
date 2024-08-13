@@ -99,7 +99,7 @@ def change_wavelength_to(wavelength):
     pyautogui.click(wavelength_position)
     time.sleep(0.2)
     pyautogui.typewrite(['backspace','backspace','backspace','backspace','backspace'], interval = 0.2)
-    pyautogui.typewrite(str(wavelength))
+    pyautogui.typewrite(str(wavelength), interval = 0.2)
     time.sleep(0.2)
     pyautogui.typewrite('enter')
     
@@ -110,7 +110,7 @@ def change_power_to(power):
     pyautogui.click(power_position)
     time.sleep(0.2)
     pyautogui.typewrite(['backspace','backspace','backspace','backspace','backspace'], interval = 0.2)
-    pyautogui.typewrite(str(power))
+    pyautogui.typewrite(str(power), interval = 0.2)
     time.sleep(0.2)
     pyautogui.typewrite(['enter'])
 
