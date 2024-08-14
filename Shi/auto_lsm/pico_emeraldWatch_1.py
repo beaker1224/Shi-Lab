@@ -101,7 +101,7 @@ def change_wavelength_to(wavelength):
     pyautogui.typewrite(['backspace','backspace','backspace','backspace','backspace'], interval = 0.2)
     pyautogui.typewrite(str(wavelength), interval = 0.2)
     time.sleep(0.2)
-    pyautogui.typewrite('enter')
+    pyautogui.hotkey('enter')
     
 # pass in must be numbers
 def change_power_to(power):
@@ -112,7 +112,7 @@ def change_power_to(power):
     pyautogui.typewrite(['backspace','backspace','backspace','backspace','backspace'], interval = 0.2)
     pyautogui.typewrite(str(power), interval = 0.2)
     time.sleep(0.2)
-    pyautogui.typewrite(['enter'])
+    pyautogui.hotkey('enter')
 
 # this will make sure when the py script is called directly, the above function will run
 if __name__ == "__main__":
