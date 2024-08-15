@@ -75,6 +75,8 @@ def main():
 
     
     input("display for information, press 'enter' when you want to exist and finish updating pico emerald layout setting")
+'''
+not sure why I wrote this.....
 
 def position_getter():
     config = load_from_json("pico_emerald_layout.json")
@@ -84,6 +86,7 @@ def position_getter():
     IR_on = tuple(config['IR_on_color'])
     wavelength_position = tuple(config['wavelength_position'])
     power_position = tuple(config['power_position'])
+'''
 
 def turn_off_IR():
     config = load_from_json("pico_emerald_layout.json")
