@@ -12,7 +12,7 @@ def get_pixel_color(x, y):
     return pyautogui.pixel(x, y)
 
 def get_lsm_button_position():
-    input("Hover your mouse on 'LSM Start' button and press 'enter'")
+    input("Hover your mouse on 'LSM Start' button's GREY AREA and press 'enter'")
     return pyautogui.position()
 
 def get_filename_position():

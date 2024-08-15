@@ -2,24 +2,29 @@ import pyautogui
 import os
 import parameter_interpreter_3
 import parameter_sets
-import pico_emeraldWatch_1
+import pico_emeraldWatch_1, FVWatch_2
 import time
 import json
+import sys
 
 pyautogui.FAILSAFE = False
-if not os.path.exists('pico_emerald_layout.json'):
-    input("pico emerald software layout did not setup! press 'enter' to quit")
-    return
+
+# Get the directory of the current script
+script_dir = os.path.dirname(os.path.realpath(__file__))
+
+# Change the working directory to the script's directory
+os.chdir(script_dir)
+
+def load_from_json(file_name):
+    with open(file_name, 'r') as file:
+        return json.load(file)
+
 pico_emerald_layout = load_from_json("pico_emerald_layout.json")
 shutter_position = tuple(pico_emerald_layout['shutter_position'])
 shutter_on_color = tuple(pico_emerald_layout['shutter_on_color'])
 
 def get_pixel_color(x, y):
     return pyautogui.pixel(x, y)
-
-def load_from_json(file_name):
-    with open(file_name, 'r') as file:
-        return json.load(file)
 
 def name_typer(order, wavelength, power, average, zoom):
     name = order + '-' + wavelength + 'nm-' + power + 'mW-avg' + average + "-zoom" + zoom
@@ -35,28 +40,36 @@ def shutter_backOn():
         current_shutter_color = get_pixel_color(shutter_position)
         if tuple(current_shutter_color) == shutter_on_color:
             return True
-        else:
-            pass
-        time.sleep(0.5) # check the shutter every 0.5 second
-
+        time.sleep(0.5)  # Check the shutter every 0.5 seconds
 
 
 
 def main():
+    if not os.path.exists('pico_emerald_layout.json'):
+        input("pico emerald software layout did not setup! press 'enter' to quit")
+        pyautogui.hotkey('ctrl', 'c')
+
     print("before you use this script, make sure that both softwares are not covered by each other")
     while True:
-        order = input("which order (#th) roi are you taking image of? number only!")
-        if type(order) != 'int':
-            print("Please enter number only!")
-        else:
-            break
+        try:
+            # Get user input and try to convert it to an integer
+            order = int(input("which order (#th) roi are you taking image of? number only!"))
+            break  # Return the integer if conversion is successful
+        except ValueError:
+            # If conversion fails, prompt the user again
+            print("Invalid input. Please enter an integer.")
+
+#    print(order) this make sure the order is stored as a value we want
+            
 
     while True:
-        zoom = input("which zoom # are you taking image of? number only!")
-        if type(zoom) != 'int':
-            print("Please enter number only!")
-        else:
-            break
+        try:
+            # Get user input and try to convert it to an integer
+            zoom = int(input("which zoom # are you taking image of? number only!"))
+            break  # Return the integer if conversion is successful
+        except ValueError:
+            # If conversion fails, prompt the user again
+            print("Invalid input. Please enter an integer.")
 
     # interprete the data in parameters.txt
     parameter_interpreter_3.interpreter()
@@ -68,13 +81,17 @@ def main():
     channels = tuple(parameters['channel'])
 
     print(order, '-', wavelengths[0], '-', powers[0], 'mW-avg', averages[0], '-zoom', zoom)
-    input("this will be how the name looks like as files, press 'enter' to advance, \n press ctrl + c to quit when you think something went wrong ")
+    input("this will be how the name looks like as files, press 'enter' to advance,\n press ctrl + c to quit when you think something went wrong ")
 
     FV_layout = load_from_json("FV_layout.json")
-    lsm_start = tuple(FV_layout['lsm button position'])
-    lsm_off_color = tuple(FV_layout['lsm button off color'])
-    lsm_colorbar_off_color = tuple(FV_layout['lsm colorbar off color'])
-    lsm_colorbar_position = tuple(FV_layout['lsm colorbar position'])
+    try:
+        lsm_start = tuple(FV_layout['lsm button position'])
+        lsm_off_color = tuple(FV_layout['lsm button off color'])
+        lsm_colorbar_off_color = tuple(FV_layout['lsm colorbar off color'])
+        lsm_colorbar_position = tuple(FV_layout['lsm colorbar position'])
+    except KeyError:
+        input("FVWatch_2 did not run, FV_layout did not setup correctly, press 'ctrl+c' to exit, press 'enter' to setup")
+        FVWatch_2.main()
 
     print("IMPORTANT: set the wavelength and power to the first set you need to take!!!!!!!!!!!!!!!!!")
     # this is because there is a bug for pico emerald software, if you enter the wavelength 
@@ -93,10 +110,10 @@ def main():
             # monitering start, lsm start, sleep(2) gives the lsm button to turn into correct working color some time
             while True:
                 current_lsm_color = get_pixel_color(lsm_start)
-                if current_lsm_color == lsm_off color:
+                if current_lsm_color == lsm_off_color:
                     break # break when lsm finished
                 time.sleep(0.5) # the color of the button is checked every 0.5 second
-            i ++
+            i += 1
         
         if powers[i] == powers[i-1]:
             pass
@@ -111,10 +128,10 @@ def main():
             time.sleep(2)
             while True:
                 current_lsm_color = get_pixel_color(lsm_start)
-                if current_lsm_color == lsm_off color:
+                if current_lsm_color == lsm_off_color:
                     break # break when lsm finished
                 time.sleep(0.5) # the color of the button is checked every 0.5 second
-        i ++
+        i += 1
 
     pico_emeraldWatch_1.change_power_to(powers[0])
     time.sleep(0.25)
