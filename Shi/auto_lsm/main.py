@@ -24,7 +24,7 @@ def get_pixel_color(x, y):
     return pyautogui.pixel(x, y)
 
 def name_typer(order, wavelength, power, average, zoom):
-    name = order + '-' + wavelength + 'nm-' + power + 'mW-avg' + average + "-zoom" + zoom
+    name = f"{order}-{wavelength}nm-{power}mW-avg{average}-zoom{zoom}"
     file = load_from_json("FV_layout.json")
     name_bar_position = tuple(file['file name editor position'])
     pyautogui.click(name_bar_position)

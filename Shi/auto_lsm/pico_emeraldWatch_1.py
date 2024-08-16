@@ -106,13 +106,13 @@ def main():
     key_positions = {}
     if update_required:
 
-        input("Hover your mouse on the wavelength setting, press 'enter' for next")
+        input("Open the wavelength setting keypad, press 'enter' for next")
         for key in keys:
             key_position = get_key_position(key)
             key_name = f"wavelength_key_{key}"
             key_positions[key_name] = [key_position[0], key_position[1]]
 
-        input("Hover your mouse on the power setting, press 'enter' for next")
+        input("Open the power setting keypad, press 'enter' for next")
         for key in keys:
             key_position = get_key_position(key)
             key_name = f"power_key_{key}"
