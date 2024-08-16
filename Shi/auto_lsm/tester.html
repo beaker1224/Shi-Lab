@@ -49,6 +49,15 @@
             padding: 15px;
             font-size: 18px;
         }
+        .keypad-display {
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
         .keypad-count {
             margin-top: 20px;
             font-size: 14px;
@@ -57,7 +66,7 @@
     </style>
 </head>
 <body>
-    <h1>LSM html webpage style tester</h1>
+    <h1>Button Click Counter with Dual Keypads</h1>
 
     <div class="container">
         <div class="button-container">
@@ -83,6 +92,8 @@
     <div class="keypads-wrapper">
         <!-- First Keypad -->
         <div class="keypad-container">
+            <div class="keypad-display" id="display1"></div>
+
             <button id="key1">1</button>
             <button id="key2">2</button>
             <button id="key3">3</button>
@@ -106,6 +117,8 @@
 
         <!-- Second Keypad -->
         <div class="keypad-container">
+            <div class="keypad-display" id="display2"></div>
+
             <button id="keyA1">1</button>
             <button id="keyA2">2</button>
             <button id="keyA3">3</button>
@@ -129,11 +142,11 @@
     </div>
 
     <div class="keypad-count">
-        Clear clicked: <span id="clear-count">0</span> times | OK clicked: <span id="ok-count">0</span> times
+        Left keypad Clear clicked: <span id="clear-count">0</span> times | OK clicked: <span id="ok-count">0</span> times
     </div>
 
     <div class="keypad-count">
-        Second keypad Clear clicked: <span id="clearA-count">0</span> times | OK clicked: <span id="okA-count">0</span> times
+        Right keypad Clear clicked: <span id="clearA-count">0</span> times | OK clicked: <span id="okA-count">0</span> times
     </div>
 
     <script>
@@ -143,10 +156,12 @@
         let count3 = 0;
         let clearCount = 0;
         let okCount = 0;
+        let displayText1 = "";
 
         // Initialize click counters for the second keypad
         let clearACount = 0;
         let okACount = 0;
+        let displayText2 = "";
 
         // Button click handlers for the first keypad
         document.getElementById("button1").addEventListener("click", function() {
@@ -165,9 +180,32 @@
         });
 
         // Keypad button click handlers for the first keypad
+        function updateDisplay1(text) {
+            displayText1 += text;
+            document.getElementById("display1").innerText = "Clicked Numbers: " + displayText1;
+        }
+
+        function resetDisplay1() {
+            displayText1 = "";
+            document.getElementById("display1").innerText = "Clicked Numbers: ";
+        }
+
+        document.getElementById("key1").addEventListener("click", function() { updateDisplay1("1"); });
+        document.getElementById("key2").addEventListener("click", function() { updateDisplay1("2"); });
+        document.getElementById("key3").addEventListener("click", function() { updateDisplay1("3"); });
+        document.getElementById("key4").addEventListener("click", function() { updateDisplay1("4"); });
+        document.getElementById("key5").addEventListener("click", function() { updateDisplay1("5"); });
+        document.getElementById("key6").addEventListener("click", function() { updateDisplay1("6"); });
+        document.getElementById("key7").addEventListener("click", function() { updateDisplay1("7"); });
+        document.getElementById("key8").addEventListener("click", function() { updateDisplay1("8"); });
+        document.getElementById("key9").addEventListener("click", function() { updateDisplay1("9"); });
+        document.getElementById("key0").addEventListener("click", function() { updateDisplay1("0"); });
+        document.getElementById("dot").addEventListener("click", function() { updateDisplay1("."); });
+
         document.getElementById("clear").addEventListener("click", function() {
             clearCount++;
             document.getElementById("clear-count").innerText = clearCount;
+            resetDisplay1();
         });
 
         document.getElementById("ok").addEventListener("click", function() {
@@ -176,17 +214,38 @@
         });
 
         // Keypad button click handlers for the second keypad
+        function updateDisplay2(text) {
+            displayText2 += text;
+            document.getElementById("display2").innerText = "Clicked Numbers: " + displayText2;
+        }
+
+        function resetDisplay2() {
+            displayText2 = "";
+            document.getElementById("display2").innerText = "Clicked Numbers: ";
+        }
+
+        document.getElementById("keyA1").addEventListener("click", function() { updateDisplay2("1"); });
+        document.getElementById("keyA2").addEventListener("click", function() { updateDisplay2("2"); });
+        document.getElementById("keyA3").addEventListener("click", function() { updateDisplay2("3"); });
+        document.getElementById("keyA4").addEventListener("click", function() { updateDisplay2("4"); });
+        document.getElementById("keyA5").addEventListener("click", function() { updateDisplay2("5"); });
+        document.getElementById("keyA6").addEventListener("click", function() { updateDisplay2("6"); });
+        document.getElementById("keyA7").addEventListener("click", function() { updateDisplay2("7"); });
+        document.getElementById("keyA8").addEventListener("click", function() { updateDisplay2("8"); });
+        document.getElementById("keyA9").addEventListener("click", function() { updateDisplay2("9"); });
+        document.getElementById("keyA0").addEventListener("click", function() { updateDisplay2("0"); });
+        document.getElementById("dotA").addEventListener("click", function() { updateDisplay2("."); });
+
         document.getElementById("clearA").addEventListener("click", function() {
             clearACount++;
             document.getElementById("clearA-count").innerText = clearACount;
+            resetDisplay2();
         });
 
         document.getElementById("okA").addEventListener("click", function() {
             okACount++;
             document.getElementById("okA-count").innerText = okACount;
         });
-
-        // You can add more handlers for other buttons if needed
     </script>
 </body>
 </html>
