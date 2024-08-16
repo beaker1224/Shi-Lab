@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Click Counter with Dual Keypads</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 50px;
+        }
+        .button-container {
+            margin: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .click-count {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+        .input-container {
+            margin-top: 30px;
+        }
+        .keypads-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .keypad-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            margin: 20px;
+        }
+        .keypad-container button {
+            padding: 15px;
+            font-size: 18px;
+        }
+        .keypad-count {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>LSM html webpage style tester</h1>
+
+    <div class="container">
+        <div class="button-container">
+            <button id="button1">Wavelength</button>
+            <div class="click-count" id="count1">Clicked: 0 times</div>
+        </div>
+        <div class="button-container">
+            <button id="button2">Power</button>
+            <div class="click-count" id="count2">Clicked: 0 times</div>
+        </div>
+        <div class="button-container">
+            <button id="button3">LSM Start</button>
+            <div class="click-count" id="count3">Clicked: 0 times</div>
+        </div>
+    </div>
+
+    <div class="input-container">
+        <label for="inputText">Enter something: </label>
+        <input type="text" id="inputText">
+    </div>
+
+    <!-- Dual Number Keypads -->
+    <div class="keypads-wrapper">
+        <!-- First Keypad -->
+        <div class="keypad-container">
+            <button id="key1">1</button>
+            <button id="key2">2</button>
+            <button id="key3">3</button>
+            <button id="backspace">Backspace</button>
+
+            <button id="key4">4</button>
+            <button id="key5">5</button>
+            <button id="key6">6</button>
+            <button id="clear">Clear</button>
+
+            <button id="key7">7</button>
+            <button id="key8">8</button>
+            <button id="key9">9</button>
+            <button id="cancel">Cancel</button>
+
+            <button id="key0">0</button>
+            <button id="dot">.</button>
+            <button id="plus-minus">+/-</button>
+            <button id="ok">OK</button>
+        </div>
+
+        <!-- Second Keypad -->
+        <div class="keypad-container">
+            <button id="keyA1">1</button>
+            <button id="keyA2">2</button>
+            <button id="keyA3">3</button>
+            <button id="backspaceA">Backspace</button>
+
+            <button id="keyA4">4</button>
+            <button id="keyA5">5</button>
+            <button id="keyA6">6</button>
+            <button id="clearA">Clear</button>
+
+            <button id="keyA7">7</button>
+            <button id="keyA8">8</button>
+            <button id="keyA9">9</button>
+            <button id="cancelA">Cancel</button>
+
+            <button id="keyA0">0</button>
+            <button id="dotA">.</button>
+            <button id="plus-minusA">+/-</button>
+            <button id="okA">OK</button>
+        </div>
+    </div>
+
+    <div class="keypad-count">
+        Clear clicked: <span id="clear-count">0</span> times | OK clicked: <span id="ok-count">0</span> times
+    </div>
+
+    <div class="keypad-count">
+        Second keypad Clear clicked: <span id="clearA-count">0</span> times | OK clicked: <span id="okA-count">0</span> times
+    </div>
+
+    <script>
+        // Initialize click counters for the first keypad
+        let count1 = 0;
+        let count2 = 0;
+        let count3 = 0;
+        let clearCount = 0;
+        let okCount = 0;
+
+        // Initialize click counters for the second keypad
+        let clearACount = 0;
+        let okACount = 0;
+
+        // Button click handlers for the first keypad
+        document.getElementById("button1").addEventListener("click", function() {
+            count1++;
+            document.getElementById("count1").innerText = "Clicked: " + count1 + " times";
+        });
+
+        document.getElementById("button2").addEventListener("click", function() {
+            count2++;
+            document.getElementById("count2").innerText = "Clicked: " + count2 + " times";
+        });
+
+        document.getElementById("button3").addEventListener("click", function() {
+            count3++;
+            document.getElementById("count3").innerText = "Clicked: " + count3 + " times";
+        });
+
+        // Keypad button click handlers for the first keypad
+        document.getElementById("clear").addEventListener("click", function() {
+            clearCount++;
+            document.getElementById("clear-count").innerText = clearCount;
+        });
+
+        document.getElementById("ok").addEventListener("click", function() {
+            okCount++;
+            document.getElementById("ok-count").innerText = okCount;
+        });
+
+        // Keypad button click handlers for the second keypad
+        document.getElementById("clearA").addEventListener("click", function() {
+            clearACount++;
+            document.getElementById("clearA-count").innerText = clearACount;
+        });
+
+        document.getElementById("okA").addEventListener("click", function() {
+            okACount++;
+            document.getElementById("okA-count").innerText = okACount;
+        });
+
+        // You can add more handlers for other buttons if needed
+    </script>
+</body>
+</html>
