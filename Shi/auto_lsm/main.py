@@ -1,17 +1,14 @@
 import pyautogui
 import os
 import parameter_interpreter_3
-import parameter_sets
 import pico_emeraldWatch_1, FVWatch_2
 import time
 import json
-import sys
 
 pyautogui.FAILSAFE = False
 
 # Get the directory of the current script
 script_dir = os.path.dirname(os.path.realpath(__file__))
-
 # Change the working directory to the script's directory
 os.chdir(script_dir)
 

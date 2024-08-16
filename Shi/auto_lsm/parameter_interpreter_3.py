@@ -14,6 +14,12 @@ def create_empty_txt(file_name):
         return
 #def main():
 
+# Get the directory of the current script
+script_dir = os.path.dirname(os.path.realpath(__file__))
+# Change the working directory to the script's directory
+os.chdir(script_dir)
+
+
 def interpreter():
     json_file = "parameters.json"
     txt_file = "parameters.txt"
