@@ -142,7 +142,7 @@ def turn_off_IR():
     IR_position = tuple(pico_emerald_layout['IR_position'])
     IR_on = tuple(pico_emerald_layout['IR_on_color'])
     if tuple(get_pixel_color(*IR_position)) == IR_on:
-        pyautogui.click(IR_position)
+        pyautogui.click(*IR_position)
 
 def click(wavelength_power_keypad, type, key):
     """
@@ -175,7 +175,7 @@ def click(wavelength_power_keypad, type, key):
         key_name = key_mapping.get(key)
         if key_name and key_name in wavelength_power_keypad:
             position = tuple(wavelength_power_keypad[key_name])
-            pyautogui.click(position)
+            pyautogui.click(*position)
         else:
             input(f"Key '{key}' for '{key_name}' not found.")
 
@@ -200,7 +200,7 @@ def click(wavelength_power_keypad, type, key):
         key_name = key_mapping.get(key)
         if key_name and key_name in wavelength_power_keypad:
             position = tuple(wavelength_power_keypad[key_name])
-            pyautogui.click(position)
+            pyautogui.click(*position)
         else:
             input(f"Key '{key}' for '{key_name}' not found.")
 
@@ -219,7 +219,7 @@ def change_wavelength_to(wavelength):
     wavelength_position = tuple(pico_emerald_layout['wavelength_position'])
     wavelength_power_keypad = load_from_json("wavelength_power_keypad.json")
     # open the wavelength setting
-    pyautogui.click(wavelength_position)
+    pyautogui.click(*wavelength_position)
     # clear the previous
     click(wavelength_power_keypad, "wavelength", "clear")
     # click on the number
@@ -238,7 +238,7 @@ def change_power_to(power):
     power_position = tuple(pico_emerald_layout['power_position'])
     wavelength_power_keypad = load_from_json("wavelength_power_keypad.json")
     # open the wavelength setting
-    pyautogui.click(power_position)
+    pyautogui.click(*power_position)
     # clear the previous
     click(wavelength_power_keypad, "power", "clear")
     # click on the number

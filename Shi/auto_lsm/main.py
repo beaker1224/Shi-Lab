@@ -27,14 +27,14 @@ def name_typer(order, wavelength, power, average, zoom):
     name = f"{order}-{wavelength}nm-{power}mW-avg{average}-zoom{zoom}"
     file = load_from_json("FV_layout.json")
     name_bar_position = tuple(file['file name editor position'])
-    pyautogui.click(name_bar_position)
+    pyautogui.click(*name_bar_position)
     pyautogui.hotkey('ctrl', 'a')
     pyautogui.typewrite(name)
 
 # will return true once the shutter is turned back on, check every 0.5 second
 def shutter_backOn():
     while True:
-        current_shutter_color = get_pixel_color(shutter_position)
+        current_shutter_color = get_pixel_color(*shutter_position)
         if tuple(current_shutter_color) == shutter_on_color:
             return True
         time.sleep(0.5)  # Check the shutter every 0.5 seconds
@@ -90,6 +90,7 @@ def main():
         input("FVWatch_2 did not run, FV_layout did not setup correctly, press 'ctrl+c' to exit, press 'enter' to setup")
         FVWatch_2.main()
 
+    print(lsm_start)
     print("IMPORTANT: set the wavelength and power to the first set you need to take!!!!!!!!!!!!!!!!!")
     # this is because there is a bug for pico emerald software, if you enter the wavelength 
     # which is the same with your current wavelength, the next adjust will not turn of the 
@@ -102,12 +103,12 @@ def main():
         
         if i == 0:
             name_typer(order, wavelengths[i], powers[i], averages[i], zoom)
-            pyautogui.click(lsm_start)
+            pyautogui.click(*lsm_start)
             time.sleep(2)
             # monitering start, lsm start, sleep(2) gives the lsm button to turn into correct working color some time
             while True:
-                current_lsm_color = get_pixel_color(lsm_start)
-                if current_lsm_color == lsm_off_color:
+                current_lsm_color = get_pixel_color(*lsm_start)
+                if tuple(current_lsm_color) == lsm_off_color:
                     break # break when lsm finished
                 time.sleep(0.5) # the color of the button is checked every 0.5 second
             i += 1
@@ -121,10 +122,10 @@ def main():
         time.sleep(0.5)
         name_typer(order, wavelengths[i], powers[i], averages[i], zoom)
         if shutter_backOn():
-            pyautogui.click(lsm_start)
+            pyautogui.click(*lsm_start)
             time.sleep(2)
             while True:
-                current_lsm_color = get_pixel_color(lsm_start)
+                current_lsm_color = get_pixel_color(*lsm_start)
                 if current_lsm_color == lsm_off_color:
                     break # break when lsm finished
                 time.sleep(0.5) # the color of the button is checked every 0.5 second
