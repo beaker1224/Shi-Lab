@@ -8,7 +8,10 @@ Foobar is a Python library for dealing with word pluralization.
 Make sure the local machine has following packages installed:
 1. [pyautogui](https://pyautogui.readthedocs.io/en/latest/)
 2. [Pillow](https://pypi.org/project/pillow/)
+
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install those packages stated above
+
+
 If unsure, please use following code to check if the proper packages are installed
 ```bash
 pip show pyautogui
