@@ -217,7 +217,7 @@ def change_wavelength_to(wavelength):
     """
     pico_emerald_layout = load_from_json("pico_emerald_layout.json")
     wavelength_position = tuple(pico_emerald_layout['wavelength_position'])
-    wavelength_power_keypad = load_from_json("wavelength_power_keypad")
+    wavelength_power_keypad = load_from_json("wavelength_power_keypad.json")
     # open the wavelength setting
     pyautogui.click(wavelength_position)
     # clear the previous
@@ -236,7 +236,7 @@ def change_wavelength_to(wavelength):
 def change_power_to(power):
     pico_emerald_layout = load_from_json("pico_emerald_layout.json")
     power_position = tuple(pico_emerald_layout['power_position'])
-    wavelength_power_keypad = load_from_json("wavelength_power_keypad")
+    wavelength_power_keypad = load_from_json("wavelength_power_keypad.json")
     # open the wavelength setting
     pyautogui.click(power_position)
     # clear the previous
