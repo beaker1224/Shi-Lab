@@ -146,7 +146,7 @@ def turn_off_IR():
 
 def click(wavelength_power_keypad, type, key):
     """
-    Clicks the specified key based on the type and key value.
+    Clicks the specified key based on the type and key value. type and key input need to be a str
 
     Parameters:
     wavelength_power_keypad (dict): The dictionary containing key positions.
@@ -223,7 +223,7 @@ def change_wavelength_to(wavelength):
     # clear the previous
     click(wavelength_power_keypad, "wavelength", "clear")
     # click on the number
-    for w in wavelength:
+    for w in str(wavelength):
         click(wavelength_power_keypad, "wavelength", w)
         time.sleep(0.1)
     # click enter
@@ -242,7 +242,7 @@ def change_power_to(power):
     # clear the previous
     click(wavelength_power_keypad, "power", "clear")
     # click on the number
-    for p in power:
+    for p in str(power):
         click(wavelength_power_keypad, "power", p)
         time.sleep(0.1)
     # click enter

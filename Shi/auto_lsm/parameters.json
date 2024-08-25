@@ -1,1 +1,1 @@
-{"wavelength": [787.1, 791.3], "power": [600, 300], "average": ["on", "off"], "channel": ["CH4", "CH2"]}
+{"wavelength": [787.1, 791.3, 862.0], "power": [600, 300, 600], "average": ["on", "off", "off"], "channel": ["CH4", "CH2", "CH2"]}

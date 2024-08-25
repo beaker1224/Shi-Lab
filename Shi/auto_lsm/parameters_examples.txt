@@ -1,8 +1,9 @@
+--
 787.1
 600
 on
 CH4
------
+--
 791.3
 300
 off
@@ -11,3 +12,5 @@ CH2
 this should be two setting format, 
 the first one is wavelength of 787.1, with power of 600mw, and will be averaged
 the second one is wavelength of 791.3, with power of 300mw, and will not be averaged
+Make Sure that there is a leading -- (two dashes) in the front of each set!
+
