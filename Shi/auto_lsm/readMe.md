@@ -49,6 +49,19 @@ Pull requests are welcome. For major changes, please open an issue first
 to discuss what you would like to change. Everyone is free to use this script, and this script
 did get help from ChatGPT. And thanks to the inspiration brought by the author of "auto_hyperspectra".
 
+## How to use
+Under the auto_lsm folder, you will find a txt file called parameters.txt. If no such a file, please run parameter_interpreter_3.py.
+Open parameter.txt, you can put your parameters into this file like the image attached below:
+![image](https://github.com/user-attachments/assets/549d51c3-0df5-4dc9-9f90-b28264edc1d0)
+IMPORTANT: The input form must be (everything in the parenthesis should be ignored, this is just for explanation)
+```
+--(TWO dashes)
+791.3(wavelength)
+300(power)
+2(# of averages)
+CH4(channel number)
+```
+
 
 ## License
 
