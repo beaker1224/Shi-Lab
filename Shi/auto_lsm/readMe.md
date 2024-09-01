@@ -43,12 +43,6 @@ This part of script will ask about positions and colors of buttons from software
 1. The script will get location and color of "LSM" start button
 2. The script will get the location of the naming text input
 
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change. Everyone is free to use this script, and this script
-did get help from ChatGPT. And thanks to the inspiration brought by the author of "auto_hyperspectra".
-
 ## How to use
 Under the auto_lsm folder, you will find a txt file called **`parameter.txt`**. If no such a file, please run **`parameter_interpreter_3.py`**.
 Open **`parameter.txt`**, you can put your parameters into this file like the image attached here:
@@ -71,6 +65,12 @@ Name will be looks like: **`ROI-wavelength-power-average#-zoom#`**
 
 !!!IMPORTANT!!!
 before you start running main.py, YOU need to make sure the wavelength and power is the first input you put into the parameter.txt file. This is because there is a bug in pico_emerald.exe, if you input the same wavelength into the software again, the system shutter will not be turned off when you change the wavelength next time, and this will definitely kill the script and currently I have no idea how to fix it. In the future, I might try to use openCV to detect the current wavelength.
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first
+to discuss what you would like to change. Everyone is free to use this script, and this script
+did get help from ChatGPT. And thanks to the inspiration brought by the author of "auto_hyperspectra".
 
 ## License
 
