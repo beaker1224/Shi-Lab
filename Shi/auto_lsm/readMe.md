@@ -45,6 +45,7 @@ This part of script will ask about positions and colors of buttons from software
 
 ## How to use
 Under the auto_lsm folder, you will find a txt file called **`parameter.txt`**. If no such a file, please run **`parameter_interpreter_3.py`**.
+Currently, the script cannot change the channels to red/green, if you are in SRS channel, the script will use that constantly, this feature will be added into the script in the future. Also the same for the # of averages.
 Open **`parameter.txt`**, you can put your parameters into this file like the image attached here:
 
 ![image](https://github.com/user-attachments/assets/549d51c3-0df5-4dc9-9f90-b28264edc1d0)
