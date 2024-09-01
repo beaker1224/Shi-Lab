@@ -49,7 +49,7 @@ Open **`parameter.txt`**, you can put your parameters into this file like the im
 
 ![image](https://github.com/user-attachments/assets/549d51c3-0df5-4dc9-9f90-b28264edc1d0)
 
-IMPORTANT: The input form must be (everything in the parenthesis should be ignored, this is just for explanation)
+IMPORTANT: The input form must be (everything in the parentheses should be ignored, this is just for explanation)
 ```
 --(TWO dashes)
 791.3(wavelength)
