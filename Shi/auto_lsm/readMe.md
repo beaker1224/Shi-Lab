@@ -50,9 +50,11 @@ to discuss what you would like to change. Everyone is free to use this script, a
 did get help from ChatGPT. And thanks to the inspiration brought by the author of "auto_hyperspectra".
 
 ## How to use
-Under the auto_lsm folder, you will find a txt file called parameters.txt. If no such a file, please run parameter_interpreter_3.py.
-Open parameter.txt, you can put your parameters into this file like the image attached below:
+Under the auto_lsm folder, you will find a txt file called parameters.txt. If no such a file, please run #### **`parameter_interpreter_3.py`**.
+Open parameter.txt, you can put your parameters into this file like the image attached here:
+
 ![image](https://github.com/user-attachments/assets/549d51c3-0df5-4dc9-9f90-b28264edc1d0)
+
 IMPORTANT: The input form must be (everything in the parenthesis should be ignored, this is just for explanation)
 ```
 --(TWO dashes)
@@ -61,7 +63,14 @@ IMPORTANT: The input form must be (everything in the parenthesis should be ignor
 2(# of averages)
 CH4(channel number)
 ```
+Please note: the script is not fully completed, so the number of averages and the channel number does not do anything
+to the script, please write something but ignore what you wrote.
 
+Click on main.py, now you can input two things, the number of ROI and zoom number, this is used for naming purpose.
+Name will be looks like: ROI-wavelength-power-average#-zoom#
+
+!!!IMPORTANT!!!
+before you start running main.py, YOU need to make sure the wavelength and power is the first input you put into the parameter.txt file. This is because there is a bug in pico_emerald.exe, if you input the same wavelength into the software again, the system shutter will not be turned off when you change the wavelength next time, and this will definitely kill the script and currently I have no idea how to fix it. In the future, I might try to use openCV to detect the current wavelength.
 
 ## License
 
