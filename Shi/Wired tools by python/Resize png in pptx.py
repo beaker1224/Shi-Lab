@@ -42,3 +42,4 @@ def main():
         pyautogui.hotkey('enter')
         i += 1
 
+main()
