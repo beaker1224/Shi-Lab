@@ -35,7 +35,8 @@ def main():
     i = 0
 
     input("Press 'enter' to start")
-    while i < number:
+    pyautogui.PAUSE(0.2)
+    while i < int(number):
         pyautogui.click(*image_group)
         pyautogui.click(*image_parameter_box)
         pyautogui.write("3.68")
