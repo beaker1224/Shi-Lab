@@ -86,14 +86,19 @@ for (i = 0; i < roi_other_images.length; i++) {
             run("Image Calculator...", "operation=Subtract image1=[" + roi_other_name + "] image2=[" + roi_background_name + "] create");
 
             // Track subtracted images to avoid reopening
-            subtracted_images = Array.concat(subtracted_images, roi_other_name, roi_background_name);
+            subtracted_images = Array.concat(subtracted_images, roi_other_name);
 
             // Close the original images
             close(roi_other_name);
             close(roi_background_name);
         }
+
     }
+
 }
+subtracted_images = Array.concat(subtracted_images, roi_background_images);
+
+print("subtracted_images:" + arrayToString(subtracted_images));
 
 // Step 7: Open all images that were not involved in subtraction
 for (i = 0; i < fileList.length; i++) {
