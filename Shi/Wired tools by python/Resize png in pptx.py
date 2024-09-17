@@ -1,4 +1,4 @@
-import pyautogui, os, json
+import pyautogui, os, json, time
 
 def save_to_json(file_name, data):
     with open(file_name, 'w') as file:
@@ -15,7 +15,7 @@ def main():
     os.chdir(script_dir)
 
 
-    filename = "setup.json"
+    filename = "setup for Resize png in pptx.json"
     if not os.path.exists(filename):
         input("hover mouse to image group")
         image_group = pyautogui.position()
@@ -35,9 +35,10 @@ def main():
     i = 0
 
     input("Press 'enter' to start")
-    pyautogui.PAUSE(0.2)
+    
     while i < int(number):
         pyautogui.click(*image_group)
+        time.sleep(0.2)
         pyautogui.click(*image_parameter_box)
         pyautogui.write("3.68")
         pyautogui.hotkey('enter')
