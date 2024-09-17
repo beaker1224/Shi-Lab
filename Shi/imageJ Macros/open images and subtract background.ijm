@@ -21,7 +21,7 @@ for (i = 0; i < fileList.length; i++) {
 
     // Split the image name using "-"
     split_name = split(filename, "-");
-    if(split_name.length > 7) {
+    if(split_name[1].length > 7) {
         continue;
     }
     // Extract ROI number and wavelength
@@ -104,17 +104,15 @@ print("subtracted_images:" + arrayToString(subtracted_images));
 for (i = 0; i < fileList.length; i++) {
     filename = fileList[i];
 
-    // Split the image name using "-"
-    split_name = split(filename, "-");
-    if(split_name.length > 7) {
-        continue;
-    }
-
     // Check if the image was involved in subtraction
-    for (j = 0; j < subtracted_images.legnth; j++) {
-        if (!(subtracted_images[j] == filename)) {
-        run("Bio-Formats Importer", "open=[" + dir + filename + "] autoscale color_mode=Default view=Hyperstack stack_order=XYCZT");
-        // Open only non-subtracted images
+    for (j = 0; j < subtracted_images.length; j++) {
+        if ((filename == subtracted_images[j])) {
+            j = subtracted_images.length;
+        }
+
+        if(j == (subtracted_images.length - 1)) {
+            run("Bio-Formats Importer", "open=[" + dir + filename + "] autoscale color_mode=Default view=Hyperstack stack_order=XYCZT");
+
         }
     }
 }
