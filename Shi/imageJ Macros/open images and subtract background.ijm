@@ -1,6 +1,6 @@
 // Step 1: Define wavelengths to subtract from the background wavelength
 subtract_wavelengths = newArray("841.0nm", "843.0nm", "845.0nm"); // Add more wavelengths here as needed
-background_wavelength = "862nm";  // Modify this as needed
+background_wavelength = "862.0nm";  // Modify this as needed
 
 // Step 2: Prompt the user to select a folder
 dir = getDirectory("Choose a Directory, the folder where your images are");
@@ -98,7 +98,13 @@ for (i = 0; i < roi_other_images.length; i++) {
 // Step 7: Open all images that were not involved in subtraction
 for (i = 0; i < fileList.length; i++) {
     filename = fileList[i];
-    
+
+    // Split the image name using "-"
+    split_name = split(filename, "-");
+    if(split_name.length > 7) {
+        continue;
+    }
+
     // Check if the image was involved in subtraction
     for (j = 0; j < subtracted_images.legnth; j++) {
         if (!(subtracted_images[j] == filename)) {
