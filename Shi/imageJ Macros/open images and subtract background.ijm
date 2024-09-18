@@ -79,6 +79,8 @@ for (i = 0; i < roi_other_images.length; i++) {
             // open(dir + roi_other_name);
             // open(dir + roi_background_name);
             run("Bio-Formats Importer", "open=[" + dir + roi_other_name + "] autoscale color_mode=Default view=Hyperstack stack_order=XYCZT");
+            applyLUT(split_name[1]);
+
             run("Bio-Formats Importer", "open=[" + dir + roi_background_name + "] autoscale color_mode=Default view=Hyperstack stack_order=XYCZT");
 
 
@@ -100,9 +102,41 @@ subtracted_images = Array.concat(subtracted_images, roi_background_images);
 
 print("subtracted_images:" + arrayToString(subtracted_images));
 
+// Define your LUT mappings
+lut_mappings = newArray(
+    "791.3nm=Red", 
+    "794.6nm=Cyan", 
+    "797.2nm=Green", 
+    "787.2nm=Yellow", 
+    "841.0nm=Magenta", 
+    "843.0nm=Cyan Hot", 
+    "845.0nm=Fire"
+);
+
+// Function to apply LUT based on wavelength
+function applyLUT(wavelength) {
+    if (wavelength == "791.3nm") {
+        run("Red");
+    } else if (wavelength == "794.6nm") {
+        run("Cyan");
+    } else if (wavelength == "797.2nm") {
+        run("Green");
+    } else if (wavelength == "787.2nm") {
+        run("Yellow");
+    } else if (wavelength == "841.0nm") {
+        run("Magenta");
+    } else if (wavelength == "843.0nm") {
+        run("Cyan Hot");
+    } else if (wavelength == "845.0nm") {
+        run("Fire");
+    }
+}
+
 // Step 7: Open all images that were not involved in subtraction
 for (i = 0; i < fileList.length; i++) {
     filename = fileList[i];
+    split_name = split(filename, "-");  // Split filename to get wavelength
+    wavelength = split_name[1];   // Extract wavelength from filename
 
     // Check if the image was involved in subtraction
     for (j = 0; j < subtracted_images.length; j++) {
@@ -112,7 +146,9 @@ for (i = 0; i < fileList.length; i++) {
 
         if(j == (subtracted_images.length - 1)) {
             run("Bio-Formats Importer", "open=[" + dir + filename + "] autoscale color_mode=Default view=Hyperstack stack_order=XYCZT");
-
+            
+            // Apply the LUT based on the wavelength
+            applyLUT(wavelength);
         }
     }
 }
