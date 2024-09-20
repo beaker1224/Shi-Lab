@@ -103,8 +103,10 @@ def main():
         
         if i == 0:
             name_typer(order, wavelengths[i], powers[i], averages[i], zoom)
-            pyautogui.click(*lsm_start)
-            time.sleep(2)
+
+            if shutter_backOn():
+                pyautogui.click(*lsm_start)
+                time.sleep(2.5)
             # monitering start, lsm start, sleep(2) gives the lsm button to turn into correct working color some time
             while True:
                 current_lsm_color = get_pixel_color(*lsm_start)
@@ -123,7 +125,7 @@ def main():
         name_typer(order, wavelengths[i], powers[i], averages[i], zoom)
         if shutter_backOn():
             pyautogui.click(*lsm_start)
-            time.sleep(2)
+            time.sleep(2.5)
             while True:
                 current_lsm_color = get_pixel_color(*lsm_start)
                 if current_lsm_color == lsm_off_color:
@@ -134,5 +136,7 @@ def main():
     pico_emeraldWatch_1.change_power_to(powers[0])
     time.sleep(0.25)
     pico_emeraldWatch_1.change_wavelength_to(wavelengths[0])
-
+    print("----------------------Done-------------------------")
+    pyautogui.alert(text='Done', title = 'Auto LSM', button = 'exit')
+    
 main()
