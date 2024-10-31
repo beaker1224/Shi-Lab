@@ -19,6 +19,18 @@ def get_filename_position():
     input("Hover your mouse on the end of file naming part (the part you enter the name of the image) \n and press 'enter'")
     return pyautogui.position()
 
+def get_frame_off_position():
+    input("Hover your mouse on the None button of the average section, and press 'enter'")
+    return pyautogui.position()
+
+def get_frame_on_position():
+    input("Hover your mouse on the Frame button of the average section, and press 'enter'")
+    return pyautogui.position()
+
+def get_frame_numberpad_position():
+    input("Hover your mouse on the Frame NUMBERPAD, and press 'enter'")
+    return pyautogui.position()
+
 def save_to_json(file_name, data):
     with open(file_name, 'w') as file:
         json.dump(data, file)
@@ -44,13 +56,20 @@ def main():
         lsm_colorbar_position = get_lsm_colorbar_position()
         lsm_colorbar_off = get_pixel_color(*lsm_colorbar_position)
         lsm_filename_position = get_filename_position()
+        frame_off_position = get_frame_off_position()
+        frame_on_position = get_frame_on_position()
+        frame_numberpad_position = get_frame_numberpad_position()
+
 
         save_to_json(json_file, {
             'lsm button position': lsm_position,
             'lsm button off color': lsm_off_color,
             'lsm colorbar position': lsm_colorbar_position,
             'lsm colorbar off color': lsm_colorbar_off,
-            'file name editor position': lsm_filename_position
+            'file name editor position': lsm_filename_position,
+            'frame off position': frame_off_position,
+            'frame on position': frame_on_position,
+            'frame numberpad position': frame_numberpad_position
         })
 
     else:
@@ -60,12 +79,18 @@ def main():
         lsm_colorbar_position = tuple(config['lsm colorbar position'])
         lsm_colorbar_off = tuple(config['lsm_colorbar off color'])
         lsm_filename_position = tuple(config['file name editor position'])
+        frame_off_position = tuple(config['frame off position'])
+        frame_on_position = tuple(config['frame on position'])
+        frame_numberpad_position = tuple(config['frame numberpad position'])
 
     print('lsm button position: ' + str(lsm_position),
         'lsm button off color: ' + str(lsm_off_color),
         'lsm colorbar position: ' + str(lsm_colorbar_position),
         'lsm_colorbar off color: ' + str(lsm_colorbar_off),
-        'file name editor position: ' + str(lsm_filename_position))
+        'file name editor position: ' + str(lsm_filename_position),
+        'frame off position: ' + str(frame_off_position),
+        'frame on position: ' + str(frame_on_position),
+        'frame numberpad position: ' + str(frame_numberpad_position))
 
     
     input("display for information, press 'enter' when you want to exist and finish updating FV layout setting")

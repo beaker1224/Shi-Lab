@@ -8,6 +8,8 @@ def load_from_json(file_name):
     with open(file_name, 'r') as file:
         return json.load(file)
 
+number = input("how many images?")
+
 def main():
     # Get the directory of the current script
     script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -31,10 +33,9 @@ def main():
         image_parameter_box = tuple(file['image_parameter_box'])
 
 
-    number = input("how many images?")
+    
     i = 0
 
-    input("Press 'enter' to start")
     
     while i < int(number):
         pyautogui.click(*image_group)
@@ -44,4 +45,10 @@ def main():
         pyautogui.hotkey('enter')
         i += 1
 
+
 main()
+while True:
+    input("press enter for another loop")
+    main()
+
+
