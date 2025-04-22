@@ -5,17 +5,12 @@ import os
 
 # Input: List of folders containing images
 folders = [
-    r"D:/Chrome/2024-10-19 Hela cells D-Label/2024-10-19 Hela cells D-Label/D-Ace/1-CD subtracted",
-    r"D:\Chrome\2024-10-19 Hela cells D-Label\2024-10-19 Hela cells D-Label\D-Ace\2-CD subtracted",
-    r"D:\Chrome\2024-10-19 Hela cells D-Label\2024-10-19 Hela cells D-Label\D-Glutamine\1-CD subtracted",
-    r"D:\Chrome\2024-10-19 Hela cells D-Label\2024-10-19 Hela cells D-Label\D-Glutamine\2-CD subtracted",
-    r"D:\Chrome\2024-10-19 Hela cells D-Label\2024-10-19 Hela cells D-Label\D-Met\1-CD subtracted",
-    r"D:\Chrome\2024-10-19 Hela cells D-Label\2024-10-19 Hela cells D-Label\D-Met\2-CD subtracted",
-    r"D:\Chrome\2024-10-19 Hela cells D-Label\2024-11-15 Hela Cells D-Label\Choline\1-CD subtracted",
-    r"D:\Chrome\2024-10-19 Hela cells D-Label\2024-11-15 Hela Cells D-Label\Leucine\1-CD subtracted",
-    r"D:\Chrome\2024-10-19 Hela cells D-Label\2024-11-15 Hela Cells D-Label\L-Serine\1-CD subtracted",
-    r"D:\Chrome\2024-10-19 Hela cells D-Label\2024-11-15 Hela Cells D-Label\Lysine\1-CD subtracted",
-    r"D:\Chrome\2024-10-19 Hela cells D-Label\2024-11-15 Hela Cells D-Label\Tyrosine\1-CD subtracted"
+    # r"D:/Chrome/2024-10-19 Hela cells D-Label/2024-10-19 Hela cells D-Label/D-Ace/1-CD subtracted", 
+    # r"D:\Chrome\2024-10-19 Hela cells D-Label\2024-10-19 Hela cells D-Label\D-Ace\2-CD subtracted" this is how this looks like, please use this as a reference
+    r"E:\Lab\Liver Lipid Gene\Liver # 9",
+    r"E:\Lab\Liver Lipid Gene\Liver # 9",
+    r"E:\Lab\Liver Lipid Gene\Liver #  10",
+    r"E:\Lab\Liver Lipid Gene\Liver #  10"
 ]
 
 # Output: Directory to save the PowerPoint
