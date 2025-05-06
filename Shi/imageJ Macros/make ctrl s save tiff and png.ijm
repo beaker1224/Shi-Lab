@@ -1,4 +1,4 @@
-// Custom save shortcut, if not work please change ctrl+s to s and press s to save both
+// Custom save shortcut, if not work please change ctrl+s to s and press s to save both, do not delete the []
 macro "Save as TIFF and PNG [ctrl+s]" {
     // Get the current image title
     title = getTitle();

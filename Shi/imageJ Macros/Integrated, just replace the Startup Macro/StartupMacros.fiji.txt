@@ -679,3 +679,55 @@ for (i = 0; i < fileList.length; i++) {
         }
     }
 }
+
+macro "masked CD mean png tiff" {
+	// ImageJ Macro: batch‐apply LUT, measure mean, then allow contrast tweak & save
+	
+	// 1) choose folder
+	dir = getDirectory("Choose a Directory");
+	list = getFileList(dir);
+	
+	// 2) clear any old results
+	run("Clear Results");
+	
+	for (i = 0; i < list.length; i++) {
+	    file = list[i];
+	    if (!endsWith(file, "-masked.tif")) continue;
+	    
+	    // 3) open via Bio-Formats
+	    run("Bio-Formats Importer", 
+	        "open=[" + dir + file + "] autoscale color_mode=Default view=Hyperstack stack_order=XYCZT");
+	    
+	    // 4) grab the real window title
+	    title = getTitle();  
+	    
+	    // 5) apply the right LUT
+	    if (indexOf(title, "841.8nm") != -1) {
+	        run("Magenta");
+	    } else if (indexOf(title, "844.6nm") != -1) {
+	        run("Cyan Hot");
+	    } else if (indexOf(title, "841.0nm") != -1) {
+	        run("Magenta");
+	    } else if (indexOf(title, "845.0nm") != -1) {
+	        run("Cyan Hot");
+	    }
+	    
+	    // 6) measure mean intensity
+	    run("Set Measurements...", "mean redirect=None decimal=3");
+	    run("Measure");
+	    
+	    // 7) let you adjust contrast
+	    run("Brightness/Contrast...");
+	    waitForUser("Adjust contrast for " + title + " then click OK");
+	
+	    // 8) build a base filename (strip “.tif”)
+	    base = replace(title, ".tif", "");
+	    
+	    // 9) save as TIFF and PNG with “-lut” suffix
+	    saveAs("Tiff", dir + base + ".tif");
+	    run("Smooth");
+	    saveAs("PNG",  dir + base + ".png");
+	    
+	    // 10) close and loop
+	    close();
+}

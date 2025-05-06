@@ -1,0 +1,38 @@
+// ImageJ Macro to process files with wavelength 791.3nm, convert thresholded image to mask, and save with a sequential name
+
+// Get the current directory
+dir = getDirectory("current");
+
+// Get a list of all files in the directory
+list = getFileList(dir);
+
+// Initialize a counter for naming the mask files
+counter = 1;
+
+for (i = 0; i < list.length; i++) {
+    // Process only .oir files with wavelength 791.3nm in the name
+    if (endsWith(list[i], ".oir") && matches(list[i], ".*791.3nm.*")) {
+        // Open the current file
+        run("Bio-Formats Importer", "open=[" + dir + list[i] + "] autoscale color_mode=Default view=Hyperstack stack_order=XYCZT");
+        // Wait for the user to set the threshold
+        waitForUser("Set the threshold and press OK.");
+        
+        // Convert the image to a mask (binary image)
+        run("Convert to Mask");
+        
+        // Divide the mask by 255 (to normalize it to a 0-1 range)
+        run("Divide...", "value=255");
+        
+        // Create the mask filename using the counter
+        maskName = dir + counter + "-mask.tif";
+        
+        // Save the mask image to the same directory
+        saveAs("Tiff", maskName);
+        
+        // Close the current image
+        close();
+        
+        // Increment the counter for the next file
+        counter++;
+    }
+}

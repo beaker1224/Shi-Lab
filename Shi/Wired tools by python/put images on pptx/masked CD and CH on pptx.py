@@ -7,16 +7,28 @@ import os
 folders = [
     # r"D:/Chrome/2024-10-19 Hela cells D-Label/2024-10-19 Hela cells D-Label/D-Ace/1-CD subtracted", 
     # r"D:\Chrome\2024-10-19 Hela cells D-Label\2024-10-19 Hela cells D-Label\D-Ace\2-CD subtracted" this is how this looks like, please use this as a reference
-    r"E:\Lab\Liver Lipid Gene\Liver # 9",
-    r"E:\Lab\Liver Lipid Gene\Liver # 9",
-    r"E:\Lab\Liver Lipid Gene\Liver #  10",
-    r"E:\Lab\Liver Lipid Gene\Liver #  10"
+    r"D:\study\Shi_Lab\Data\sebaceous gland\1R",
+    r"D:\study\Shi_Lab\Data\sebaceous gland\2R",
+    r"D:\study\Shi_Lab\Data\sebaceous gland\3R",
+    r"D:\study\Shi_Lab\Data\sebaceous gland\4R",
+    r"D:\study\Shi_Lab\Data\sebaceous gland\5R",
+    r"D:\study\Shi_Lab\Data\sebaceous gland\6R",
+    r"D:\study\Shi_Lab\Data\sebaceous gland\7R",
+    r"D:\study\Shi_Lab\Data\sebaceous gland\8R",
+    r"D:\study\Shi_Lab\Data\sebaceous gland\9R",
+    r"D:\study\Shi_Lab\Data\sebaceous gland\10R",
+    r"D:\study\Shi_Lab\Data\sebaceous gland\11R",
+    r"D:\study\Shi_Lab\Data\sebaceous gland\12R",
+    r"D:\study\Shi_Lab\Data\sebaceous gland\13R",
+    r"D:\study\Shi_Lab\Data\sebaceous gland\14R",
+    r"D:\study\Shi_Lab\Data\sebaceous gland\15R",
+    r"D:\study\Shi_Lab\Data\sebaceous gland\16R",
 ]
 
 # Output: Directory to save the PowerPoint
-output_dir = "D:/Chrome/2024-10-19 Hela cells D-Label"
+output_dir = "D:/Chrome"
 os.makedirs(output_dir, exist_ok=True)  # Create the directory if it doesn't exist
-output_pptx = os.path.join(output_dir, "output_presentation.pptx")
+output_pptx = os.path.join(output_dir, "SG_output_presentation(1).pptx")
 
 # Create a new PowerPoint presentation
 presentation = Presentation()
@@ -29,7 +41,12 @@ margin = Inches(0.5)  # Margin around the edges
 # Loop through each folder
 for folder in folders:
     # Get all image files in the folder
-    image_files = sorted([f for f in os.listdir(folder) if f.endswith('.png') or f.endswith('.jpg')])
+    image_files = sorted([
+        f for f in os.listdir(folder)
+        if (f.endswith('.png') or f.endswith('.jpg'))
+        and not f.startswith("Result of")
+    ])
+    
     if not image_files:
         continue  # Skip empty folders
 
@@ -46,7 +63,7 @@ for folder in folders:
     slide = presentation.slides.add_slide(slide_layout)
 
     # Calculate grid dimensions
-    images_per_row = 7  # Customize as needed
+    images_per_row = 5  # Customize as needed
     available_width = slide_width - (2 * margin)
     available_height = slide_height - (2 * margin)
     rows = (len(image_files) + images_per_row - 1) // images_per_row  # Calculate total rows needed
