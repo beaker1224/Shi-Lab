@@ -34,7 +34,7 @@ def get_key_position(num):
                will indicate the number the user should hover over.
 
     Returns:
-    tuple: A tuple representing the current mouse cursor position (x, y) as integers.
+        tuple: A tuple representing the current mouse cursor position (x, y) as integers.
 
     Example:
     >>> position = get_key_position("5")

@@ -4,11 +4,23 @@ import json
 
 
 def get_lsm_colorbar_position():
+    """
+    Gets the position of the colorbar.
+
+    Returns:
+        tuple: The (x, y) position.
+    """
     print("Hover your mouse on lsm PROGRESSION COLORBAR (the one that between lsm button and estimated time) \n just make sure to not touch the edge of the colorbar")
     input("press 'enter' to advance")
     return pyautogui.position()
 
 def get_pixel_color(x, y):
+    '''
+    Gets the pixel of the current position
+    
+    Returns:
+        tuple: The (R,G,B) of the position (x,y)
+    '''
     return pyautogui.pixel(x, y)
 
 def get_lsm_button_position():
@@ -29,6 +41,10 @@ def get_frame_on_position():
 
 def get_frame_numberpad_position():
     input("Hover your mouse on the Frame NUMBERPAD, and press 'enter'")
+    return pyautogui.position()
+
+def get_checkbox_position():
+    input("Hover your mouse over the checkbox left-top cornor position, and press 'enter")
     return pyautogui.position()
 
 def save_to_json(file_name, data):
