@@ -1,6 +1,8 @@
 import pyautogui
 import os
 import json
+import zlib
+
 
 
 def get_lsm_colorbar_position():
@@ -75,8 +77,8 @@ def main():
         frame_off_position = get_frame_off_position()
         frame_on_position = get_frame_on_position()
         frame_numberpad_position = get_frame_numberpad_position()
-
-
+        channel_checkbox_position = get_checkbox_position()
+        # channel_checkbox_pixel = 
         save_to_json(json_file, {
             'lsm button position': lsm_position,
             'lsm button off color': lsm_off_color,
@@ -85,7 +87,8 @@ def main():
             'file name editor position': lsm_filename_position,
             'frame off position': frame_off_position,
             'frame on position': frame_on_position,
-            'frame numberpad position': frame_numberpad_position
+            'frame numberpad position': frame_numberpad_position,
+            'channel_checkbox_position' : channel_checkbox_position
         })
 
     else:
