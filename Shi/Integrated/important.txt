@@ -1,0 +1,13 @@
+what I have done on python:
+1. input a folder path, convert all the files into tif files from oir files
+2. create a mask based on a choice, default to 791.3 image
+3. redox process, the tiff files will be output after calculating FAD and NADH files.
+4. AFTER prm-srs on matlab, mask out the prm-srs files under one folder by a chosen threshold
+5. calculate CD/CH ratio
+6. K-means Clustering
+
+what you still need to do:
+1. prm-srs need to be run first via matlab
+2. calibration bar of the redox and CD plots need to be done via FIJI
+3. refine masking if there are things that could not be removed via thresholding mask
+4. 

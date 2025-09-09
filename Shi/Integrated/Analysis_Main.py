@@ -2,7 +2,8 @@ import subprocess
 import os
 import sys
 from helpers.oir2tiff import oir_to_tiff
-
+from helpers.create_mask import thresholding_mask
+from helpers.redox import process_images
 print("Welcome to Shuo's code for Image analysis!\n" \
 "I am here to help you to do some basic image analysis from " \
 "either .oir images or .tif images")

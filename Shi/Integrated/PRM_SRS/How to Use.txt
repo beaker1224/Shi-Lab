@@ -1,0 +1,2 @@
+click on "srs5_image_generation"
+change the file path, and the wavelength, step size (the number of spaces should be the same as your number of images in the selected folder)
