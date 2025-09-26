@@ -41,7 +41,7 @@ def main():
         pyautogui.click(*image_group)
         time.sleep(0.2)
         pyautogui.click(*image_parameter_box)
-        pyautogui.write("1")
+        pyautogui.write("2.19")
         pyautogui.hotkey('enter')
         i += 1
 
