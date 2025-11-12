@@ -231,7 +231,7 @@ def apply_mask_PRM(img: np.ndarray, thr: float) -> np.ndarray:
 def mask_prm_srs(folder: Path, frac: float = 0.8, out_subdir: str = "prm_srs_masked",
                 recursive: bool = False, overwrite: bool = False) -> Tuple[int, int]:
     """
-    Process all TIFFs in a folder.
+    Process all TIFFs in a folder, thresholding all the tiffs with a default value of 0.8
 
     Args:
         folder (Path): Path to the root PRM-SRS output folder

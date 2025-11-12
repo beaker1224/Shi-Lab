@@ -5,27 +5,21 @@ import os
 
 # Input: List of folders containing images
 folders = [
-    # r"D:/Chrome/2024-10-19 Hela cells D-Label/2024-10-19 Hela cells D-Label/D-Ace/1-CD subtracted", 
-    # r"D:\Chrome\2024-10-19 Hela cells D-Label\2024-10-19 Hela cells D-Label\D-Ace\2-CD subtracted" this is how this looks like, please use this as a reference
-    r"D:\Chrome\Rapamycin\data\gut\Ctrl2\tiff_files\processed",
-    r"D:\Chrome\Rapamycin\data\gut\Ctrl3\tiff_files\processed",
-    r"D:\Chrome\Rapamycin\data\gut\H2\tiff_files\processed",
-    r"D:\Chrome\Rapamycin\data\gut\L1\tiff_files\processed",
-    r"D:\Chrome\Rapamycin\data\gut\L2\tiff_files\processed",
-    r"D:\Chrome\Rapamycin\data\brain\Ctrl1\tiff_files\processed",
-    r"D:\Chrome\Rapamycin\data\brain\Ctrl2\tiff_files\processed",
-    r"D:\Chrome\Rapamycin\data\brain\H1\tiff_files\processed",
-    r"D:\Chrome\Rapamycin\data\brain\H2\tiff_files\processed",
-    r"D:\Chrome\Rapamycin\data\brain\L1\tiff_files\processed",
-    r"D:\Chrome\Rapamycin\data\brain\L2\tiff_files\processed",
-    r"D:\Chrome\Rapamycin\data\brain\L3\tiff_files\processed"
-
+            r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\with Methanol Wash\BCR-ABL\high\tiff_files\processed",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\with Methanol Wash\DMSO\high\tiff_files\processed",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\with Methanol Wash\LYni\high\tiff_files\processed",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\BCR-ACL\High\tiff_files\processed",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\BCR-ACL\Low\tiff_files\processed",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\DMSO\high\tiff_files\processed",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\DMSO\low\tiff_files\processed",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\LYni\high\tiff_files\processed",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\LYni\low\tiff_files\processed"
 ]
 
 # Output: Directory to save the PowerPoint
-output_dir = r"D:\Chrome\Rapamycin"
+output_dir = r"D:\Chrome"
 os.makedirs(output_dir, exist_ok=True)  # Create the directory if it doesn't exist
-output_pptx = os.path.join(output_dir, "Rapamycin Presentation.pptx")
+output_pptx = os.path.join(output_dir, "Cancer Stiffness Presentation.pptx")
 
 # Create a new PowerPoint presentation
 presentation = Presentation()
@@ -55,7 +49,7 @@ for folder in folders:
     slide = presentation.slides.add_slide(slide_layout)
 
     # Calculate grid dimensions
-    images_per_row = 9  # Customize as needed
+    images_per_row = 4  # Customize as needed
     available_width = slide_width - (2 * margin)
     available_height = slide_height - (2 * margin)
     rows = (len(image_files) + images_per_row - 1) // images_per_row  # Calculate total rows needed

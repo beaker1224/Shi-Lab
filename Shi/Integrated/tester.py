@@ -33,3 +33,16 @@ import tifffile as tiff
 #            ]
 # for f in folders:
 #     apply_mask(f)
+
+folders = [r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\with Methanol Wash\BCR-ABL\high\tiff_files",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\with Methanol Wash\DMSO\high\tiff_files",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\with Methanol Wash\LYni\high\tiff_files",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\BCR-ACL\High\tiff_files",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\BCR-ACL\Low\tiff_files",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\DMSO\high\tiff_files",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\DMSO\low\tiff_files",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\LYni\high\tiff_files",
+           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\LYni\low\tiff_files"]
+
+for f in folders:
+    apply_mask(f)
