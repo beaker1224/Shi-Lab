@@ -12,6 +12,7 @@ import umap  # pip install umap-learn
 from scipy.interpolate import interp1d
 from scipy.stats import fisher_exact
 from sklearn.cluster import KMeans
+import requests
 
 
 def smooth_spectrum(spectrum, lamda=0.2):
@@ -93,7 +94,7 @@ class hSRSAnalyzer:
     def load_water_baseline(self):
         """Load and prepare the water baseline."""
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        water_path = os.path.join(script_dir, "water_HSI_76.csv")
+        water_path = os.path.join(script_dir, "PBS_HSI_76.csv")
         baseline_data = pd.read_csv(water_path, header=None).values.flatten()
         x_original = np.linspace(self.spectra_start, self.spectra_end, len(baseline_data))
         baseline_data = baseline_data[::-1]  # reverse
@@ -439,15 +440,25 @@ def prompt_groups_from_user() -> OrderedDict:
         print(f"  - {k}: {v}")
     return groups
 
+def notify_done_ntfy(title = "Task Complete", message = "Your task has finished running."):
+    """Send a notification using ntfy.sh service."""
+    url = "https://ntfy.sh/K-means-with-love-from-beaker"
+    response = requests.post(
+        url, 
+        data=message.encode('utf-8'), 
+        headers={"Title": title, 
+                 "Priority": "5"},
+                 timeout=20)
+    response.raise_for_status() 
 
 def main():
     parser = argparse.ArgumentParser(description="Hyperspectral SRS Image Analysis (multi-group).")
-    parser.add_argument("--output_folder", type=str, default=r"D:\Chrome\Rapamycin\data\gut\Cluster Tiffs\Cluster Results\All",
+    parser.add_argument("--output_folder", type=str, default=r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\Cluster Results\Wash with Methanol",
                         help="Output folder")
-    parser.add_argument("--n_clusters", type=int, default=6, help="Number of clusters (recommended <= 20)")
+    parser.add_argument("--n_clusters", type=int, default=8, help="Number of clusters (recommended <= 20)")
     parser.add_argument("--spectra_start", type=float, default=2700, help="Lowest wavenumber")
     parser.add_argument("--spectra_end", type=float, default=3100, help="Highest wavenumber")
-    parser.add_argument("--target_channels", type=int, default=62, help="Resampled spectral channels")
+    parser.add_argument("--target_channels", type=int, default=51, help="Resampled spectral channels")
     parser.add_argument("--no_prompt", action="store_true",
                         help="Skip interactive prompts (expects --groups_csv)")
     parser.add_argument("--groups_csv", type=str, default="",
@@ -482,6 +493,8 @@ def main():
         target_channels=args.target_channels,
     )
     analyzer.process_combined_data()
+
+    notify_done_ntfy(title="K-means Analysis Complete", message="K-means analysis has finished successfully.")
 
 
 if __name__ == "__main__":
