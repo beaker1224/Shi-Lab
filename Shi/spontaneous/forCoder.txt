@@ -1,0 +1,7 @@
+helpers need to be plugins, 
+helpers shall intake file paths: rawFile
+following should be helpers:
+save_as_csv or save_as_txt(datatype)
+fitted_bg_subtraction(rawFile)
+nornal_bg_subtraction(rawFile, rawBG)
+plot(data: dimension:2): (first coln: raman shift; second coln: intensity)
