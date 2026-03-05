@@ -59,7 +59,7 @@ def run_background_subtraction_recursively(
 
 # Example usage:
 if __name__ == "__main__":
-    root = r"D:\Chrome\Workspace\Projects\Rapamycin\data\spontaneous"  # or whatever your root is
+    root = r"D:\Chrome\Workspace\Projects\Rapamycin\data\spontaneous\Rapa_D40\Gut"  # or whatever your root is
     summaries = run_background_subtraction_recursively(root, require_bg=False)
 
     # quick report
