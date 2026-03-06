@@ -74,3 +74,25 @@ def read_spectrum(path: Path, header: bool = False) -> Tuple[np.ndarray, ...]:
         arrays.append(arr)
     return tuple(arrays)
 
+def save_ratios(path: Path, data: List[Dict[str, Any]], header: bool = True) -> None:
+    '''
+    This function saves a list of dictionaries containing ratio data to a csv file.
+    Parameters:
+    path (Path): The path where the csv file will be saved.
+    data (List[Dict[str, Any]]): A list of dictionaries, where each dictionary contains the ratio data for a sample.
+    header (bool): Whether to include a header row in the csv file. Default is True.
+    Returns:
+    None
+    '''
+    df = pd.DataFrame(data)
+    df.to_csv(path, index=False)
+
+def load_ratios(path: Path) -> pd.DataFrame:
+    '''
+    This function loads ratio data from a csv file into a pandas DataFrame.
+    Parameters:
+    path (Path): The path to the csv file containing the ratio data.
+    Returns:
+    pd.DataFrame: A DataFrame containing the ratio data from the csv file.
+    '''
+    return pd.read_csv(path)
