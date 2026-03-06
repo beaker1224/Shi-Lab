@@ -9,7 +9,7 @@ import numpy as np
 from typing import Tuple
 from scipy.stats import ttest_ind
 
-def peak_ratio_calculator(wn: np.ndarray, intensity: np.ndarray, peak1: float, peak2: float) -> float:
+def peak_ratio_calculator(wn: np.ndarray, intensity: np.ndarray, bg_intensity: np.ndarray, peak1: float, peak2: float) -> float:
     '''
     This function calculates the ratio of two peaks in a Raman spectrum.
     Parameters:

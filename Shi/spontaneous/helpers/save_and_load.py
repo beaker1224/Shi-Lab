@@ -8,7 +8,7 @@ import pandas as pd
 import csv
 
 
-def save_spectrm(fileType: Literal['txt', 'csv'], outpath: Path, wn: np.ndarray, intensity: np.ndarray, bg_curve: Optional[np.ndarray] = None, header: bool = False) -> None:
+def save_spectrum(fileType: Literal['txt', 'csv'], outpath: Path, wn: np.ndarray, intensity: np.ndarray, bg_curve: Optional[np.ndarray] = None, header: bool = False) -> None:
     '''
     This function saves the wavenumber and intensity data to a file in either txt or csv format.
     Parameters:
