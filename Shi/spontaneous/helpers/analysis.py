@@ -9,7 +9,9 @@ import numpy as np
 from typing import Tuple
 from scipy.stats import ttest_ind
 
-def peak_ratio_calculator(wn: np.ndarray, intensity: np.ndarray, bg_intensity: np.ndarray, peak1: float, peak2: float) -> float:
+from typing import Optional
+
+def peak_ratio_calculator(wn: np.ndarray, intensity: np.ndarray, peak1: float, peak2: float, bg_intensity: Optional[np.ndarray] = None) -> float:
     '''
     This function calculates the ratio of two peaks in a Raman spectrum.
     Parameters:
@@ -17,6 +19,7 @@ def peak_ratio_calculator(wn: np.ndarray, intensity: np.ndarray, bg_intensity: n
     intensity (np.ndarray): The intensity data corresponding to the wavenumber axis.
     peak1 (float): The wavenumber of the first peak.
     peak2 (float): The wavenumber of the second peak.
+    bg_intensity (Optional[np.ndarray]): The background intensity data. If provided, uses bg_intensity for peak2 instead of intensity.
     Returns:
     float: The ratio of the two peaks.
     '''
@@ -24,10 +27,14 @@ def peak_ratio_calculator(wn: np.ndarray, intensity: np.ndarray, bg_intensity: n
     idx1 = np.argmin(np.abs(wn - peak1))
     idx2 = np.argmin(np.abs(wn - peak2))
     # Calculate the ratio of the two peaks
-    ratio = intensity[idx1] / intensity[idx2] if intensity[idx2] != 0 else np.nan
+    if bg_intensity is not None:
+        ratio = intensity[idx1] / bg_intensity[idx2] if bg_intensity[idx2] != 0 else np.nan
+    else:
+        ratio = intensity[idx1] / intensity[idx2] if intensity[idx2] != 0 else np.nan
     return ratio
 
-def area_under_curve_calculator(wn: np.ndarray, intensity: np.ndarray, peak_range1: tuple[float, float], peak_range2: tuple[float, float]):
+def area_under_curve_ratio_calculator(wn: np.ndarray, intensity: np.ndarray, 
+                                peak_range1: tuple[float, float], peak_range2: tuple[float, float], bg_intensity: Optional[np.ndarray] = None):
     '''
     This function calculates the area under the curve for a specified range in a Raman spectrum.
     Parameters:
@@ -48,8 +55,12 @@ def area_under_curve_calculator(wn: np.ndarray, intensity: np.ndarray, peak_rang
 
     # Calculate the area under the curve using numerical integration
     area1 = np.trapezoid(intensity_range1, wn_range1)
-    area2 = np.trapezoid(intensity_range2, wn_range2)
-    return area1, area2
+    if bg_intensity is not None:
+        bg_intensity_range2 = bg_intensity[mask2]
+        area2 = np.trapezoid(bg_intensity_range2, wn_range2)
+    else:
+        area2 = np.trapezoid(intensity_range2, wn_range2)
+    return area1 / area2
 
 def t_test_calculator(group1: np.ndarray, group2: np.ndarray) -> Tuple[float, float]:
     '''
