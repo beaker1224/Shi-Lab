@@ -2,12 +2,10 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Literal, Union, Optional, Tuple, Dict, List, Any
-from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
 import csv
-import re
 
 
 def save_spectrm(fileType: Literal['txt', 'csv'], outpath: Path, wn: np.ndarray, intensity: np.ndarray, bg_curve: Optional[np.ndarray] = None, header: bool = False) -> None:

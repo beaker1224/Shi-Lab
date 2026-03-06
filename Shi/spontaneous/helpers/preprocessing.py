@@ -6,9 +6,6 @@ from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
-import csv
-import re
-
 
 from scipy.interpolate import interp1d
 from scipy.optimize import minimize, Bounds, curve_fit
