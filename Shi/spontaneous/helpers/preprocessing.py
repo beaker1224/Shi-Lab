@@ -8,7 +8,7 @@ import pandas as pd
 
 from scipy.interpolate import interp1d
 from scipy.optimize import minimize, Bounds, curve_fit
-import matplotlib.pyplot as plt
+from scipy.signal import savgol_filter
 
 
 # Please type the csv file name that will be processed with address
@@ -72,7 +72,7 @@ def fitted_bg_subtraction(wn: np.ndarray, intensity: np.ndarray, range_start: in
 
     upper_bounds = [np.max(new_data[:, 1]), 3600, 500, np.max(new_data[:, 1])]
             
-    bounds = Bounds(lower_bounds, upper_bounds)
+    bounds = Bounds(lower_bounds, upper_bounds) # type: ignore
             
     result = minimize(func, init_val, method='Nelder-Mead', tol=1e-20, bounds=bounds)
             
@@ -173,3 +173,17 @@ def polynomial_baseline_correction(wn: np.ndarray, intensity: np.ndarray) -> Tup
     corrected_intensity = intensity - baseline
 
     return wn, corrected_intensity
+
+def smoothing(wn: np.ndarray, intensity: np.ndarray, window_length: int = 11, polyorder: int = 2) -> Tuple[np.ndarray, np.ndarray]:
+    '''
+    This function performs smoothing on a Raman spectrum using the Savitzky-Golay filter.
+    Parameters:
+    wn (np.ndarray): The wavenumber axis data.
+    intensity (np.ndarray): The intensity data corresponding to the wavenumber axis.
+    window_length (int): The length of the filter window (must be a positive odd integer). default is 11.
+    polyorder (int): The order of the polynomial used to fit the samples (must be less than window_length). default is 2.
+    Returns:
+    Tuple[np.ndarray, np.ndarray]: A tuple containing the wavenumber axis and the smoothed intensity.
+    '''
+    smoothed_intensity = savgol_filter(intensity, window_length=window_length, polyorder=polyorder)
+    return wn, smoothed_intensity

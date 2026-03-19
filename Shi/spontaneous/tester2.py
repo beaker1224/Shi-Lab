@@ -1,35 +1,18 @@
 '''
 here I will gather the following information:
-a. row file after fitted background subtraction (this part is special, should be the intensity from subtracted spectra vs fitted background curve)
-1. total lipid ratio to water: 2850 cm-1 / 3420 cm-1
-2. total protein ratio to water: 2940 cm-1 / 3420 cm-1
-
-b. row file after spectra bg subtraction
-3. total lipid to protein ratio: 2850 cm-1 / 2940 cm-1
-4. lipid CD/CH ratio: 2140 cm-1 / 2850 cm-1
-5. protein CD/CH ratio: 2180 cm-1 / 2940 cm-1
-6. lipid unsaturation ratio: 3005 cm-1 / 2850 cm-1
-
-c. put all the above ratios in a table, and do statistical analysis
-1. save all the ratios in a csv file, with columns: sample name, group, ratio values, with headers
-2. do statistical analysis (t-test or ANOVA) on the ratios, and save the results in a separate csv file, with columns: ratio name, p-value, significance level, with headers
-
-d. row file after spectra bg subtraction and simple baseline correction
-1. plot statistical analysis results, with histogram and significance annotations
-2. plot baseline corrected spectra, for shape analysis
-
-e. discussion
-1. gut should be focused on the r2 region instead of r5 region
-2. ovary should be focused on the posterior region, instead of the anterior region
+1. intake raw data
+2. perform background subtraction
+3. smoothing
+4. baseline correction
+5. save the processed spectra
 '''
 from helpers.analysis import peak_ratio_calculator, t_test_calculator
-from helpers.preprocessing import spectra_bg_subtraction, simple_baseline_correction, fitted_bg_subtraction
+from helpers.preprocessing import spectra_bg_subtraction, simple_baseline_correction, smoothing
 from helpers.save_and_load import read_spectrum, save_ratios, save_spectrum
 import numpy as np
 import pandas as pd
 from pathlib import Path
-from typing import Dict, List, Any
-from scipy.stats import f_oneway
+from typing import Dict, List, Any, Tuple
 
 raw_group_dirs: Dict[str, Path] = {
     "Gut_D10_Rapa": Path(r"D:\Chrome\Workspace\Projects\Rapamycin\data\spontaneous\Raw\D10_Gut\1_RAPA"),
@@ -41,14 +24,11 @@ raw_group_dirs: Dict[str, Path] = {
     "Ovary_D40_Rapa": Path(r"D:\Chrome\Workspace\Projects\Rapamycin\data\spontaneous\Raw\D40_Ovary\1_RAPA"),
     "Ovary_D40_Ctrl": Path(r"D:\Chrome\Workspace\Projects\Rapamycin\data\spontaneous\Raw\D40_Ovary\4_CTRL"),
 }
-output_csv_path = Path(r"D:\Chrome\ratios.csv")
 
-# Process the data for parts a and b
-all_ratios = []
+output_spectra_folder = Path(r"D:\Chrome\processed_spectra")
 
 for group in raw_group_dirs.keys():
     raw_dir = raw_group_dirs[group]
-    bg_sub_dir = bg_subtracted_group_dirs[group]
     
     raw_files = list(raw_dir.glob('*.txt')) if raw_dir.exists() else []
     
