@@ -1,0 +1,13 @@
+zoom 1.3x
+3um z step
+srs
+40us dwell
+2 fr avg
+60k gain
+-0.5 offset
+
+
+tpf
+8us dwell
+200mW
+5 fr avg

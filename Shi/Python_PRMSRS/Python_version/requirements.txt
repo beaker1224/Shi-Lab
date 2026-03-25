@@ -1,0 +1,10 @@
+numpy
+scipy
+pandas
+matplotlib
+scikit-learn
+scikit-image
+tifffile
+# Optional for native OIR/OIB reading:
+# aicsimageio
+# bioio
