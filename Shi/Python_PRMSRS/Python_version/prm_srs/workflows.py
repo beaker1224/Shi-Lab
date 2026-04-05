@@ -24,19 +24,29 @@ def srs5_image_generation(
     output_folder: Path | str | None = None,
     wavenumber_samples: np.ndarray | None = None,
     potential_shift: float = 100.0,
+    raman_shift_start: float | None = None,
+    raman_shift_end: float | None = None,
+    image_count: int | None = None,
 ) -> dict[str, dict[str, np.ndarray]]:
     root = Path(root_folder)
     folder_names = folders_generation(root)
-    output_root = ensure_directory(output_folder or Path(f"{root}_lipid_subtype_output"))
+    output_root = ensure_directory(
+        output_folder or (root.parent / f"{root.name}_lipid_subtype_output")
+    )
 
     if wavenumber_samples is None:
-        wavenumber_samples = np.linspace(2700, 3120, 62)
+        wavenumber_samples = build_wavenumber_samples(
+            raman_shift_start=raman_shift_start,
+            raman_shift_end=raman_shift_end,
+            image_count=image_count,
+        )
     window_size = window_estimation(wavenumber_samples, potential_shift)
     subtype_name, reference_spectra = reference_signal2(wavenumber_samples, window_size)
 
     results: dict[str, dict[str, np.ndarray]] = {}
     for folder_name in folder_names:
         images = read_oir_folder_image(folder_name)
+        _validate_stack_size(images, wavenumber_samples, folder_name)
         folder_output = ensure_directory(output_root / folder_name.name)
         score_images_by_name, shift_images_by_name = match_shifted_references(
             images,
@@ -60,7 +70,7 @@ def srs5_image_generation_copy(
     potential_shift: float = 100.0,
 ) -> dict[str, dict[str, np.ndarray]]:
     root = Path(root_folder)
-    output = output_folder or Path(f"{root}_lipid subtype")
+    output = output_folder or (root.parent / f"{root.name}_lipid subtype")
     samples = wavenumber_samples if wavenumber_samples is not None else np.linspace(2700, 3120, 51)
     return srs5_image_generation(root, output_folder=output, wavenumber_samples=samples, potential_shift=potential_shift)
 
@@ -74,7 +84,7 @@ def srs_lipid_subtype(
 ) -> None:
     root = Path(root_folder)
     folder_names = folders_generation(root)
-    output_root = ensure_directory(output_folder or Path(f"{root}_out"))
+    output_root = ensure_directory(output_folder or (root.parent / f"{root.name}_out"))
 
     samples = wavenumber_samples if wavenumber_samples is not None else np.linspace(2700, 3150, 76)
     subtype_name, reference_dataset = reference_signal3(samples)
@@ -116,7 +126,7 @@ def srs5_hippocampus(
     if not folder_names:
         raise FileNotFoundError(f"No folders found under {root}")
 
-    output_root = ensure_directory(output_folder or Path(f"{root}_out"))
+    output_root = ensure_directory(output_folder or (root.parent / f"{root.name}_out"))
     wavenumber_samples = np.linspace(2796, 3085, 82)
     window_size = window_estimation(wavenumber_samples, 100)
     subtype_name, reference_spectra = reference_signal2(wavenumber_samples, window_size)
@@ -208,3 +218,28 @@ def _column_minmax_scale(data: np.ndarray) -> np.ndarray:
     maximum = data.max(axis=0, keepdims=True)
     denominator = np.where((maximum - minimum) == 0, 1.0, maximum - minimum)
     return (data - minimum) / denominator
+
+
+def build_wavenumber_samples(
+    raman_shift_start: float | None,
+    raman_shift_end: float | None,
+    image_count: int | None,
+) -> np.ndarray:
+    if raman_shift_start is None or raman_shift_end is None or image_count is None:
+        raise ValueError(
+            "srs5_image_generation requires either `wavenumber_samples` or all of "
+            "`raman_shift_start`, `raman_shift_end`, and `image_count`."
+        )
+    if image_count <= 0:
+        raise ValueError(f"`image_count` must be positive, got {image_count}.")
+    return np.linspace(float(raman_shift_start), float(raman_shift_end), int(image_count))
+
+
+def _validate_stack_size(images: np.ndarray, wavenumber_samples: np.ndarray, folder_name: Path) -> None:
+    stack_size = int(images.shape[0])
+    expected_size = int(len(wavenumber_samples))
+    if stack_size != expected_size:
+        raise ValueError(
+            f"Image-count mismatch for {folder_name}: loaded {stack_size} images, "
+            f"but the Raman-shift inputs describe {expected_size} positions."
+        )

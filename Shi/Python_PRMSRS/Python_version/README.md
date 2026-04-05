@@ -27,7 +27,11 @@ python demo_2_subtype_lipid_signal.py
 For image workflows, pass an absolute input folder:
 
 ```powershell
-python srs5_image_generation.py --root-folder "D:\\data\\brain\\L3\\1-CH"
+python srs5_image_generation.py `
+  --hyperspectra-folder "D:\\data\\brain\\L3\\1-CH" `
+  --raman-shift-start 2700 `
+  --raman-shift-end 3120 `
+  --num-images 62
 ```
 
 ## Suggested dependencies

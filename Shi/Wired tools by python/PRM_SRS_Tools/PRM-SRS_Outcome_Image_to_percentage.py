@@ -33,10 +33,11 @@ def filter_tiff_images_by_threshold(input_dir, threshold_percentage=0.9):
                     image_array = tif.asarray()
 
                 # Convert pixel values (0-255) to a percentage (0.0-1.0)
-                percentage_array = image_array.astype(np.float32) / 255.0
+                #percentage_array = image_array.astype(np.float32) / 255.0
+                percentage_array = image_array.astype(np.float32)
 
                 # Apply the threshold. The result is a boolean array (True/False).
-                binary_array = percentage_array > threshold_percentage
+                binary_array = percentage_array >= threshold_percentage
 
                 # Convert the boolean array to an 8-bit integer array (0 or 255)
                 output_array = binary_array.astype(np.uint8) * 255
@@ -50,10 +51,10 @@ def filter_tiff_images_by_threshold(input_dir, threshold_percentage=0.9):
 if __name__ == '__main__':
     # --- Configuration ---
     # 1. Set the path to your folder containing the TIFF images.
-    input_directory = r"D:\study\Shi_Lab\Data\Training Muscle\mice Biopsy\SOL\2-zoom4_out"
+    input_directory = r"D:\Chrome\temp_group\test\1-CH_lipid_subtype_output\1-CH"
 
     # 2. Set your desired threshold value (e.g., 0.9 for 90%).
-    desired_threshold = 0.75
+    desired_threshold = 0.80
     # --- End of Configuration ---
 
     # --- Script Execution ---
