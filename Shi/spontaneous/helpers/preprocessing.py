@@ -128,7 +128,8 @@ def spectra_bg_subtraction(wn: np.ndarray, intensity: np.ndarray, bg_wn: np.ndar
     subtracted = intensity - bg_on_sample
     return wn, subtracted
 
-def simple_baseline_correction(wn: np.ndarray, intensity: np.ndarray, cell_silent_start: int = 2300, cell_silent_end: int = 2600, trim = None, min_max: bool = True) -> Tuple[np.ndarray, np.ndarray]:
+def simple_baseline_correction(wn: np.ndarray, intensity: np.ndarray, 
+                               cell_silent_start: int = 2300, cell_silent_end: int = 2600, trim = None, min_max: bool = True) -> Tuple[np.ndarray, np.ndarray]:
     '''
     This function performs simple baseline correction on a Raman spectrum by setting
     the average of the intensity values from the cell silent region as zero line.

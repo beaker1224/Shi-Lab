@@ -62,7 +62,7 @@ def area_under_curve_ratio_calculator(wn: np.ndarray, intensity: np.ndarray,
         area2 = np.trapezoid(intensity_range2, wn_range2)
     return area1 / area2
 
-def t_test_calculator(group1: np.ndarray, group2: np.ndarray) -> Tuple[float, float]:
+def t_test_calculator(group1: np.ndarray, group2: np.ndarray) -> Tuple:
     '''
     This function performs a t-test between two groups of data.
     Parameters:
