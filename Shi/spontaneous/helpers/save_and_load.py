@@ -58,7 +58,7 @@ def read_spectrum(path: Path, header: bool = False) -> Tuple[np.ndarray, ...]:
     Tuple[np.ndarray, ...]: Tuple of numpy arrays (wavenumber, intensity) or (wavenumber, intensity, background).
     """
     try:
-        df = pd.read_csv(path, delim_whitespace=True, header=0 if header else None, comment="#")
+        df = pd.read_csv(path, sep=r"\s+", header=0 if header else None, comment="#")
     except Exception:
         df = pd.read_csv(path, sep=None, engine="python", header=0 if header else None, comment="#")
 
