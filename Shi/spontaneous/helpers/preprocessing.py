@@ -2,6 +2,10 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Literal, Union, Optional, Tuple, Dict, List, Any
+try:
+    from . import save_and_load as sl
+except ImportError:
+    import save_and_load as sl
 
 import numpy as np
 import pandas as pd
@@ -26,16 +30,41 @@ def fitted_bg_subtraction(wn: np.ndarray, intensity: np.ndarray, range_start: in
     the background-subtracted intensity, and the fitted background curve.
     '''
 
-    # Combine into 2D array for interpolation
-    data = np.column_stack((wn, intensity))
+    wn = np.asarray(wn, dtype=float)
+    intensity = np.asarray(intensity, dtype=float)
+    valid_mask = np.isfinite(wn) & np.isfinite(intensity)
+    wn = wn[valid_mask]
+    intensity = intensity[valid_mask]
+
+    if wn.size < 2:
+        print("Error occurred while interpolating data: not enough valid data points.")
+        return np.array([]), np.array([]), np.array([])
+
+    order = np.argsort(wn)
+    wn = wn[order]
+    intensity = intensity[order]
+
+    unique_wn, unique_indices = np.unique(wn, return_index=True)
+    wn = unique_wn
+    intensity = intensity[unique_indices]
+
+    axis_start = max(int(np.ceil(np.min(wn))), int(np.ceil(range_start)))
+    axis_stop = min(int(np.floor(np.max(wn))) + 1, int(np.ceil(range_end)))
+
+    if axis_start >= axis_stop:
+        print(
+            "Error occurred while interpolating data: requested range does not overlap "
+            f"the spectrum range ({np.min(wn):.3f}-{np.max(wn):.3f} cm-1)."
+        )
+        return np.array([]), np.array([]), np.array([])
 
     try:
-        interp_data = interp1d(data[:, 0], data[:, 1])
+        interp_data = interp1d(wn, intensity)
     except ValueError as e:
         print(f"Error occurred while interpolating data: {e}, possible due to range too large to include all data points.")
         return np.array([]), np.array([]), np.array([])
 
-    axis_x = np.arange(range_start, range_end, 1)
+    axis_x = np.arange(axis_start, axis_stop, 1)
     new_data = np.zeros([axis_x.shape[0], 2])
 
     new_data[:, 0] = axis_x # from range start to end with step of 1
@@ -50,12 +79,11 @@ def fitted_bg_subtraction(wn: np.ndarray, intensity: np.ndarray, range_start: in
         # inten = new_data[2220:2800, 1]
         # but the above was built on the assumption that the input data has a wavenumber range from 1000 to 3900, which may not always be the case.
         # To make it more flexible, we can use the range_start and range_end parameters to determine the indices for the fitting range based on the new_data's wavenumber axis.
-        start = 3220-range_start
-        try:
-            wavenumber = new_data[start:start+580, 0]
-            inten = new_data[start:start+580, 1]
-        except IndexError as e:
-            print(f"Error occurred while slicing data for fitting: {e}, possible don't have data greater than 3800 cm-1.")
+        fit_mask = (new_data[:, 0] >= 3220) & (new_data[:, 0] <= 3800)
+        wavenumber = new_data[fit_mask, 0]
+        inten = new_data[fit_mask, 1]
+        if wavenumber.size < 2:
+            print("Error occurred while slicing data for fitting: spectrum does not include 3220-3800 cm-1.")
             return np.inf # return infinity to indicate that the fitting cannot be performed due to insufficient data points in the specified range
                     
         fun = parm[0]*np.exp((-np.square(wavenumber-parm[1]))/(2*parm[2]*parm[2])) + parm[3]
@@ -80,14 +108,13 @@ def fitted_bg_subtraction(wn: np.ndarray, intensity: np.ndarray, range_start: in
     res_parm = result.x
 
 
-    bg_curve = np.zeros([data.shape[0],])
-
     bg_curve = res_parm[0]*np.exp((-np.square(new_data[:, 0]-res_parm[1]))/(2*res_parm[2]*res_parm[2])) + res_parm[3]
 
     sub_data = new_data[:, 1] - bg_curve
 
     baseline_mask = (new_data[:, 0] >= 2400) & (new_data[:, 0] <= 2500)
-    sub_data = sub_data - np.mean(sub_data[baseline_mask])
+    if np.any(baseline_mask):
+        sub_data = sub_data - np.mean(sub_data[baseline_mask])
 
     return new_data[:, 0], sub_data, bg_curve
 
@@ -188,3 +215,5 @@ def smoothing(wn: np.ndarray, intensity: np.ndarray, window_length: int = 11, po
     '''
     smoothed_intensity = savgol_filter(intensity, window_length=window_length, polyorder=polyorder)
     return wn, smoothed_intensity
+
+
