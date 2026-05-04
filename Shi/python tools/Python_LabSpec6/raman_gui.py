@@ -626,7 +626,7 @@ class RamanEditor(tk.Tk):
 
         if self.pick_points:
             px, py = zip(*self.pick_points)
-            self.point_artist = self.ax.scatter(px, py, color="#0f766e", s=36, zorder=5, label="Baseline points")
+            self.point_artist = self.ax.scatter(px, py, color="#ff0011", s=36, zorder=5, label="Baseline points")
 
         self.ax.set_title(spectrum.path.name)
         self.ax.legend(loc="upper right")
