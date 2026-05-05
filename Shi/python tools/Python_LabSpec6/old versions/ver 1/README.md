@@ -16,8 +16,6 @@ python raman_gui.py
 - Add multiple draggable vertical x-axis cursor lines with different colors and labels.
 - Baseline correction by polynomial fit across the current spectrum.
 - Manual baseline correction by clicking anchor points and connecting them with interpolation.
-- Place manual points snapped to the spectrum, or turn snapping off to place points anywhere in the plot area.
-- Zoom with the mouse wheel, the Matplotlib toolbar, or the `Zoom in`, `Zoom out`, and `Reset view` buttons.
 - Undo recent edits with `Ctrl+Z` or the `Undo` button.
 - Export the corrected spectrum with the same two-column structure as the raw file.
 
@@ -27,9 +25,8 @@ The included `example spectra.txt` is a plain tab-delimited two-column file: x-a
 
 1. Open a spectrum.
 2. Enable `Manual point mode`.
-3. Leave `Snap points to spectrum` on for spectrum-following points, or turn it off for free baseline placement.
-4. Click points along the visual baseline.
-5. Click `Apply point baseline`.
-6. Export with `Export corrected`.
+3. Click points along the visual baseline.
+4. Click `Apply point baseline`.
+5. Export with `Export corrected`.
 
 The correction subtracts from the current displayed spectrum, so repeated corrections are cumulative. Use `Reset to raw` to start again from the original intensity.

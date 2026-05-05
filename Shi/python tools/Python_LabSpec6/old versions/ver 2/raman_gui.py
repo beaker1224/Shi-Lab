@@ -184,49 +184,9 @@ class RamanEditor(tk.Tk):
         self.columnconfigure(1, weight=1)
         self.rowconfigure(0, weight=1)
 
-        sidebar_container = ttk.Frame(self)
-        sidebar_container.grid(row=0, column=0, sticky="ns")
-        sidebar_container.rowconfigure(0, weight=1)
-        sidebar_container.columnconfigure(0, weight=1)
-
-        sidebar_canvas = tk.Canvas(sidebar_container, width=310, highlightthickness=0, borderwidth=0)
-        sidebar_canvas.grid(row=0, column=0, sticky="ns")
-        sidebar_scrollbar = ttk.Scrollbar(sidebar_container, orient="vertical", command=sidebar_canvas.yview)
-        sidebar_scrollbar.grid(row=0, column=1, sticky="ns")
-        sidebar_canvas.configure(yscrollcommand=sidebar_scrollbar.set)
-
-        sidebar = ttk.Frame(sidebar_canvas, padding=(10, 10, 8, 10))
-        sidebar_window = sidebar_canvas.create_window((0, 0), window=sidebar, anchor="nw")
+        sidebar = ttk.Frame(self, padding=(10, 10, 8, 10))
+        sidebar.grid(row=0, column=0, sticky="ns")
         sidebar.columnconfigure(0, weight=1)
-
-        def update_sidebar_scroll_region(_event: object) -> None:
-            sidebar_canvas.configure(scrollregion=sidebar_canvas.bbox("all"))
-
-        def update_sidebar_width(event: object) -> None:
-            sidebar_canvas.itemconfigure(sidebar_window, width=event.width)
-
-        def enable_sidebar_mousewheel(_event: object) -> None:
-            sidebar_canvas.bind_all("<MouseWheel>", scroll_sidebar)
-
-        def disable_sidebar_mousewheel(_event: object) -> None:
-            sidebar_canvas.unbind_all("<MouseWheel>")
-
-        def scroll_sidebar(event: object) -> str:
-            sidebar_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
-            return "break"
-
-        def bind_mousewheel_to_children(widget: tk.Widget) -> None:
-            widget.bind("<Enter>", enable_sidebar_mousewheel, add="+")
-            widget.bind("<Leave>", disable_sidebar_mousewheel, add="+")
-            for child in widget.winfo_children():
-                bind_mousewheel_to_children(child)
-
-        sidebar.bind("<Configure>", update_sidebar_scroll_region)
-        sidebar_canvas.bind("<Configure>", update_sidebar_width)
-        sidebar_canvas.bind("<Enter>", enable_sidebar_mousewheel)
-        sidebar_canvas.bind("<Leave>", disable_sidebar_mousewheel)
-        sidebar.bind("<Enter>", enable_sidebar_mousewheel)
-        sidebar.bind("<Leave>", disable_sidebar_mousewheel)
 
         plot_area = ttk.Frame(self, padding=(0, 8, 10, 4))
         plot_area.grid(row=0, column=1, sticky="nsew")
@@ -320,7 +280,6 @@ class RamanEditor(tk.Tk):
             "Polyfit subtracts the fitted baseline from the selected spectrum."
         )
         ttk.Label(sidebar, text=help_text, wraplength=250, foreground="#4a4a4a").grid(row=9, column=0, sticky="ew")
-        bind_mousewheel_to_children(sidebar)
 
         self.figure = Figure(figsize=(8, 5), dpi=100)
         self.ax = self.figure.add_subplot(111)

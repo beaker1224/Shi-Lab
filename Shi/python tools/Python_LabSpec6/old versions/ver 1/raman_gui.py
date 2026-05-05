@@ -3,7 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 import tkinter as tk
-from tkinter import font as tkfont
 from tkinter import filedialog, messagebox, ttk
 
 import numpy as np
@@ -148,7 +147,6 @@ class RamanEditor(tk.Tk):
         self.dragging_cursor: CursorLine | None = None
         self.pick_points: list[tuple[float, float]] = []
         self.pick_mode = tk.BooleanVar(value=False)
-        self.snap_points_to_spectrum = tk.BooleanVar(value=True)
         self.show_baseline = tk.BooleanVar(value=True)
         self.show_original = tk.BooleanVar(value=True)
         self.poly_order = tk.IntVar(value=3)
@@ -164,69 +162,18 @@ class RamanEditor(tk.Tk):
         self.point_artist = None
         self._last_baseline: np.ndarray | None = None
 
-        self._configure_fonts()
         self._build_ui()
         self._connect_plot_events()
         self.bind_all("<Control-z>", self.undo)
         self.bind_all("<Control-Z>", self.undo)
 
-    def _configure_fonts(self) -> None:
-        for name in ("TkDefaultFont", "TkTextFont", "TkMenuFont"):
-            tkfont.nametofont(name).configure(size=11)
-        tkfont.nametofont("TkHeadingFont").configure(size=12, weight="bold")
-
-        style = ttk.Style(self)
-        style.configure("TButton", padding=(8, 5))
-        style.configure("TLabel", padding=(0, 1))
-        style.configure("TLabelframe.Label", font=tkfont.nametofont("TkHeadingFont"))
-
     def _build_ui(self) -> None:
         self.columnconfigure(1, weight=1)
         self.rowconfigure(0, weight=1)
 
-        sidebar_container = ttk.Frame(self)
-        sidebar_container.grid(row=0, column=0, sticky="ns")
-        sidebar_container.rowconfigure(0, weight=1)
-        sidebar_container.columnconfigure(0, weight=1)
-
-        sidebar_canvas = tk.Canvas(sidebar_container, width=310, highlightthickness=0, borderwidth=0)
-        sidebar_canvas.grid(row=0, column=0, sticky="ns")
-        sidebar_scrollbar = ttk.Scrollbar(sidebar_container, orient="vertical", command=sidebar_canvas.yview)
-        sidebar_scrollbar.grid(row=0, column=1, sticky="ns")
-        sidebar_canvas.configure(yscrollcommand=sidebar_scrollbar.set)
-
-        sidebar = ttk.Frame(sidebar_canvas, padding=(10, 10, 8, 10))
-        sidebar_window = sidebar_canvas.create_window((0, 0), window=sidebar, anchor="nw")
+        sidebar = ttk.Frame(self, padding=(10, 10, 8, 10))
+        sidebar.grid(row=0, column=0, sticky="ns")
         sidebar.columnconfigure(0, weight=1)
-
-        def update_sidebar_scroll_region(_event: object) -> None:
-            sidebar_canvas.configure(scrollregion=sidebar_canvas.bbox("all"))
-
-        def update_sidebar_width(event: object) -> None:
-            sidebar_canvas.itemconfigure(sidebar_window, width=event.width)
-
-        def enable_sidebar_mousewheel(_event: object) -> None:
-            sidebar_canvas.bind_all("<MouseWheel>", scroll_sidebar)
-
-        def disable_sidebar_mousewheel(_event: object) -> None:
-            sidebar_canvas.unbind_all("<MouseWheel>")
-
-        def scroll_sidebar(event: object) -> str:
-            sidebar_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
-            return "break"
-
-        def bind_mousewheel_to_children(widget: tk.Widget) -> None:
-            widget.bind("<Enter>", enable_sidebar_mousewheel, add="+")
-            widget.bind("<Leave>", disable_sidebar_mousewheel, add="+")
-            for child in widget.winfo_children():
-                bind_mousewheel_to_children(child)
-
-        sidebar.bind("<Configure>", update_sidebar_scroll_region)
-        sidebar_canvas.bind("<Configure>", update_sidebar_width)
-        sidebar_canvas.bind("<Enter>", enable_sidebar_mousewheel)
-        sidebar_canvas.bind("<Leave>", disable_sidebar_mousewheel)
-        sidebar.bind("<Enter>", enable_sidebar_mousewheel)
-        sidebar.bind("<Leave>", disable_sidebar_mousewheel)
 
         plot_area = ttk.Frame(self, padding=(0, 8, 10, 4))
         plot_area.grid(row=0, column=1, sticky="nsew")
@@ -239,7 +186,7 @@ class RamanEditor(tk.Tk):
         ttk.Button(sidebar, text="Undo   Ctrl+Z", command=self.undo).grid(row=3, column=0, sticky="ew", pady=(0, 12))
 
         ttk.Label(sidebar, text="Loaded spectra").grid(row=4, column=0, sticky="w")
-        self.spectrum_list = tk.Listbox(sidebar, height=8, width=32, exportselection=False, font=("Segoe UI", 11))
+        self.spectrum_list = tk.Listbox(sidebar, height=8, width=32, exportselection=False)
         self.spectrum_list.grid(row=5, column=0, sticky="ew", pady=(4, 10))
         self.spectrum_list.bind("<<ListboxSelect>>", self._on_spectrum_selected)
         spectra_actions = ttk.Frame(sidebar)
@@ -258,7 +205,7 @@ class RamanEditor(tk.Tk):
         cursor_frame.columnconfigure(0, weight=1)
         ttk.Button(cursor_frame, text="Add cursor", command=self.add_cursor).grid(row=0, column=0, sticky="ew")
         ttk.Button(cursor_frame, text="Remove selected", command=self.remove_selected_cursor).grid(row=0, column=1, sticky="ew", padx=(6, 0))
-        self.cursor_list = tk.Listbox(cursor_frame, height=5, exportselection=False, font=("Segoe UI", 11))
+        self.cursor_list = tk.Listbox(cursor_frame, height=5, exportselection=False)
         self.cursor_list.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(6, 0))
         self.cursor_list.bind("<<ListboxSelect>>", self._on_cursor_selected)
         ttk.Label(cursor_frame, text="Label").grid(row=2, column=0, sticky="w", pady=(8, 0))
@@ -284,49 +231,40 @@ class RamanEditor(tk.Tk):
             variable=self.pick_mode,
             command=self._update_pick_status,
         ).grid(row=2, column=0, columnspan=2, sticky="w", pady=(8, 0))
-        ttk.Checkbutton(
-            baseline_frame,
-            text="Snap points to spectrum",
-            variable=self.snap_points_to_spectrum,
-        ).grid(row=3, column=0, columnspan=2, sticky="w")
         ttk.Button(baseline_frame, text="Apply point baseline", command=self.apply_manual_baseline).grid(
-            row=4, column=0, columnspan=2, sticky="ew", pady=(6, 0)
+            row=3, column=0, columnspan=2, sticky="ew", pady=(6, 0)
         )
         ttk.Button(baseline_frame, text="Clear points", command=self.clear_points).grid(
-            row=5, column=0, columnspan=2, sticky="ew", pady=(6, 0)
+            row=4, column=0, columnspan=2, sticky="ew", pady=(6, 0)
         )
         ttk.Button(baseline_frame, text="Reset to raw", command=self.reset_current).grid(
-            row=6, column=0, columnspan=2, sticky="ew", pady=(6, 0)
+            row=5, column=0, columnspan=2, sticky="ew", pady=(6, 0)
         )
         ttk.Checkbutton(
             baseline_frame,
             text="Show raw overlay",
             variable=self.show_original,
             command=self.refresh_plot,
-        ).grid(row=7, column=0, columnspan=2, sticky="w", pady=(8, 0))
+        ).grid(row=6, column=0, columnspan=2, sticky="w", pady=(8, 0))
         ttk.Checkbutton(
             baseline_frame,
             text="Show baseline",
             variable=self.show_baseline,
             command=self.refresh_plot,
-        ).grid(row=8, column=0, columnspan=2, sticky="w")
+        ).grid(row=7, column=0, columnspan=2, sticky="w")
 
         help_text = (
             "Drag cursor lines on the plot.\n"
             "Manual baseline: enable point mode, click baseline points, then apply.\n"
-            "Turn snap off to place points anywhere on the plot.\n"
-            "Use mouse wheel or the toolbar buttons to zoom.\n"
             "Undo recent edits with Ctrl+Z.\n"
             "Polyfit subtracts the fitted baseline from the selected spectrum."
         )
         ttk.Label(sidebar, text=help_text, wraplength=250, foreground="#4a4a4a").grid(row=9, column=0, sticky="ew")
-        bind_mousewheel_to_children(sidebar)
 
         self.figure = Figure(figsize=(8, 5), dpi=100)
         self.ax = self.figure.add_subplot(111)
-        self.ax.set_xlabel("Raman shift / x-axis", fontsize=12)
-        self.ax.set_ylabel("Intensity", fontsize=12)
-        self.ax.tick_params(labelsize=11)
+        self.ax.set_xlabel("Raman shift / x-axis")
+        self.ax.set_ylabel("Intensity")
         self.ax.grid(True, alpha=0.22)
 
         self.canvas = FigureCanvasTkAgg(self.figure, master=plot_area)
@@ -334,9 +272,6 @@ class RamanEditor(tk.Tk):
         toolbar_frame = ttk.Frame(plot_area)
         toolbar_frame.grid(row=1, column=0, sticky="ew")
         NavigationToolbar2Tk(self.canvas, toolbar_frame, pack_toolbar=False).grid(row=0, column=0, sticky="w")
-        ttk.Button(toolbar_frame, text="Zoom in", command=self.zoom_in).grid(row=0, column=1, sticky="w", padx=(12, 0))
-        ttk.Button(toolbar_frame, text="Zoom out", command=self.zoom_out).grid(row=0, column=2, sticky="w", padx=(6, 0))
-        ttk.Button(toolbar_frame, text="Reset view", command=self.reset_zoom).grid(row=0, column=3, sticky="w", padx=(6, 0))
 
         status = ttk.Label(self, textvariable=self.status_text, anchor="w", padding=(10, 4))
         status.grid(row=1, column=0, columnspan=2, sticky="ew")
@@ -345,7 +280,6 @@ class RamanEditor(tk.Tk):
         self.canvas.mpl_connect("button_press_event", self._on_plot_press)
         self.canvas.mpl_connect("motion_notify_event", self._on_plot_motion)
         self.canvas.mpl_connect("button_release_event", self._on_plot_release)
-        self.canvas.mpl_connect("scroll_event", self._on_scroll_zoom)
 
     @property
     def current(self) -> ParsedSpectrum | None:
@@ -650,43 +584,15 @@ class RamanEditor(tk.Tk):
             self.refresh_plot()
             self.status_text.set("Manual baseline points cleared.")
 
-    def zoom_in(self) -> None:
-        self._zoom_plot(0.75)
-
-    def zoom_out(self) -> None:
-        self._zoom_plot(1.35)
-
-    def reset_zoom(self) -> None:
-        if self.current is None:
-            return
-        self.refresh_plot(reset_view=True)
-        self.status_text.set("Reset plot view.")
-
-    def _zoom_plot(self, scale: float, center_x: float | None = None, center_y: float | None = None) -> None:
-        if self.current is None:
-            return
-
-        x_min, x_max = self.ax.get_xlim()
-        y_min, y_max = self.ax.get_ylim()
-        x_center = center_x if center_x is not None else (x_min + x_max) / 2
-        y_center = center_y if center_y is not None else (y_min + y_max) / 2
-        new_width = (x_max - x_min) * scale
-        new_height = (y_max - y_min) * scale
-
-        self.ax.set_xlim(x_center - new_width / 2, x_center + new_width / 2)
-        self.ax.set_ylim(y_center - new_height / 2, y_center + new_height / 2)
-        self.canvas.draw_idle()
-
     def refresh_plot(self, reset_view: bool = False) -> None:
         spectrum = self.current
         self.ax.clear()
         self.ax.grid(True, alpha=0.22)
-        self.ax.set_xlabel("Raman shift / x-axis", fontsize=12)
-        self.ax.set_ylabel("Intensity", fontsize=12)
-        self.ax.tick_params(labelsize=11)
+        self.ax.set_xlabel("Raman shift / x-axis")
+        self.ax.set_ylabel("Intensity")
 
         if spectrum is None:
-            self.ax.set_title("Open Raman spectra", fontsize=13)
+            self.ax.set_title("Open Raman spectra")
             self.canvas.draw_idle()
             return
 
@@ -722,8 +628,8 @@ class RamanEditor(tk.Tk):
             px, py = zip(*self.pick_points)
             self.point_artist = self.ax.scatter(px, py, color="#ff0011", s=36, zorder=5, label="Baseline points")
 
-        self.ax.set_title(spectrum.path.name, fontsize=13)
-        self.ax.legend(loc="upper right", fontsize=10)
+        self.ax.set_title(spectrum.path.name)
+        self.ax.legend(loc="upper right")
         if reset_view:
             self.ax.relim()
             self.ax.autoscale_view()
@@ -736,17 +642,12 @@ class RamanEditor(tk.Tk):
             return
 
         if self.pick_mode.get():
-            if self.snap_points_to_spectrum.get():
-                y_value = self._nearest_y(event.xdata)
-                point_source = "spectrum"
-            else:
-                y_value = float(event.ydata) if event.ydata is not None else None
-                point_source = "free"
+            y_value = self._nearest_y(event.xdata)
             if y_value is not None:
                 self._push_undo()
                 self.pick_points.append((float(event.xdata), y_value))
                 self.refresh_plot()
-                self.status_text.set(f"Added {point_source} baseline point at x={event.xdata:.2f}.")
+                self.status_text.set(f"Added manual baseline point at x={event.xdata:.2f}.")
             return
 
         cursor = self._nearest_cursor(event.xdata)
@@ -772,12 +673,6 @@ class RamanEditor(tk.Tk):
                 self.undo_stack.pop(0)
             self._drag_start_snapshot = None
         self.dragging_cursor = None
-
-    def _on_scroll_zoom(self, event: object) -> None:
-        if event.inaxes != self.ax or event.xdata is None or event.ydata is None:
-            return
-        scale = 0.82 if event.button == "up" else 1.22
-        self._zoom_plot(scale, float(event.xdata), float(event.ydata))
 
     def _nearest_y(self, x_value: float) -> float | None:
         spectrum = self.current
