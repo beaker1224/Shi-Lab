@@ -13,6 +13,7 @@ python raman_gui.py
 - Open one or more `txt`, `csv`, `tsv`, or `dat` spectra files.
 - Plot the selected spectrum in the main window.
 - Delete the selected loaded spectrum or clear the full loaded list.
+- Set one loaded spectrum as a background spectrum, then subtract it from another selected spectrum.
 - Add multiple draggable vertical x-axis cursor lines with different colors and labels.
 - Baseline correction by polynomial fit across the current spectrum.
 - Manual baseline correction by clicking anchor points and connecting them with interpolation.
@@ -22,6 +23,16 @@ python raman_gui.py
 - Export the corrected spectrum with the same two-column structure as the raw file.
 
 The included `example spectra.txt` is a plain tab-delimited two-column file: x-axis value and intensity.
+
+## Background Subtraction
+
+1. Open at least two spectra.
+2. Select the background spectrum.
+3. Click `Set selected as BG`.
+4. Select the target spectrum.
+5. Click `Subtract BG`.
+
+If the x-axis values are not identical, the background is interpolated onto the target spectrum's x-axis before subtraction.
 
 ## Manual Baseline Workflow
 

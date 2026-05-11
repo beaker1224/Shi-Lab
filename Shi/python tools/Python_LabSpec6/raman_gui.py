@@ -43,6 +43,7 @@ class UndoSnapshot:
     pick_points: list[tuple[float, float]]
     cursor_states: list[tuple[str, str, float]]
     last_baseline: np.ndarray | None
+    last_overlay_label: str
 
 
 class SpectrumParser:
@@ -144,6 +145,7 @@ class RamanEditor(tk.Tk):
 
         self.spectra: list[ParsedSpectrum] = []
         self.current_index: int | None = None
+        self.background_index: int | None = None
         self.cursor_lines: list[CursorLine] = []
         self.dragging_cursor: CursorLine | None = None
         self.pick_points: list[tuple[float, float]] = []
@@ -154,6 +156,7 @@ class RamanEditor(tk.Tk):
         self.poly_order = tk.IntVar(value=3)
         self.cursor_label = tk.StringVar(value="")
         self.cursor_x = tk.StringVar(value="")
+        self.background_text = tk.StringVar(value="BG: none")
         self.status_text = tk.StringVar(value="Open one or more Raman spectrum text files to begin.")
         self.undo_stack: list[UndoSnapshot] = []
         self._drag_start_snapshot: UndoSnapshot | None = None
@@ -163,6 +166,7 @@ class RamanEditor(tk.Tk):
         self.baseline_artist = None
         self.point_artist = None
         self._last_baseline: np.ndarray | None = None
+        self._last_overlay_label = "Last baseline"
 
         self._configure_fonts()
         self._build_ui()
@@ -253,8 +257,20 @@ class RamanEditor(tk.Tk):
             row=0, column=1, sticky="ew", padx=(6, 0)
         )
 
+        bg_frame = ttk.LabelFrame(sidebar, text="Background subtraction", padding=8)
+        bg_frame.grid(row=7, column=0, sticky="ew", pady=(0, 10))
+        bg_frame.columnconfigure(0, weight=1)
+        bg_frame.columnconfigure(1, weight=1)
+        ttk.Label(bg_frame, textvariable=self.background_text).grid(row=0, column=0, columnspan=2, sticky="w")
+        ttk.Button(bg_frame, text="Set selected as BG", command=self.set_background_spectrum).grid(
+            row=1, column=0, sticky="ew", pady=(6, 0)
+        )
+        ttk.Button(bg_frame, text="Subtract BG", command=self.subtract_background).grid(
+            row=1, column=1, sticky="ew", padx=(6, 0), pady=(6, 0)
+        )
+
         cursor_frame = ttk.LabelFrame(sidebar, text="X-axis cursor lines", padding=8)
-        cursor_frame.grid(row=7, column=0, sticky="ew", pady=(0, 10))
+        cursor_frame.grid(row=9, column=0, sticky="ew", pady=(0, 10))
         cursor_frame.columnconfigure(0, weight=1)
         ttk.Button(cursor_frame, text="Add cursor", command=self.add_cursor).grid(row=0, column=0, sticky="ew")
         ttk.Button(cursor_frame, text="Remove selected", command=self.remove_selected_cursor).grid(row=0, column=1, sticky="ew", padx=(6, 0))
@@ -315,11 +331,12 @@ class RamanEditor(tk.Tk):
             "Drag cursor lines on the plot.\n"
             "Manual baseline: enable point mode, click baseline points, then apply.\n"
             "Turn snap off to place points anywhere on the plot.\n"
+            "Set one spectrum as BG, then subtract it from another.\n"
             "Use mouse wheel or the toolbar buttons to zoom.\n"
             "Undo recent edits with Ctrl+Z.\n"
             "Polyfit subtracts the fitted baseline from the selected spectrum."
         )
-        ttk.Label(sidebar, text=help_text, wraplength=250, foreground="#4a4a4a").grid(row=9, column=0, sticky="ew")
+        ttk.Label(sidebar, text=help_text, wraplength=250, foreground="#4a4a4a").grid(row=10, column=0, sticky="ew")
         bind_mousewheel_to_children(sidebar)
 
         self.figure = Figure(figsize=(8, 5), dpi=100)
@@ -363,6 +380,7 @@ class RamanEditor(tk.Tk):
             pick_points=list(self.pick_points),
             cursor_states=[(cursor.label, cursor.color, cursor.x_value) for cursor in self.cursor_lines],
             last_baseline=self._last_baseline.copy() if self._last_baseline is not None else None,
+            last_overlay_label=self._last_overlay_label,
         )
 
     def _push_undo(self) -> None:
@@ -389,6 +407,7 @@ class RamanEditor(tk.Tk):
 
         self.pick_points = list(snapshot.pick_points)
         self._last_baseline = snapshot.last_baseline.copy() if snapshot.last_baseline is not None else None
+        self._last_overlay_label = snapshot.last_overlay_label
         self.cursor_lines.clear()
         for label, color, x_value in snapshot.cursor_states:
             self.cursor_lines.append(CursorLine(label, color, x_value, None, None))
@@ -430,6 +449,49 @@ class RamanEditor(tk.Tk):
         if errors:
             messagebox.showwarning("Some files were not loaded", "\n".join(errors))
 
+    def set_background_spectrum(self) -> None:
+        selection = self.spectrum_list.curselection()
+        if not selection:
+            messagebox.showinfo("No spectrum selected", "Select a loaded spectrum to use as the background.")
+            return
+
+        self.background_index = selection[0]
+        spectrum = self.spectra[self.background_index]
+        self.background_text.set(f"BG: {spectrum.path.name}")
+        self.status_text.set(f"Set {spectrum.path.name} as the background spectrum.")
+
+    def subtract_background(self) -> None:
+        target = self.current
+        if target is None:
+            messagebox.showinfo("No target spectrum", "Select the spectrum you want to subtract the BG from.")
+            return
+        if self.background_index is None or self.background_index >= len(self.spectra):
+            messagebox.showinfo("No background spectrum", "Select a spectrum and click 'Set selected as BG' first.")
+            return
+        if self.current_index == self.background_index:
+            messagebox.showinfo("Same spectrum selected", "Select a different target spectrum before subtracting BG.")
+            return
+
+        background = self.spectra[self.background_index]
+        bg_values = self._background_values_for_target(background, target)
+        self._push_undo()
+        target.y_work = target.y_work - bg_values
+        self._last_baseline = bg_values
+        self._last_overlay_label = f"BG: {background.path.name}"
+        self.refresh_plot()
+        self.status_text.set(f"Subtracted BG {background.path.name} from {target.path.name}.")
+
+    def _background_values_for_target(self, background: ParsedSpectrum, target: ParsedSpectrum) -> np.ndarray:
+        if len(background.x) == len(target.x) and np.allclose(background.x, target.x, rtol=1e-8, atol=1e-8):
+            return background.y_work.copy()
+
+        order = np.argsort(background.x)
+        bg_x = background.x[order]
+        bg_y = background.y_work[order]
+        unique_x, unique_indices = np.unique(bg_x, return_index=True)
+        unique_y = bg_y[unique_indices]
+        return np.interp(target.x, unique_x, unique_y, left=unique_y[0], right=unique_y[-1])
+
     def delete_selected_spectrum(self) -> None:
         selection = self.spectrum_list.curselection()
         if not selection:
@@ -442,9 +504,18 @@ class RamanEditor(tk.Tk):
         self._clear_undo_history()
         self.pick_points.clear()
         self._last_baseline = None
+        self._last_overlay_label = "Last baseline"
+
+        if self.background_index == index:
+            self.background_index = None
+            self.background_text.set("BG: none")
+        elif self.background_index is not None and self.background_index > index:
+            self.background_index -= 1
 
         if not self.spectra:
             self.current_index = None
+            self.background_index = None
+            self.background_text.set("BG: none")
             self.cursor_lines.clear()
             self.cursor_list.delete(0, tk.END)
             self.cursor_label.set("")
@@ -472,7 +543,10 @@ class RamanEditor(tk.Tk):
         self.cursor_x.set("")
         self.pick_points.clear()
         self._last_baseline = None
+        self._last_overlay_label = "Last baseline"
         self.current_index = None
+        self.background_index = None
+        self.background_text.set("BG: none")
         self._clear_undo_history()
         self.refresh_plot()
         self.status_text.set(f"Cleared {count} loaded spectrum file(s).")
@@ -628,6 +702,7 @@ class RamanEditor(tk.Tk):
             return
         spectrum.y_work = spectrum.y_work - baseline
         self._last_baseline = baseline
+        self._last_overlay_label = "Last baseline"
         self.refresh_plot()
         self.status_text.set(status)
 
@@ -638,6 +713,7 @@ class RamanEditor(tk.Tk):
         self._push_undo()
         spectrum.y_work = spectrum.y_raw.copy()
         self._last_baseline = None
+        self._last_overlay_label = "Last baseline"
         self.clear_points(redraw=False, record_undo=False)
         self.refresh_plot()
         self.status_text.set(f"Reset {spectrum.path.name} to raw intensity.")
@@ -715,7 +791,7 @@ class RamanEditor(tk.Tk):
                 color="#ef4444",
                 linewidth=1.1,
                 linestyle="--",
-                label="Last baseline",
+                label=self._last_overlay_label,
             )[0]
 
         if self.pick_points:
