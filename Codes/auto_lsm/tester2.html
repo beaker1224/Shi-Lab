@@ -1,0 +1,334 @@
+tester2.html
+File
+first thing is need you to help me to rewrite the tester2.html, to fit to the FV31S-SW software layout, since I want to use this GUI as a test case.
+
+Keep all the features within in the current tester2.html, you can squeeze them to the right side if you need more space, add the features showing in the picture. Note: the speed is a slide bar that can be both clicked and slided, with stops on each speed, and the scan size need to be a drop down list, range from 128x128 to 5024x5024 (something like that, pixel size)
+
+Updated 
+tester2.html.
+
+Added the screenshot-style scan panel on the left.
+Preserved original controls and behavior on the right.
+Added a clickable, draggable speed slider with discrete stops.
+Added scan-size dropdown options from 128×128 to 5024×5024.
+
+Speed stops and size options are configurable test values. Syntax checks passed; visual browser testing was unavailable.
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FV31S-SW — LSM GUI Tester</title>
+    <style>
+*{box-sizing:border-box}body{margin:0;background:#171717;color:#bdbdbd;font:14px Arial,sans-serif}button,input,select{font:inherit}button{cursor:pointer;color:#bdbdbd;background:linear-gradient(#434343,#242424);border:2px solid;border-color:#555 #080808 #080808 #555;padding:6px 10px}button:hover{filter:brightness(1.2)}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #65bbd7;outline-offset:2px}button.active,button[aria-pressed=true]{background:#8fcde1;color:#12242b}header{height:27px;background:linear-gradient(#363636,#191919);border-bottom:2px solid #050505;display:flex;align-items:center;gap:4px}header span{padding:4px 8px;border-right:1px solid #666}header small{margin-left:auto;padding-right:12px;color:#999}.workspace{display:grid;grid-template-columns:490px minmax(490px,1fr);gap:12px;padding:0 10px 16px 0;max-width:1440px}.scan-panel{border:2px solid #060606;padding:0 23px 0 2px;position:relative;background:#1c1c1c;align-self:start}.rail{position:absolute;right:1px;top:0;width:20px;height:100%;background:#242424;border-left:2px solid #050505}.rail span{display:block;text-align:center;border:1px solid #060606;background:linear-gradient(#515151,#292929);height:23px}.rail i{display:block;height:72px;margin-top:2px;border:2px solid #070707;background:linear-gradient(90deg,#333,#202020)}summary,.section-title{background:linear-gradient(#666,#303030);border:2px solid;border-color:#777 #101010 #101010 #777;padding:3px 5px;font-size:14px;font-weight:normal;cursor:pointer}summary::marker{color:#bbb}.toolbar{display:flex;gap:2px;margin:7px 4px 10px}.toolbar button{width:33px;height:34px;padding:3px}.toolbar button:last-child{margin-left:12px}.toolbar svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.5}.group-title{margin:7px 4px}.setting{display:flex;align-items:center;min-height:28px;padding:0 4px;gap:12px}.setting.indent{padding-left:24px}.setting .caption{width:89px;flex-shrink:0}.setting label{display:inline-flex;gap:6px;align-items:center;min-width:88px;cursor:pointer}input[type=radio]{appearance:none;width:20px;height:20px;margin:0;border-radius:50%;border:3px solid #080808;background:radial-gradient(circle at 40% 30%,#555,#111);box-shadow:0 0 1px #777}input[type=radio]:checked{background:radial-gradient(circle at 40% 30%,#5cabc1,#23566a)}.speed-row{gap:8px}.speed-label{min-width:146px}.arrow{padding:0;width:20px;height:20px;line-height:16px}.slider-wrap{position:relative;width:188px;height:25px;display:flex;align-items:center}input[type=range]{appearance:none;width:100%;height:5px;margin:0;background:#444;border:1px solid #111;cursor:pointer;z-index:1}input[type=range]::-webkit-slider-thumb{appearance:none;width:10px;height:19px;border:2px solid #030303;background:linear-gradient(90deg,#555,#222);border-radius:1px}input[type=range]::-moz-range-thumb{width:8px;height:17px;background:#444;border:2px solid #080808;border-radius:1px}.ticks{position:absolute;left:5px;right:5px;top:5px;display:flex;justify-content:space-between;pointer-events:none}.ticks i{height:15px;width:2px;background:#454545}select{background:#303030;color:#bbb;border:2px solid;border-color:#090909 #555 #555 #090909;width:121px;height:28px;padding-left:14px}input[type=text]{background:#202020;color:#ddd;border:2px inset #555;padding:6px;width:220px}.timing{margin:12px 4px 9px;font-size:14px;white-space:nowrap}.area-body{padding:12px;color:#929292}.test-panel{padding-top:2px}h1{font-size:16px;font-weight:normal;margin:0 0 8px;background:linear-gradient(#555,#2b2b2b);padding:6px 10px;border:1px solid #666}.container{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.button-container{padding:8px;background:#222;border:1px solid #414141}.button-container button{width:100%;min-height:40px;padding:5px}.click-count,.keypad-count{font-size:12px;color:#aaa;margin-top:9px}.input-container{padding:14px 10px;background:#252525;border:1px solid #414141;margin-top:12px}.checkbox-container{display:flex;gap:24px;margin-bottom:12px}input[type=checkbox]{accent-color:#6ca8bc}.keypads-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.keypad-container{display:grid;grid-template-columns:repeat(3,1fr) 1.5fr;gap:5px;background:#252525;padding:10px;border:1px solid #484848}.keypad-container button{font-size:13px;padding:9px 3px;min-width:0}.keypad-display{grid-column:1/-1;min-height:40px;background:#141414;border:2px inset #555;color:#cae7f0;font:18px monospace;padding:8px;overflow-wrap:anywhere}.progress-bar{height:5px;width:0;background:lightblue;margin-top:7px;transition:width .1s}.note{font-size:12px;color:#929292;line-height:1.5;margin-top:18px}.status{padding:8px 0;color:#89b7c6;font-size:12px} @media(max-width:1000px){.workspace{grid-template-columns:490px 510px}.container{gap:4px}}
+</style>
+</head>
+<body><header><span>Ocular</span><span>LSM Imaging ×</span><small>FV31S-SW · GUI test case</small></header><main class="workspace"><aside class="scan-panel"><div class="rail" aria-hidden="true"><span>▲</span><i></i></div><details open><summary>Scan Settings</summary><div class="toolbar" role="group" aria-label="Scan tools"><button id="scan-tool-0" title="Rectangle" aria-label="Rectangle" aria-pressed="false"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M2 10 19 2 24 17 8 24Z"/></svg></button><button id="scan-tool-1" title="Ellipse" aria-label="Ellipse" aria-pressed="false"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="10"/></svg></button><button id="scan-tool-2" title="Polygon" aria-label="Polygon" aria-pressed="false"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M2 21 6 6 21 3 16 13 23 22Z"/></svg></button><button id="scan-tool-3" title="Freehand" aria-label="Freehand" aria-pressed="false"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M5 20C-1 11 13 0 18 4S11 12 19 17 9 26 5 20Z"/></svg></button><button id="scan-tool-4" title="Line" aria-label="Line" aria-pressed="false"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="m3 3 21 21"/></svg></button><button id="scan-tool-5" title="Curve" aria-label="Curve" aria-pressed="false"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M3 20C22 28 2 6 20 5Q25 2 20 1"/></svg></button><button id="scan-tool-6" title="Point" aria-label="Point" aria-pressed="false"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M13 1v9m0 6v9M1 13h9m6 0h9"/></svg></button><button id="scan-tool-7" title="Grid" aria-label="Grid" aria-pressed="false"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M3 3h20v20H3zM8 3v20m5-20v20m5-20v20M3 8h20M3 13h20M3 18h20"/></svg></button><button id="scan-tool-8" title="Multipoint" aria-label="Multipoint" aria-pressed="false"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M13 1v6m-3-3h6M4 10v6m-3-3h6m15-3v6m-3-3h6M13 19v6m-3-3h6"/></svg></button><button id="scan-tool-9" title="Full frame" aria-label="Full frame" aria-pressed="false"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M3 3h21v21H3zM6 6h15v15H6z"/></svg></button></div><div class="group-title">Scanner:</div><div class="setting indent"><span class="caption">Type:</span><label><input type="radio" name="scanner" id="scanner-0" value="Galvano" checked>Galvano</label><label><input type="radio" name="scanner" id="scanner-1" value="Resonant" >Resonant</label></div><div class="setting indent"><span class="caption">Mode:</span><label><input type="radio" name="mode" id="mode-0" value="OneWay" checked>OneWay</label><label><input type="radio" name="mode" id="mode-1" value="Roundtrip" >Roundtrip</label></div><div class="setting indent"><span class="caption">Interlace:</span><label><input type="radio" name="interlace" id="interlace-0" value="OFF" checked>OFF</label><label><input type="radio" name="interlace" id="interlace-1" value="2x" >2x</label><label><input type="radio" name="interlace" id="interlace-2" value="4x" >4x</label></div><div class="setting speed-row"><label class="speed-label" for="scan-speed">Speed: <output id="speed-value">2.0</output> μs/pixel</label><button class="arrow" id="speed-down" aria-label="Previous speed">◀</button><div class="slider-wrap"><div class="ticks" aria-hidden="true"></div><input type="range" id="scan-speed" min="0" max="12" step="1" value="0" aria-label="Scan speed"></div><button class="arrow" id="speed-up" aria-label="Next speed">▶</button></div><div class="group-title">Image Size:</div><div class="setting indent"><span class="caption">Aspect Ratio:</span><label><input type="radio" name="aspect" id="aspect-0" value="1:1" checked>1:1</label><label><input type="radio" name="aspect" id="aspect-1" value="4:3" >4:3</label></div><div class="setting indent"><label class="caption" for="scan-size">Scan Size:</label><select id="scan-size" aria-label="Scan size"></select></div><div class="setting"><span>High voltage correction:</span><label><input type="radio" name="voltage" id="voltage-0" value="ON" checked>ON</label><label><input type="radio" name="voltage" id="voltage-1" value="OFF" >OFF</label></div><div class="timing" id="scan-timing"></div></details><details><summary>Area Settings</summary><div class="area-body">Selected scan tool: <output id="selected-tool">None</output></div></details></aside><section class="test-panel">
+    <h1>LSM auto clicker tester webpage</h1>
+
+    <div class="container">
+        <div class="button-container">
+            <button id="button1">Wavelength</button>
+            <div class="click-count" id="count1">Clicked: 0 times</div>
+        </div>
+        <div class="button-container">
+            <button id="button2">Power</button>
+            <div class="click-count" id="count2">Clicked: 0 times</div>
+        </div>
+        <div class="button-container">
+            <button id="button3">LSM Start</button>
+            <div class="progress-bar" id="progress-bar"></div>
+            <div class="click-count" id="count3">Clicked: 0 times</div>
+        </div>
+        <div class="button-container">
+            <button id="button4">System Shutter</button>
+            <div class="click-count" id="count4">Clicked: 0 times</div>
+        </div>
+    </div>
+
+    <div class="input-container">
+        <div class="checkbox-container">
+            <label><input type="checkbox" id="ch2"> CH2</label>
+            <label><input type="checkbox" id="ch3"> CH3</label>
+        </div>
+        <label for="inputText">Enter something: </label>
+        <input type="text" id="inputText">
+    </div>
+
+    <!-- Dual Number Keypads -->
+    <div class="keypads-wrapper">
+        <!-- First Keypad -->
+        <div class="keypad-container">
+            <div class="keypad-display" id="display1"></div>
+
+            <button id="key1">1</button>
+            <button id="key2">2</button>
+            <button id="key3">3</button>
+            <button id="backspace">Backspace</button>
+
+            <button id="key4">4</button>
+            <button id="key5">5</button>
+            <button id="key6">6</button>
+            <button id="clear">Clear</button>
+
+            <button id="key7">7</button>
+            <button id="key8">8</button>
+            <button id="key9">9</button>
+            <button id="cancel">Cancel</button>
+
+            <button id="key0">0</button>
+            <button id="dot">.</button>
+            <button id="plus-minus">+/-</button>
+            <button id="ok">OK</button>
+        </div>
+
+        <!-- Second Keypad -->
+        <div class="keypad-container">
+            <div class="keypad-display" id="display2"></div>
+
+            <button id="keyA1">1</button>
+            <button id="keyA2">2</button>
+            <button id="keyA3">3</button>
+            <button id="backspaceA">Backspace</button>
+
+            <button id="keyA4">4</button>
+            <button id="keyA5">5</button>
+            <button id="keyA6">6</button>
+            <button id="clearA">Clear</button>
+
+            <button id="keyA7">7</button>
+            <button id="keyA8">8</button>
+            <button id="keyA9">9</button>
+            <button id="cancelA">Cancel</button>
+
+            <button id="keyA0">0</button>
+            <button id="dotA">.</button>
+            <button id="plus-minusA">+/-</button>
+            <button id="okA">OK</button>
+        </div>
+    </div>
+
+    <div class="keypad-count">
+        Left keypad Clear clicked: <span id="clear-count">0</span> times | OK clicked: <span id="ok-count">0</span> times
+    </div>
+
+    <div class="keypad-count">
+        Right keypad Clear clicked: <span id="clearA-count">0</span> times | OK clicked: <span id="okA-count">0</span> times
+    </div>
+
+<p class="note">Test fixture: speed stops and scan sizes are configurable sample values, not a verified instrument specification. Timing is an estimate. Original keypad and shutter timing behavior is retained.</p><div id="scan-status" class="status" role="status">Ready</div></section></main>
+    <script>
+        // Initialize click counters
+        let count1 = 0;
+        let count2 = 0;
+        let count3 = 0;
+        let clearCount = 0;
+        let okCount = 0;
+        let clearACount = 0;
+        let okACount = 0;
+        let systemShutterActive = true;
+        let shutterTimeout;
+        let keypad1Input = '';
+        let keypad2Input = '';
+
+        // Button click handlers
+        document.getElementById("button1").addEventListener("click", function() {
+            count1++;
+            document.getElementById("count1").innerText = "Clicked: " + count1 + " times";
+        });
+
+        document.getElementById("button2").addEventListener("click", function() {
+            count2++;
+            document.getElementById("count2").innerText = "Clicked: " + count2 + " times";
+        });
+
+        document.getElementById("button3").addEventListener("click", function() {
+            count3++;
+            document.getElementById("count3").innerText = "Clicked: " + count3 + " times";
+            startProgressBar();
+            changeColorTemporarily(document.getElementById("button3"), 5000, 10000);
+        });
+
+        document.getElementById("button4").addEventListener("click", function() {
+            systemShutterActive = !systemShutterActive;
+            this.classList.toggle("active");
+        });
+
+        // Keypad button click handlers
+        function handleKeypadInput(key, displayId) {
+            let display = document.getElementById(displayId);
+            if (key === 'Backspace') {
+                if (displayId === 'display1') {
+                    keypad1Input = keypad1Input.slice(0, -1);
+                } else {
+                    keypad2Input = keypad2Input.slice(0, -1);
+                }
+            } else if (key === 'Clear') {
+                if (displayId === 'display1') {
+                    keypad1Input = '';
+                } else {
+                    keypad2Input = '';
+                }
+            } else if (key === 'Cancel') {
+                if (displayId === 'display1') {
+                    keypad1Input = '';
+                } else {
+                    keypad2Input = '';
+                }
+            } else {
+                if (displayId === 'display1') {
+                    keypad1Input += key;
+                } else {
+                    keypad2Input += key;
+                }
+            }
+
+            display.innerText = displayId === 'display1' ? keypad1Input : keypad2Input;
+        }
+
+        // Keypad 1 buttons
+        document.getElementById("key1").addEventListener("click", function() { handleKeypadInput('1', 'display1'); });
+        document.getElementById("key2").addEventListener("click", function() { handleKeypadInput('2', 'display1'); });
+        document.getElementById("key3").addEventListener("click", function() { handleKeypadInput('3', 'display1'); });
+        document.getElementById("key4").addEventListener("click", function() { handleKeypadInput('4', 'display1'); });
+        document.getElementById("key5").addEventListener("click", function() { handleKeypadInput('5', 'display1'); });
+        document.getElementById("key6").addEventListener("click", function() { handleKeypadInput('6', 'display1'); });
+        document.getElementById("key7").addEventListener("click", function() { handleKeypadInput('7', 'display1'); });
+        document.getElementById("key8").addEventListener("click", function() { handleKeypadInput('8', 'display1'); });
+        document.getElementById("key9").addEventListener("click", function() { handleKeypadInput('9', 'display1'); });
+        document.getElementById("key0").addEventListener("click", function() { handleKeypadInput('0', 'display1'); });
+        document.getElementById("dot").addEventListener("click", function() { handleKeypadInput('.', 'display1'); });
+        document.getElementById("plus-minus").addEventListener("click", function() { handleKeypadInput('+/-', 'display1'); });
+        document.getElementById("backspace").addEventListener("click", function() { handleKeypadInput('Backspace', 'display1'); });
+        document.getElementById("clear").addEventListener("click", function() {
+            handleKeypadInput('Clear', 'display1');
+            clearCount++;
+            document.getElementById("clear-count").innerText = clearCount;
+        });
+        document.getElementById("cancel").addEventListener("click", function() { handleKeypadInput('Cancel', 'display1'); });
+        document.getElementById("ok").addEventListener("click", function() {
+            okCount++;
+            document.getElementById("ok-count").innerText = okCount;
+            handleSystemShutterTemporary();
+            checkSystemShutter();
+        });
+
+        // Keypad 2 buttons
+        document.getElementById("keyA1").addEventListener("click", function() { handleKeypadInput('1', 'display2'); });
+        document.getElementById("keyA2").addEventListener("click", function() { handleKeypadInput('2', 'display2'); });
+        document.getElementById("keyA3").addEventListener("click", function() { handleKeypadInput('3', 'display2'); });
+        document.getElementById("keyA4").addEventListener("click", function() { handleKeypadInput('4', 'display2'); });
+        document.getElementById("keyA5").addEventListener("click", function() { handleKeypadInput('5', 'display2'); });
+        document.getElementById("keyA6").addEventListener("click", function() { handleKeypadInput('6', 'display2'); });
+        document.getElementById("keyA7").addEventListener("click", function() { handleKeypadInput('7', 'display2'); });
+        document.getElementById("keyA8").addEventListener("click", function() { handleKeypadInput('8', 'display2'); });
+        document.getElementById("keyA9").addEventListener("click", function() { handleKeypadInput('9', 'display2'); });
+        document.getElementById("keyA0").addEventListener("click", function() { handleKeypadInput('0', 'display2'); });
+        document.getElementById("dotA").addEventListener("click", function() { handleKeypadInput('.', 'display2'); });
+        document.getElementById("plus-minusA").addEventListener("click", function() { handleKeypadInput('+/-', 'display2'); });
+        document.getElementById("backspaceA").addEventListener("click", function() { handleKeypadInput('Backspace', 'display2'); });
+        document.getElementById("clearA").addEventListener("click", function() {
+            handleKeypadInput('Clear', 'display2');
+            clearACount++;
+            document.getElementById("clearA-count").innerText = clearACount;
+        });
+        document.getElementById("cancelA").addEventListener("click", function() { handleKeypadInput('Cancel', 'display2'); });
+        document.getElementById("okA").addEventListener("click", function() {
+            okACount++;
+            document.getElementById("okA-count").innerText = okACount;
+            handleSystemShutterTemporary();
+            checkSystemShutter();
+        });
+
+        // Check if both OK buttons are pressed to activate the system shutter
+        function checkSystemShutter() {
+            if (okCount > 0 && okACount > 0 && !systemShutterActive) {
+                document.getElementById("button4").classList.add("active");
+                systemShutterActive = true;
+
+                let randomTime = Math.floor(Math.random() * 6000) + 10000; // Random time between 10 to 15 seconds
+                shutterTimeout = setTimeout(function() {
+                    document.getElementById("button4").classList.remove("active");
+                    systemShutterActive = false;
+                    okCount = 0;
+                    okACount = 0;
+                    document.getElementById("ok-count").innerText = okCount;
+                    document.getElementById("okA-count").innerText = okACount;
+                }, randomTime);
+            }
+        }
+
+        // Temporarily change color of the system shutter button
+        function handleSystemShutterTemporary() {
+            let button4 = document.getElementById("button4");
+
+            // Set the button to its original plain color
+            button4.classList.add("original");
+            button4.classList.remove("active");
+
+            // Change back to light blue after a random time between 10 to 20 seconds
+            let randomTime = Math.floor(Math.random() * 20000) + 10000; // Random time between 10 to 20 seconds
+            setTimeout(function() {
+                button4.classList.remove("original");
+                button4.classList.add("active");
+            }, randomTime);
+        }
+        // Simulate a progress bar for the LSM Start button
+        function startProgressBar() {
+            let progressBar = document.getElementById("progress-bar");
+            let width = 0;
+            let interval = setInterval(function() {
+                if (width >= 100) {
+                    clearInterval(interval);
+                } else {
+                    width++;
+                    progressBar.style.width = width + '%';
+                }
+            }, 50); // Adjust speed here
+        }
+
+        // Function to change button color temporarily
+        function changeColorTemporarily(button, minTime, maxTime) {
+            button.classList.add("active");
+            let randomTime = Math.floor(Math.random() * (maxTime - minTime + 1)) + minTime;
+            setTimeout(function() {
+                button.classList.remove("active");
+            }, randomTime);
+        }
+    
+// Test values: edit these two arrays to match the instrument's exact options.
+const speedStops = [2, 2.5, 4, 5, 8, 10, 12.5, 16, 20, 25, 50, 100, 200];
+const scanSizes = [128, 256, 512, 1024, 2048, 4096, 5024];
+const speedSlider = document.getElementById('scan-speed');
+const sizeSelect = document.getElementById('scan-size');
+speedSlider.max = speedStops.length - 1;
+document.querySelector('.ticks').innerHTML = speedStops.map(() => '<i></i>').join('');
+function updateSizes(){
+ const old = Number(sizeSelect.value) || 512;
+ const square = document.querySelector('input[name=aspect]:checked').value === '1:1';
+ sizeSelect.replaceChildren(...scanSizes.map(w => new Option(`${w}x${square?w:Math.round(w*3/4)}`,w,false,w===old)));
+ updateScan();
+}
+function updateScan(){
+ const speed = speedStops[Number(speedSlider.value)];
+ const width = Number(sizeSelect.value);
+ const height = document.querySelector('input[name=aspect]:checked').value === '1:1' ? width : Math.round(width*3/4);
+ document.getElementById('speed-value').textContent = speed.toFixed(1);
+ speedSlider.setAttribute('aria-valuetext',`${speed} microseconds per pixel`);
+ document.getElementById('scan-timing').textContent = `Pixel: ${speed.toFixed(1)} usec Line: ${(width*speed/1000).toFixed(3)} msec Frame: ${(width*height*speed/1000).toFixed(3)} msec`;
+ document.getElementById('scan-status').textContent = `Scan: ${width} × ${height} · ${speed.toFixed(1)} μs/pixel · ${document.querySelector('input[name=scanner]:checked').value} · ${document.querySelector('input[name=mode]:checked').value} · Interlace ${document.querySelector('input[name=interlace]:checked').value} · HV ${document.querySelector('input[name=voltage]:checked').value}`;
+}
+speedSlider.addEventListener('input',updateScan);
+sizeSelect.addEventListener('change',updateScan);
+for (const [id,delta] of [['speed-down',-1],['speed-up',1]]) document.getElementById(id).addEventListener('click',()=>{speedSlider.value=Math.max(0,Math.min(speedStops.length-1,Number(speedSlider.value)+delta));speedSlider.dispatchEvent(new Event('input',{bubbles:true}));speedSlider.dispatchEvent(new Event('change',{bubbles:true}));});
+document.querySelectorAll('input[type=radio]').forEach(r=>r.addEventListener('change',r.name==='aspect'?updateSizes:updateScan));
+document.querySelectorAll('.toolbar button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.toolbar button').forEach(other=>other.setAttribute('aria-pressed',String(other===b)));document.getElementById('selected-tool').textContent=b.title;}));
+let count4=0;
+document.getElementById('button4').addEventListener('click',()=>{document.getElementById('count4').textContent=`Clicked: ${++count4} times`;});
+updateSizes();
+</script>
+</body>
+</html>
+tester2.html
+HTML
