@@ -40,7 +40,7 @@ def average_clicker(average):
         pyautogui.click(frame_numberpad_position)
         pyautogui.hotkey('ctrl', 'a')
         pyautogui.typewrite(average)
-        
+
 def click_channel(channel_number):
     """
     Click one channel checkbox using its saved position.
@@ -209,17 +209,22 @@ def main():
                     time.sleep(0.5) # the color of the button is checked every 0.5 second
                 i += 1
 
-        # part 2, changing the power and then the wavelength, and the name of the file
+        # part 2, changing the IR, power, and then the wavelength, and the name of the file, and channels
         if powers[i] == powers[i-1]:
             pass
         else:
             pico_emeraldWatch_1.change_power_to(powers[i])
             time.sleep(0.25)
+
+        pico_emeraldWatch_1.change_IR(channels[i])
         pico_emeraldWatch_1.change_wavelength_to(wavelengths[i])
+
+        set_channels(channels[i])
+
         time.sleep(0.5)
         name_typer(order, wavelengths[i], powers[i], averages[i], zoom)
 
-        # part 3, when tuned ok, then click on the lsm start
+        # part 4, when tuned ok, then click on the lsm start
         if shutter_backOn():
             pyautogui.click(*lsm_start)
             time.sleep(2.8)

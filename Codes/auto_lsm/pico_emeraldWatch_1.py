@@ -102,7 +102,7 @@ def main():
         print("now entering wavelength and power number button setup")
         update_required = True
 
-    keys = ("0","1","2","3","4","5","6","7","8","9",".","clear","enter")
+    keys = ("0","1","2","3","4","5","6","7","8","9",".","clear","ok")
     key_positions = {}
     if update_required:
 
@@ -137,12 +137,21 @@ def position_getter():
     power_position = tuple(pico_emerald_layout['power_position'])
 '''
 
-def turn_off_IR():
+def change_IR(channels):
+    # load the pico emerald layout settings
     pico_emerald_layout = load_from_json("pico_emerald_layout.json")
     IR_position = tuple(pico_emerald_layout['IR_position'])
-    IR_on = tuple(pico_emerald_layout['IR_on_color'])
-    if tuple(get_pixel_color(*IR_position)) == IR_on:
-        pyautogui.click(*IR_position)
+    IR_on_color = tuple(pico_emerald_layout['IR_on_color'])
+    
+    current_IR_color = tuple(get_pixel_color(*IR_position))
+    IR_is_on = (current_IR_color == IR_on_color)
+
+    if 5 in channels:
+        if not IR_is_on:
+            pyautogui.click(*IR_position)
+    else:
+        if IR_is_on:
+            pyautogui.click(*IR_position)
 
 def click(wavelength_power_keypad, type, key):
     """
@@ -151,7 +160,7 @@ def click(wavelength_power_keypad, type, key):
     Parameters:
     wavelength_power_keypad (dict): The dictionary containing key positions.
     type (str): Must be a string, "wavelength" or "power".
-    key (str): The key to click, must be a string representing the key. keys = ("0","1","2","3","4","5","6","7","8","9",".","clear","enter")
+    key (str): The key to click, must be a string representing the key. keys = ("0","1","2","3","4","5","6","7","8","9",".","clear","ok")
 
     """
     # for wavelength
@@ -169,7 +178,7 @@ def click(wavelength_power_keypad, type, key):
             "9": "wavelength_key_9",
             ".": "wavelength_key_.",
             "clear": "wavelength_key_clear",
-            "enter": "wavelength_key_enter"
+            "ok": "wavelength_key_ok"
         }
 
         key_name = key_mapping.get(key)
@@ -194,7 +203,7 @@ def click(wavelength_power_keypad, type, key):
             "9": "power_key_9",
             ".": "power_key_.",
             "clear": "power_key_clear",
-            "enter": "power_key_enter"
+            "ok": "power_key_ok"
         }
 
         key_name = key_mapping.get(key)
@@ -227,7 +236,7 @@ def change_wavelength_to(wavelength):
         click(wavelength_power_keypad, "wavelength", w)
         time.sleep(0.1)
     # click enter
-    click(wavelength_power_keypad, "wavelength", "enter")
+    click(wavelength_power_keypad, "wavelength", "ok")
 
     
 
@@ -246,7 +255,7 @@ def change_power_to(power):
         click(wavelength_power_keypad, "power", p)
         time.sleep(0.1)
     # click enter
-    click(wavelength_power_keypad, "power", "enter")
+    click(wavelength_power_keypad, "power", "ok")
 
 # this will make sure when the py script is called directly, the above function will run
 if __name__ == "__main__":
