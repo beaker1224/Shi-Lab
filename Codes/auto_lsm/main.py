@@ -12,6 +12,7 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 # Change the working directory to the script's directory
 os.chdir(script_dir)
 
+# generic helpers
 def load_from_json(file_name):
     with open(file_name, 'r') as file:
         return json.load(file)
@@ -23,32 +24,8 @@ shutter_on_color = tuple(pico_emerald_layout['shutter_on_color'])
 def get_pixel_color(x, y):
     return pyautogui.pixel(x, y)
 
-def name_typer(order, wavelength, power, average, zoom):
-    name = f"{order}-{wavelength}nm-{power}mW-avg{average}-zoom{zoom}"
-    if (average == "off" or average == "no" or int(average) == 0):
-        name = f"{order}-{wavelength}nm-{power}mW-zoom{zoom}"
-    file = load_from_json("FV_layout.json")
-    name_bar_position = tuple(file['file name editor position'])
-    pyautogui.click(*name_bar_position)
-    pyautogui.hotkey('ctrl', 'a')
-    pyautogui.typewrite(name)
-
-# will return true once the shutter is turned back on, check every 0.5 second
-def shutter_backOn():
-    '''
-    This function checks the shutter color change every 0.75 second, 
-    and returns a boolean True when the color changed to the color on
-    for the system shutter.
-
-    '''
-    while True:
-        current_shutter_color = get_pixel_color(*shutter_position)
-        if tuple(current_shutter_color) == shutter_on_color:
-            return True
-        time.sleep(0.75)  # Check the shutter every 0.75 second
-
+# FV helpers
 # the average clicker to click average number
-parameter_interpreter_3.interpreter()
 os.system('cls')
 # averages = tuple(load_from_json("parameters.json")['average'])
 fvFile = load_from_json("FV_layout.json")
@@ -63,6 +40,89 @@ def average_clicker(average):
         pyautogui.click(frame_numberpad_position)
         pyautogui.hotkey('ctrl', 'a')
         pyautogui.typewrite(average)
+        
+def click_channel(channel_number):
+    """
+    Click one channel checkbox using its saved position.
+    """
+
+    FV_layout = load_from_json("FV_layout.json")
+
+    position = tuple(
+        FV_layout[f'channel_{channel_number}_checkbox_position']
+    )
+
+    # Click slightly inside the checkbox instead of exactly
+    # on the saved top-left corner
+    x, y = position
+
+    pyautogui.click(x + 7, y + 7)
+
+    time.sleep(0.3)
+
+
+def set_channels(desired_channels):
+    """
+    Make the FV checkboxes match desired_channels.
+
+    Example:
+        set_channels([1, 3, 5])
+
+    Result:
+        CH1 -> ON
+        CH2 -> OFF
+        CH3 -> ON
+        CH4 -> OFF
+        CH5 -> ON
+    """
+
+    # print("\nSetting channels...")
+
+    for channel in range(1, 6):
+
+        currently_checked = FVWatch_2.checkbox_is_checked(channel)
+
+        should_be_checked = channel in desired_channels
+
+        # print(
+        #     f"CH{channel}: "
+        #     f"current={currently_checked}, "
+        #     f"desired={should_be_checked}"
+        # )
+
+        # Only click when current state does not match desired state
+        if currently_checked != should_be_checked:
+
+            # print(f" -> Clicking CH{channel}")
+
+            click_channel(channel)
+
+    # print("\nFinished setting channels.")
+
+def name_typer(order, wavelength, power, average, zoom):
+    name = f"{order}-{wavelength}nm-{power}mW-avg{average}-zoom{zoom}"
+    if (average == "off" or average == "no" or int(average) == 0):
+        name = f"{order}-{wavelength}nm-{power}mW-zoom{zoom}"
+    file = load_from_json("FV_layout.json")
+    name_bar_position = tuple(file['file name editor position'])
+    pyautogui.click(*name_bar_position)
+    pyautogui.hotkey('ctrl', 'a')
+    pyautogui.typewrite(name)
+
+# synchronization helpers
+# will return true once the shutter is turned back on, check every 0.5 second
+def shutter_backOn():
+    '''
+    This function checks the shutter color change every 0.75 second, 
+    and returns a boolean True when the color changed to the color on
+    for the system shutter.
+
+    '''
+    while True:
+        current_shutter_color = get_pixel_color(*shutter_position)
+        if tuple(current_shutter_color) == shutter_on_color:
+            return True
+        time.sleep(0.75)  # Check the shutter every 0.75 second
 
 
 def main():

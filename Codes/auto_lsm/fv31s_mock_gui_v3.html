@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FV31S-SW GUI Mockup</title>
+<style>
+  :root{
+    --bg:#0f1011;
+    --panel:#17191b;
+    --panel2:#1d1f21;
+    --border:#5e6266;
+    --border2:#3f4347;
+    --text:#c8cbce;
+    --muted:#8e9499;
+    --accent:#356f8c;
+    --blue:#2a6684;
+    --input:#0f1113;
+    --btn:#25282b;
+    --green:#6fc36f;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:#0a0b0c;color:var(--text);font-family:Segoe UI,Arial,sans-serif;font-size:12px}
+  body{overflow:auto}
+  .app{min-width:1320px;min-height:900px;background:var(--bg)}
+  .topbar{
+    height:28px;background:#f4f4f4;color:#222;display:flex;align-items:center;
+    padding:0 8px;border-bottom:1px solid #888;
+  }
+  .app-title{font-size:11px;margin-right:18px}
+  .menu{display:flex;gap:16px;font-size:12px}
+  .toolbar{
+    height:34px;background:#17191b;border-bottom:1px solid #4c5054;display:flex;align-items:center;
+    padding:0 8px;gap:6px
+  }
+  .tab-main{
+    padding:5px 34px;border:1px solid #555;background:#2a2d30;color:#ddd;text-align:center;
+  }
+  .tab-main.active{background:#225c79;border-color:#6b8797}
+  .toolbar .spacer{flex:1}
+  .workspace{
+    display:grid;
+    grid-template-columns: 290px 310px 1fr 360px;
+    gap:4px;padding:4px;height:calc(100vh - 62px);min-height:830px
+  }
+  .col{display:flex;flex-direction:column;gap:4px;min-height:0}
+  .panel{
+    background:var(--panel);border:1px solid #555;box-shadow:inset 0 0 0 1px #111;
+    min-height:0;
+  }
+  .panel-title{
+    height:22px;padding:3px 7px;background:linear-gradient(#303438,#24272a);
+    border-bottom:1px solid #5f6366;color:#d5d7d9;font-size:11px;font-weight:600;
+    display:flex;align-items:center;justify-content:space-between
+  }
+  .panel-body{padding:7px}
+  .section-title{
+    height:22px;padding:3px 6px;background:#2a2d30;border:1px solid #444;color:#bfc3c5;
+    margin:-1px -1px 6px -1px;font-weight:600
+  }
+  .row{display:flex;align-items:center;gap:6px;margin:5px 0}
+  .row.tight{margin:2px 0}
+  label{color:#b7bbbe}
+  input[type=text], select, .fake-input{
+    background:#0c0e0f;color:#c7cbd0;border:1px solid #4f5458;height:22px;padding:2px 5px;
+  }
+  input[type=text]{min-width:52px}
+  select{min-width:84px}
+  button{
+    background:linear-gradient(#34383c,#232629);color:#cfd2d4;border:1px solid #5c6165;
+    height:22px;padding:1px 8px;font-size:11px;cursor:pointer
+  }
+  button:hover{background:#3d4246}
+  .iconbar{display:flex;gap:3px;flex-wrap:wrap}
+  .iconbtn{width:22px;padding:0;text-align:center}
+  .radio,.check{accent-color:#5aa0c8}
+  .channel-check{
+    appearance:none;
+    -webkit-appearance:none;
+    width:13px;
+    height:13px;
+    margin:0 3px 0 0;
+    vertical-align:-2px;
+    border:1px solid #6c7277;
+    background:#111315;
+    border-radius:1px;
+    position:relative;
+    cursor:pointer;
+  }
+  .channel-check:checked{
+    background:#111315;
+    border-color:#8b9196;
+  }
+  .channel-check:checked::after{
+    content:"✓";
+    position:absolute;
+    left:1px;
+    top:-3px;
+    color:#d8dcdf;
+    font-size:13px;
+    font-weight:700;
+    line-height:13px;
+  }
+  .hr{height:1px;background:#42464a;margin:6px 0}
+  .range-wrap{display:flex;align-items:center;gap:6px}
+  input[type=range]{width:150px;height:14px}
+  .small{font-size:10px;color:#9ea3a7}
+  .muted{color:#7f858a}
+  .grow{flex:1}
+  .left-scan{height:405px}
+  .left-area{height:290px}
+  .left-micro{flex:1}
+  .pmt{height:100%}
+  .channel-tabs{display:flex;gap:3px;margin:6px 0}
+  .channel-tab{width:38px;text-align:center;padding:4px 0;background:#1f2b33;border:1px solid #4a6270}
+  .channel-block{border-top:1px solid #35393d;padding:5px 0}
+  .color-chip{display:inline-block;width:12px;height:12px;border:1px solid #777;vertical-align:middle}
+  .sliderline{display:grid;grid-template-columns:36px 45px 18px 18px 1fr;align-items:center;gap:3px;margin:2px 0}
+  .bar{height:12px;background:#090a0b;border:1px solid #3d4246;position:relative}
+  .bar:after{content:"";position:absolute;left:0;top:0;bottom:0;width:45%;background:#626973}
+  .center{display:grid;grid-template-rows:160px 1fr 270px;gap:4px;min-width:560px}
+  .upper-center{display:grid;grid-template-columns:245px 1fr;gap:4px}
+  .lut{
+    display:grid;grid-template-columns:1fr 44px;gap:8px;height:100%;
+  }
+  .hist{
+    border:1px solid #777;background:#040505;position:relative;height:115px;margin-top:6px
+  }
+  .hist svg{width:100%;height:100%}
+  .grad{height:115px;border:1px solid #777;
+    background:linear-gradient(to bottom,#fff 0%,#fff 14%,#ffeb00 26%,#ff6a00 42%,#d00000 60%,#000 100%)}
+  .viewer-toolbar{display:flex;gap:4px;align-items:center;padding:6px;border-bottom:1px solid #444}
+  .viewer{
+    background:#0b0d0f;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden
+  }
+  .viewer-controls{
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    padding:34px 20px 22px;
+  }
+  .keypad{
+    display:grid;
+    grid-template-columns:118px 74px 74px 74px;
+    grid-template-rows:42px 46px 46px 46px 46px;
+    gap:8px;
+    align-items:stretch;
+  }
+  .pad-btn, .pad-display{
+    border:1px solid #73787c;
+    background:linear-gradient(#f5f5f5,#e5e5e5);
+    color:#000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:15px;
+    user-select:none;
+  }
+  .pad-btn{
+    cursor:pointer;
+  }
+  .pad-btn:active{
+    background:#d7d7d7;
+  }
+  .pad-display{
+    background:#ececec;
+    justify-content:flex-start;
+    padding:0 8px;
+    overflow:hidden;
+    white-space:nowrap;
+  }
+  .pad-label-btn{
+    font-size:14px;
+  }
+  .keypad-count{
+    min-width:348px;
+    text-align:center;
+    font-size:10px;
+    line-height:1.6;
+    color:#aab0b3;
+  }
+  .system-shutter{
+    min-width:145px;
+    height:28px;
+    background:linear-gradient(#34383c,#232629);
+    color:#cfd2d4;
+    border:1px solid #5c6165;
+    font-size:12px;
+    cursor:pointer;
+    transition:background-color .3s ease;
+  }
+  .system-shutter.active{
+    background:lightblue;
+    border-color:#8fb7c7;
+    color:#101010;
+  }
+  .viewer-label{position:absolute;top:38px;color:#747c80}
+  .viewer-status{
+    position:absolute;bottom:3px;left:8px;font-size:10px;color:#aab0b3
+  }
+  .livegraph{display:grid;grid-template-columns:180px 1fr 130px;height:100%}
+  .graph-list{border-right:1px solid #444;padding:8px}
+  .graph{padding:10px;display:flex;align-items:center;justify-content:center}
+  .plot{
+    width:100%;height:100%;border:1px solid #bbb;position:relative;background:#040505
+  }
+  .plot:before{content:"Intensity";position:absolute;left:-30px;top:48%;font-size:9px;transform:rotate(-90deg);color:#bbb}
+  .plot:after{content:"Time(ms)";position:absolute;bottom:-18px;left:45%;font-size:9px;color:#bbb}
+  .graph-settings{border-left:1px solid #444;padding:8px}
+  .right-acquire{height:420px}
+  .right-series{height:210px}
+  .right-z{flex:1}
+  .tabstrip{display:flex;border-bottom:1px solid #444;margin:-7px -7px 6px}
+  .tab{padding:5px 8px;border-right:1px solid #444;background:#25282b}
+  .tab.active{background:#151718}
+  .filebox{display:flex;align-items:center;gap:4px}
+  .filebox input{width:100%}
+  .progress{height:13px;background:#101213;border:1px solid #4c5155;margin:7px 0}
+  .progress span{display:block;width:0;height:100%;background:#5b818f;transition:width .28s ease}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .zdiagram{
+    width:100px;height:84px;margin:6px auto;border:1px solid #3f4447;position:relative;background:#111315
+  }
+  .zdiagram div{position:absolute;left:25px;right:25px;height:14px;border:1px solid #56616a;transform:skewY(-18deg)}
+  .zdiagram .a{top:50px}.zdiagram .b{top:34px}.zdiagram .c{top:18px}
+  .tiny{font-size:9px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="app-title">OLYMPUS FV31S-SW</div>
+    <div class="menu"><span>File</span><span>Tool Window</span><span>Tools</span><span>Window</span><span>Help</span></div>
+  </div>
+
+  <div class="toolbar">
+    <button class="tab-main active">Layout</button>
+    <div class="spacer"></div>
+    <button class="tab-main active">Acquisition</button>
+    <button class="tab-main">Viewer</button>
+    <button class="tab-main">cellSens</button>
+  </div>
+
+  <div class="workspace">
+    <!-- LEFT -->
+    <div class="col">
+      <div class="panel left-scan">
+        <div class="panel-title"><span>LSM Imaging</span><span>×</span></div>
+        <div class="panel-body">
+          <div class="section-title">Scan Settings</div>
+          <div class="iconbar">
+            <button class="iconbtn">◇</button><button class="iconbtn">○</button><button class="iconbtn">⌁</button>
+            <button class="iconbtn">∕</button><button class="iconbtn">↔</button><button class="iconbtn">⊞</button><button class="iconbtn">□</button>
+          </div>
+
+          <div class="row"><label style="width:65px">Scanner:</label></div>
+          <div class="row">
+            <label style="width:65px">Type:</label>
+            <label><input class="radio" type="radio" name="type" checked> Galvano</label>
+            <label><input class="radio" type="radio" name="type"> Resonant</label>
+          </div>
+          <div class="row">
+            <label style="width:65px">Mode:</label>
+            <label><input class="radio" type="radio" checked> OneWay</label>
+          </div>
+          <div class="row range-wrap">
+            <label style="width:65px">Speed:</label>
+            <span id="speedVal">4.0</span><span>µs/pixel</span>
+          </div>
+          <div class="row range-wrap">
+            <span style="width:65px"></span>
+            <input id="speed" type="range" min="1" max="10" step="1" value="4">
+          </div>
+
+          <div class="row">
+            <label style="width:65px">Image Size:</label>
+          </div>
+          <div class="row">
+            <label style="width:65px">Aspect Ratio:</label>
+            <label><input class="radio" type="radio" name="ratio" checked> 1:1</label>
+            <label><input class="radio" type="radio" name="ratio"> 4:3</label>
+          </div>
+          <div class="row">
+            <label style="width:65px">Scan Size:</label>
+            <select id="scanSize">
+              <option>128x128</option>
+              <option>256x256</option>
+              <option>512x512</option>
+              <option>1024x1024</option>
+              <option selected>2048x2048</option>
+              <option>4096x4096</option>
+              <option>5024x5024</option>
+            </select>
+          </div>
+          <div class="row">
+            <label><input class="radio" type="radio" name="hv" checked> High voltage correction ON</label>
+            <label><input class="radio" type="radio" name="hv"> OFF</label>
+          </div>
+          <div class="small">Pixel: 4.0 usec  Line: 9.292 msec  Frame: 19.039 sec</div>
+        </div>
+      </div>
+
+      <div class="panel left-area">
+        <div class="panel-title"><span>Area Settings</span><span></span></div>
+        <div class="panel-body">
+          <div class="iconbar"><button class="iconbtn">↖</button><button class="iconbtn">↗</button></div>
+          <div class="two-col">
+            <div>
+              <div style="width:95px;height:95px;border:1px solid #4d5357;margin:10px auto;position:relative;border-radius:50%">
+                <div style="position:absolute;left:18px;top:15px;width:60px;height:60px;border:1px solid #71777b;clip-path:polygon(15% 0,85% 0,100% 20%,100% 80%,80% 100%,20% 100%,0 80%,0 20%)"></div>
+              </div>
+            </div>
+            <div>
+              <div class="row"><label>Rotation:</label><input type="text" value="0.0"><span>deg</span><button>Reset</button></div>
+              <div class="row"><label>Pan X:</label><input type="text" value="0.00"><span>µm</span><button>Reset</button></div>
+              <div class="row"><label>Pan Y:</label><input type="text" value="0.00"><span>µm</span><button>Reset</button></div>
+            </div>
+          </div>
+          <div class="hr"></div>
+          <div class="row"><label>Zoom:</label><input type="text" value="1.00"><button>◀</button><button>▶</button></div>
+          <div class="row"><button>x1</button><button>🔍</button></div>
+          <div class="section-title" style="margin-top:10px">Round trip correction</div>
+        </div>
+      </div>
+
+      <div class="panel left-micro">
+        <div class="panel-title"><span>Microscope</span><span>Information</span></div>
+        <div class="panel-body">
+          <div class="section-title">Objective Lens</div>
+          <select style="width:100%"><option>1:XPLN25XWMP2</option></select>
+          <div class="small" style="margin:6px 0">Move objective lens to escape position</div>
+
+          <div class="section-title">Z Limit Setting</div>
+          <div class="small">Current Z position: 15631.35</div>
+          <div class="row"><label>Near limit:</label><input type="text" value="17000.00"><button>Refresh</button></div>
+          <button style="width:100%;margin-bottom:6px">Apply Entered parameter to near limit</button>
+          <label><input class="check" type="checkbox" checked> Apply to all</label>
+          <div class="small" style="margin-top:8px;line-height:1.7">
+            ● 1:XPLN25XWMP2 &nbsp;&nbsp;17000.00<br>
+            ○ 2:XPLN10XSVMP &nbsp;&nbsp;15532.40<br>
+            ○ 3:None &nbsp;&nbsp;15532.40<br>
+            ○ 4:None &nbsp;&nbsp;15532.40
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PMT -->
+    <div class="col">
+      <div class="panel pmt">
+        <div class="panel-title"><span>PMT Setting</span><span>×</span></div>
+        <div class="panel-body">
+          <div class="row">
+            <label>Average:</label>
+            <label><input class="radio" type="radio" name="avg" checked> None</label>
+            <label><input class="radio" type="radio" name="avg"> Line</label>
+            <label><input class="radio" type="radio" name="avg"> Frame</label>
+            <input type="text" value="3" style="width:28px"><span>Times</span>
+          </div>
+          <div class="row">
+            <label>Sequential Scan:</label>
+            <label><input class="radio" type="radio" name="seq" checked> None</label>
+            <label><input class="radio" type="radio" name="seq"> Line</label>
+            <label><input class="radio" type="radio" name="seq"> Frame</label>
+          </div>
+          <button>Dye & Detector Select</button>
+          <div class="row small" style="justify-content:center;margin-top:10px">RNDD1 &nbsp; RNDD2 &nbsp; RNDD3G &nbsp; RNDD4G &nbsp; CD1</div>
+
+          <div class="row"><label><input class="check" type="checkbox" checked> Group 1</label></div>
+          <div class="channel-tabs">
+            <div class="channel-tab">CH1</div><div class="channel-tab">CH2</div><div class="channel-tab">CH3</div>
+            <div class="channel-tab">CH4</div><div class="channel-tab">CH5</div>
+          </div>
+
+          <div class="channel-block">
+            <div class="row tight"><label><input class="channel-check" type="checkbox"> CH1</label><span class="color-chip" style="background:#62aa77"></span>
+              <select><option>Emerald</option></select><span>RNDD1</span><span class="grow"></span><span>G-1</span></div>
+            <div class="sliderline"><span>HV</span><input type="text" value="600"><button>◀</button><button>▶</button><div class="bar"></div></div>
+            <div class="sliderline"><span>Gain</span><input type="text" value="1.000"><button>◀</button><button>▶</button><div class="bar"></div></div>
+            <div class="sliderline"><span>Offset</span><input type="text" value="0"><button>◀</button><button>▶</button><div class="bar"></div></div>
+          </div>
+
+          <div class="channel-block">
+            <div class="row tight"><label><input class="channel-check" type="checkbox"> CH2</label><span class="color-chip" style="background:#db3b3b"></span>
+              <select><option>Red</option></select><span>RNDD2</span><span class="grow"></span><span>G-1</span></div>
+            <div class="sliderline"><span>HV</span><input type="text" value="600"><button>◀</button><button>▶</button><div class="bar"></div></div>
+            <div class="sliderline"><span>Gain</span><input type="text" value="1.000"><button>◀</button><button>▶</button><div class="bar"></div></div>
+            <div class="sliderline"><span>Offset</span><input type="text" value="0"><button>◀</button><button>▶</button><div class="bar"></div></div>
+          </div>
+
+          <div class="channel-block">
+            <div class="row tight"><label><input class="channel-check" type="checkbox" checked> CH3</label><span class="color-chip" style="background:#ba3dc2"></span>
+              <select><option>Violet</option></select><span>RNDD3G</span><span class="grow"></span><span>G-1</span></div>
+            <div class="sliderline"><span>HV</span><input type="text" value="500"><button>◀</button><button>▶</button><div class="bar"></div></div>
+            <div class="sliderline"><span>Gain</span><input type="text" value="1.000"><button>◀</button><button>▶</button><div class="bar"></div></div>
+            <div class="sliderline"><span>Offset</span><input type="text" value="0"><button>◀</button><button>▶</button><div class="bar"></div></div>
+          </div>
+
+          <div class="channel-block">
+            <div class="row tight"><label><input class="channel-check" type="checkbox"> CH4</label><span class="color-chip" style="background:#62becd"></span>
+              <select><option>Cyan</option></select><span>RNDD4G</span><span class="grow"></span><span>G-1</span></div>
+            <div class="sliderline"><span>HV</span><input type="text" value="500"><button>◀</button><button>▶</button><div class="bar"></div></div>
+            <div class="sliderline"><span>Gain</span><input type="text" value="1.000"><button>◀</button><button>▶</button><div class="bar"></div></div>
+            <div class="sliderline"><span>Offset</span><input type="text" value="0"><button>◀</button><button>▶</button><div class="bar"></div></div>
+          </div>
+
+          <div class="channel-block">
+            <div class="row tight"><label><input class="channel-check" type="checkbox" checked> CH5</label><span class="color-chip" style="background:#a86a6a"></span>
+              <select><option>Kaede-red</option></select><span>CD1</span><span class="grow"></span><span>G-1</span></div>
+            <div class="sliderline"><span>HV</span><input type="text" value="600"><button>◀</button><button>▶</button><div class="bar"></div></div>
+            <div class="sliderline"><span>Gain</span><input type="text" value="1.000"><button>◀</button><button>▶</button><div class="bar"></div></div>
+            <div class="sliderline"><span>Offset</span><input type="text" value="0"><button>◀</button><button>▶</button><div class="bar"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER -->
+    <div class="center">
+      <div class="upper-center">
+        <div class="panel">
+          <div class="panel-title"><span>Live</span><span>Graph &nbsp; Table &nbsp; Analysis</span></div>
+          <div class="panel-body lut">
+            <div>
+              <div class="row"><label>Reference</label><select><option>CH5</option></select></div>
+              <div class="row"><button>Save As</button><button>Load</button><button>Reset</button></div>
+              <div class="small">Blue<br>Cyan<br>Fall<br>FITC<br>Gray</div>
+              <div class="hist">
+                <svg viewBox="0 0 200 120" preserveAspectRatio="none">
+                  <polyline points="20,110 40,100 50,80 60,20 65,10 70,110" fill="none" stroke="#fff" stroke-width="3"/>
+                  <polyline points="30,110 60,108 80,100 95,45 105,12 110,110" fill="none" stroke="#e33" stroke-width="2"/>
+                  <polyline points="40,110 75,108 100,90 120,25 130,8 135,110" fill="none" stroke="#2d4" stroke-width="2"/>
+                  <polyline points="50,110 90,108 120,105 145,50 155,10 160,110" fill="none" stroke="#44f" stroke-width="2"/>
+                </svg>
+              </div>
+            </div>
+            <div class="grad"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><span>Viewer</span><span>▦</span></div>
+          <div class="viewer-toolbar">
+            <button>Live</button><button>Live×2</button><button>Live×4</button><button>1:1</button>
+            <select><option>26</option></select><button>🔍</button>
+          </div>
+          <div class="small" style="padding:5px 8px;border-bottom:1px solid #3d4246">LUT: &nbsp; Hi-Lo &nbsp;&nbsp; Auto Contrast &nbsp;&nbsp; Reset</div>
+        </div>
+      </div>
+
+      <div class="panel viewer">
+        <div class="viewer-label">CH5 Kaede-red</div>
+        <div class="viewer-controls">
+          <div class="keypad">
+            <div class="pad-display" id="display1"></div>
+            <div class="pad-btn" id="key1">1</div>
+            <div class="pad-btn" id="key2">2</div>
+            <div class="pad-btn" id="key3">3</div>
+
+            <div class="pad-btn pad-label-btn" id="backspace">Backspace</div>
+            <div class="pad-btn" id="key4">4</div>
+            <div class="pad-btn" id="key5">5</div>
+            <div class="pad-btn" id="key6">6</div>
+
+            <div class="pad-btn pad-label-btn" id="clear">Clear</div>
+            <div class="pad-btn" id="key7">7</div>
+            <div class="pad-btn" id="key8">8</div>
+            <div class="pad-btn" id="key9">9</div>
+
+            <div class="pad-btn pad-label-btn" id="cancel">Cancel</div>
+            <div class="pad-btn" id="key0">0</div>
+            <div class="pad-btn" id="dot">.</div>
+            <div class="pad-btn" id="plus-minus">+/-</div>
+
+            <div class="pad-btn pad-label-btn" id="ok">OK</div>
+          </div>
+
+          <div class="keypad-count">
+            Clear clicked: <span id="clear-count">0</span> times |
+            OK clicked: <span id="ok-count">0</span> times
+          </div>
+
+          <button id="button4" class="system-shutter">System Shutter</button>
+        </div>
+
+        <div class="viewer-status">Size:2048x2048 &nbsp; 0.249µm/pixel &nbsp; XY=(38,1352) &nbsp; Int:1155</div>
+      </div>
+
+      <div class="panel livegraph">
+        <div class="graph-list">
+          <div class="panel-title" style="margin:-8px -8px 8px">Live Graph</div>
+          <button>Line</button>
+          <div style="margin-top:10px;border:1px solid #444;height:24px;padding:4px">Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Color&nbsp;&nbsp;&nbsp; Line</div>
+        </div>
+        <div class="graph">
+          <div class="plot">
+            <span style="position:absolute;left:6px;top:6px">1</span>
+            <span style="position:absolute;left:6px;bottom:6px">0</span>
+            <span style="position:absolute;right:6px;bottom:6px">1</span>
+          </div>
+        </div>
+        <div class="graph-settings">
+          <b>Horizontal Axis</b>
+          <div class="row"><label><input class="check" type="checkbox" checked> Auto</label></div>
+          <div class="row"><label>Time Range</label></div>
+          <input type="text" value="000:00:10.00" style="width:100%">
+          <div class="hr"></div>
+          <b>Vertical Axis</b>
+          <div class="row"><label><input class="check" type="checkbox" checked> Auto</label></div>
+          <div class="row"><label>Min:</label><input type="text" value="0"></div>
+          <div class="row"><label>Max:</label><input type="text" value="4095"></div>
+          <div class="hr"></div>
+          <button>Clear Graph</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="col">
+      <div class="panel right-acquire">
+        <div class="panel-title"><span>Acquire</span><span>×</span></div>
+        <div class="panel-body">
+          <div class="tabstrip"><div class="tab active">Normal</div><div class="tab">Sync</div><div class="tab">Sequence</div><div class="tab">MATL</div></div>
+          <div class="two-col">
+            <div class="panel" style="border-color:#4a4e52">
+              <div class="panel-body">
+                <b>Imaging</b>
+                <div style="margin-top:8px"><button id="lsmStartBtn" style="width:100%">▣ LSM Start</button></div>
+                <div class="row"><button>SERIES DONE</button><label><input class="check" type="checkbox"> Append</label></div>
+                <div class="row"><button>APPEND NEXT</button><input type="text" value="1" style="width:40px"></div>
+              </div>
+            </div>
+            <div class="panel" style="border-color:#4a4e52">
+              <div class="panel-body"><b>Bleach</b><div style="margin-top:8px"><button style="width:100%" disabled>⚡ Stimulation Start</button></div></div>
+            </div>
+          </div>
+          <div class="row" style="margin-top:10px"><label>LSM</label></div>
+          <div class="filebox"><input type="text" value="D:\Hongjie\Mouse_Intestine\Fasted_2\Sweep"><button>📁</button></div>
+          <div class="filebox"><input type="text" value="2_SRS_791.3nm_800mW_4us_Zoom1"><button>▼</button><button>📁</button></div>
+          <div class="small" style="margin-top:12px">Current scan condition</div>
+          <div class="progress"><span id="scanProgress"></span></div>
+          <div class="small" style="line-height:2">
+            Total scanning time &nbsp; : 00:19.04<br>
+            Remaining time &nbsp;&nbsp;&nbsp;&nbsp; : -<br>
+            Next scan start at &nbsp; : -
+          </div>
+        </div>
+      </div>
+
+      <div class="panel right-series">
+        <div class="panel-title"><span>Series</span><span>×</span></div>
+        <div class="panel-body">
+          <b>LSM</b>
+          <div class="row"><label>Time :</label><label><input class="radio" type="radio" name="tm"> ON</label><label><input class="radio" type="radio" name="tm" checked> OFF</label></div>
+          <div class="row"><label>Z :</label><label><input class="radio" type="radio" name="zz"> ON</label><label><input class="radio" type="radio" name="zz" checked> OFF</label></div>
+          <div class="small" style="margin-top:20px">Series: 19.039 sec</div>
+          <div class="section-title" style="margin-top:10px">Time Lapse</div>
+          <div class="row"><label>LSM Total : 00:19.04</label></div>
+          <div class="row"><label>Interval:</label><input type="text" value="FreeRun"><span class="grow"></span></div>
+          <div class="row"><label>Scan:</label><input type="text" value="00:19.04"><label>Rest:</label><input type="text" value="00:00.00"></div>
+          <div class="row"><label>Cycle:</label><input type="text" value="100"></div>
+        </div>
+      </div>
+
+      <div class="panel right-z">
+        <div class="panel-title"><span>Z Section</span><span></span></div>
+        <div class="panel-body">
+          <div class="row"><label>Motor:</label><label><input class="radio" type="radio" name="motor" checked> Start/End</label><label><input class="radio" type="radio" name="motor"> Range</label></div>
+          <div class="row"><label>Current: 15341.35</label><span class="grow"></span><label>Origin: 200.00</label></div>
+          <div class="two-col">
+            <div>
+              <div class="iconbar" style="flex-direction:column;width:25px">
+                <button class="iconbtn">▲</button><button class="iconbtn">△</button><button class="iconbtn">▽</button><button class="iconbtn">▼</button>
+              </div>
+            </div>
+            <div>
+              <div class="zdiagram"><div class="c"></div><div class="b"></div><div class="a"></div></div>
+            </div>
+          </div>
+          <div class="row"><label>Slices:</label><input type="text" value="38"><button>▲</button></div>
+          <div class="row"><label>Step Size:</label><input type="text" value="0.35"><button>▲</button></div>
+          <div class="row"><span class="grow"></span><button>Optimize</button></div>
+          <div class="hr"></div>
+          <div class="two-col">
+            <div>
+              <div class="row"><label>Start:</label><input type="text" value="15333.50"></div>
+              <div class="row"><button>Register</button><button>Move</button></div>
+            </div>
+            <div>
+              <div class="row"><label>End:</label><input type="text" value="15346.45"></div>
+              <div class="row"><button>Register</button><button>Move</button></div>
+            </div>
+          </div>
+          <button style="width:100%;margin-top:8px">START &lt;=&gt; END</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const speed = document.getElementById('speed');
+  const speedVal = document.getElementById('speedVal');
+
+  const speedStops = {
+    1: "2.0", 2: "2.5", 3: "3.0", 4: "4.0", 5: "6.0",
+    6: "8.0", 7: "10.0", 8: "12.5", 9: "16.0", 10: "20.0"
+  };
+
+  function updateSpeed(){
+    speedVal.textContent = speedStops[speed.value];
+  }
+
+  speed.addEventListener('input', updateSpeed);
+  speed.addEventListener('change', updateSpeed);
+
+  const lsmStartBtn = document.getElementById('lsmStartBtn');
+  const scanProgress = document.getElementById('scanProgress');
+
+  let scanRunning = false;
+  let scanAnimation = null;
+
+  function setScanButtonActive(active){
+    if(active){
+      lsmStartBtn.style.background = '#225c79';
+      lsmStartBtn.style.borderColor = '#6b8797';
+      lsmStartBtn.style.color = '#ffffff';
+    }else{
+      lsmStartBtn.style.background = '';
+      lsmStartBtn.style.borderColor = '';
+      lsmStartBtn.style.color = '';
+    }
+  }
+
+  function resetScanUI(){
+    scanRunning = false;
+    cancelAnimationFrame(scanAnimation);
+
+    scanProgress.style.transition = 'none';
+    scanProgress.style.width = '0%';
+    scanProgress.style.background = '#5b818f';
+    setScanButtonActive(false);
+
+    requestAnimationFrame(() => {
+      scanProgress.style.transition = 'width .08s linear';
+    });
+  }
+
+  lsmStartBtn.addEventListener('click', () => {
+    // Ignore extra clicks while a scan is already running.
+    if(scanRunning) return;
+
+    scanRunning = true;
+    setScanButtonActive(true);
+
+    scanProgress.style.transition = 'none';
+    scanProgress.style.width = '0%';
+    scanProgress.style.background = '#2a6684';
+
+    // The ENTIRE simulated scan takes a random 0.5–3.0 seconds.
+    const duration = 500 + Math.random() * 2500;
+    const startTime = performance.now();
+
+    function animateScan(now){
+      if(!scanRunning) return;
+
+      const elapsed = now - startTime;
+      const progress = Math.min(100, (elapsed / duration) * 100);
+
+      scanProgress.style.width = progress + '%';
+
+      if(progress < 100){
+        scanAnimation = requestAnimationFrame(animateScan);
+      }else{
+        // Briefly show 100%, then reset the bar and LSM Start button.
+        setTimeout(resetScanUI, 250);
+      }
+    }
+
+    scanAnimation = requestAnimationFrame(animateScan);
+  });
+
+
+  // ---------------------------------------------------------------
+  // Single numeric keypad, adapted from pico_emerald.html.
+  // ---------------------------------------------------------------
+  let keypad1Input = '';
+  let clearCount = 0;
+  let okCount = 0;
+
+  function updateKeypadDisplay(){
+    const display = document.getElementById('display1');
+    if(display) display.innerText = keypad1Input;
+  }
+
+  function handleKeypadInput(key){
+    if(key === 'Backspace'){
+      keypad1Input = keypad1Input.slice(0, -1);
+    }else if(key === 'Clear' || key === 'Cancel'){
+      keypad1Input = '';
+    }else if(key === '+/-'){
+      if(keypad1Input.startsWith('-')){
+        keypad1Input = keypad1Input.slice(1);
+      }else if(keypad1Input.length > 0){
+        keypad1Input = '-' + keypad1Input;
+      }else{
+        keypad1Input = '-';
+      }
+    }else{
+      keypad1Input += key;
+    }
+    updateKeypadDisplay();
+  }
+
+  const keypadBindings = {
+    key1:'1', key2:'2', key3:'3',
+    key4:'4', key5:'5', key6:'6',
+    key7:'7', key8:'8', key9:'9',
+    key0:'0', dot:'.', 'plus-minus':'+/-',
+    backspace:'Backspace', cancel:'Cancel'
+  };
+
+  Object.entries(keypadBindings).forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('click', () => handleKeypadInput(key));
+  });
+
+  const clearBtn = document.getElementById('clear');
+  if(clearBtn){
+    clearBtn.addEventListener('click', () => {
+      handleKeypadInput('Clear');
+      clearCount++;
+      document.getElementById('clear-count').innerText = clearCount;
+    });
+  }
+
+  // ---------------------------------------------------------------
+  // System Shutter behavior based on pico_emerald.html.
+  // Direct click toggles active state.
+  // ---------------------------------------------------------------
+  let systemShutterActive = false;
+  let shutterTimeout;
+
+  const systemShutterButton = document.getElementById('button4');
+
+  if(systemShutterButton){
+    systemShutterButton.addEventListener('click', function(){
+      systemShutterActive = !systemShutterActive;
+      this.classList.toggle('active');
+    });
+  }
+
+  function handleSystemShutterTemporary(){
+    if(!systemShutterButton) return;
+
+    clearTimeout(shutterTimeout);
+    systemShutterButton.classList.add('active');
+
+    // Same 5–10 second temporary active interval used by pico_emerald.html.
+    const randomTime = Math.floor(Math.random() * 5000) + 5000;
+
+    shutterTimeout = setTimeout(function(){
+      // Do not force it off if the user manually toggled it on.
+      if(!systemShutterActive){
+        systemShutterButton.classList.remove('active');
+      }
+    }, randomTime);
+  }
+
+  const okBtn = document.getElementById('ok');
+  if(okBtn){
+    okBtn.addEventListener('click', () => {
+      okCount++;
+      document.getElementById('ok-count').innerText = okCount;
+      handleSystemShutterTemporary();
+    });
+  }
+
+  document.querySelectorAll('button').forEach(btn=>{
+    if(btn === lsmStartBtn || btn === systemShutterButton) return;
+
+    btn.addEventListener('click', ()=>{
+      if(!btn.disabled){
+        btn.style.transform='translateY(1px)';
+        setTimeout(()=>btn.style.transform='',90);
+      }
+    });
+  });
+</script>
+</body>
+</html>

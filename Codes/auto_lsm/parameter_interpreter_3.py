@@ -50,10 +50,20 @@ def interpreter():
             if i + 4 > len(lines):
                 input("there is a formatting error in 'parameters.txt', for more detail please see 'readMe.md', press 'enter' to exist")
 
+            channel_line = lines[i + 3].strip()
+            channels = [
+                int(channel.strip().upper().replace("CH", "")) for channel in channel_line.split(",") if channel.strip()
+            ]
+            for channel in channels:
+                if channel not in (1, 2, 3, 4, 5):
+                    raise ValueError(
+                        f"Invalid channel CH{channel}. Valid channels are CH1 to CH5."
+                    )
             data['wavelength'].append(float(lines[i].strip()))
             data['power'].append(int(lines[i + 1].strip()))
             data['average'].append(lines[i + 2].strip())
-            data['channel'].append(lines[i + 3].strip())
+            
+            data['channel'].append(channels)
             print("end of section interpretation: ", section)
             section += 1
             # Move to the next section after the current set of 4 lines
