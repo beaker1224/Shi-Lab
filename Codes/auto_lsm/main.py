@@ -1,9 +1,12 @@
-import pyautogui
-import os
-import parameter_interpreter_3
-import pico_emeraldWatch_1, FVWatch_2
-import time
-import json
+try:
+    import pyautogui
+    import os
+    import parameter_interpreter_3
+    import pico_emeraldWatch_1, FVWatch_2
+    import time
+    import json
+except ImportError as e:
+    input(e)
 
 pyautogui.FAILSAFE = False
 
@@ -26,7 +29,7 @@ def get_pixel_color(x, y):
 
 # FV helpers
 # the average clicker to click average number
-os.system('cls')
+# os.system('cls')
 # averages = tuple(load_from_json("parameters.json")['average'])
 fvFile = load_from_json("FV_layout.json")
 frame_on_position = tuple(fvFile['frame on position'])
@@ -238,5 +241,6 @@ def main():
     pico_emeraldWatch_1.change_power_to(powers[0])
     time.sleep(0.25)
     pico_emeraldWatch_1.change_wavelength_to(wavelengths[0])
+
 
 main()

@@ -1,4 +1,8 @@
-import pyautogui
+try:
+    import pyautogui
+except ImportError:
+    input("Error: pyautogui is not installed.")
+
 import os
 import parameter_interpreter_3
 import pico_emeraldWatch_1, FVWatch_2
