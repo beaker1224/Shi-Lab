@@ -138,6 +138,11 @@ def position_getter():
 '''
 
 def change_IR(channels):
+    '''
+    This function checks the current state of the IR laser and toggles it based on the desired channels.
+    If channel 5 is in the desired channels and the IR laser is off, it will
+    turn it on. If channel 5 is not in the desired channels and the IR laser is on, it will turn it off.
+    '''
     # load the pico emerald layout settings
     pico_emerald_layout = load_from_json("pico_emerald_layout.json")
     IR_position = tuple(pico_emerald_layout['IR_position'])
