@@ -21,6 +21,17 @@ os.chdir(script_dir)
 
 
 def interpreter():
+    '''
+    This function interprets the parameters from 'parameters.txt' and saves them into 'parameters.json'.
+    It reads the parameters in groups of four lines, where each group represents a set of parameters:
+    1. Wavelength (float)
+    2. Power (int)
+    3. Average (string)
+    4. Channels (comma-separated string, e.g., "CH1,CH2,CH3")
+    The function checks for the existence of 'parameters.json' and 'parameters.txt'. 
+    If 'parameters.json' does not exist, it creates an empty one. 
+    If 'parameters.txt' does not exist, it creates an empty one and prompts the user to input parameters.
+    '''
     json_file = "parameters.json"
     txt_file = "parameters.txt"
     if not os.path.exists(json_file):

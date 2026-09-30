@@ -36,9 +36,9 @@ frame_on_position = tuple(fvFile['frame on position'])
 frame_off_position = tuple(fvFile['frame off position'])
 frame_numberpad_position = tuple(fvFile['frame numberpad position'])
 def average_clicker(average):
-    if average == 0:
+    if int(average) <= 1:
         pyautogui.click(frame_off_position)
-    if not average == 0:
+    if not int(average) == 0:
         pyautogui.click(frame_on_position)
         pyautogui.click(frame_numberpad_position)
         pyautogui.hotkey('ctrl', 'a')
@@ -160,9 +160,9 @@ def main():
             # If conversion fails, prompt the user again
             print("Invalid input. Please enter an number.")
 
-    # interprete the data in parameters.txt
+    # interprete the data in parameters.txt to parameters.json.
     parameter_interpreter_3.interpreter()
-
+    # load parameters from parameters.json
     parameters = load_from_json("parameters.json")
     wavelengths = tuple(parameters['wavelength'])
     powers = tuple(parameters['power'])
@@ -182,18 +182,21 @@ def main():
         input("FVWatch_2 did not run, FV_layout did not setup correctly, press 'ctrl+c' to exit, press 'enter' to setup")
         FVWatch_2.main()
 
-    print(lsm_start)
+    print("\n" + "="*60)
     print("IMPORTANT: set the wavelength and power to the first set you need to take!!!!!!!!!!!!!!!!!")
-    # this is because there is a bug for pico emerald software, if you enter the wavelength 
-    # which is the same with your current wavelength, the next adjust will not turn of the 
+    print("="*60)
+    # this is because there is a bug for pico emerald software, if you enter the wavelength
+    # which is the same with your current wavelength, the next adjust will not turn of the
     # system shutter, so this program will crash
     input("Press 'enter' to start the auto lsm system")
 
+
+# Actual Performance of the auto lsm system
     i = 0
 
     while i < len(wavelengths):
         if not i == 0:
-            if not averages[i] == averages[i-1]:
+            if not int(averages[i]) == int(averages[i-1]):
                 average_clicker(averages[i])
 
 
@@ -201,6 +204,10 @@ def main():
         if i == 0:
             average_clicker(averages[i])
             name_typer(order, wavelengths[i], powers[i], averages[i], zoom)
+            pico_emeraldWatch_1.change_IR(channels[i])
+            set_channels(channels[i])
+
+
             if shutter_backOn():
                 pyautogui.click(*lsm_start)
                 time.sleep(2.8)
