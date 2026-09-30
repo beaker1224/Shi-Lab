@@ -140,14 +140,33 @@
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:14px;
-    padding:34px 20px 22px;
+    gap:12px;
+    padding:28px 14px 18px;
+  }
+  .dual-keypads{
+    width:100%;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    gap:18px;
+  }
+  .keypad-group{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:7px;
+  }
+  .keypad-title{
+    font-size:13px;
+    font-weight:600;
+    color:#d7dadd;
+    text-align:center;
   }
   .keypad{
     display:grid;
-    grid-template-columns:118px 74px 74px 74px;
-    grid-template-rows:42px 46px 46px 46px 46px;
-    gap:8px;
+    grid-template-columns:104px 64px 64px 64px;
+    grid-template-rows:38px 42px 42px 42px 42px;
+    gap:6px;
     align-items:stretch;
   }
   .pad-btn, .pad-display{
@@ -176,12 +195,22 @@
   .pad-label-btn{
     font-size:14px;
   }
-  .keypad-count{
-    min-width:348px;
+  .settings-btn{
+    min-width:150px;
+    height:25px;
+  }
+  .settings-count{
+    min-width:180px;
     text-align:center;
     font-size:10px;
-    line-height:1.6;
+    line-height:1.4;
     color:#aab0b3;
+  }
+  .shutter-row{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:center;
   }
   .system-shutter{
     min-width:145px;
@@ -453,38 +482,71 @@
       </div>
 
       <div class="panel viewer">
-        <div class="viewer-label">CH5 Kaede-red</div>
         <div class="viewer-controls">
-          <div class="keypad">
-            <div class="pad-display" id="display1"></div>
-            <div class="pad-btn" id="key1">1</div>
-            <div class="pad-btn" id="key2">2</div>
-            <div class="pad-btn" id="key3">3</div>
+          <div class="dual-keypads">
+            <div class="keypad-group">
+              <div class="keypad-title">Wavelength</div>
+              <div class="keypad" id="wavelength-keypad">
+                <div class="pad-display" id="wavelength-display"></div>
+                <div class="pad-btn" data-pad="wavelength" data-key="1">1</div>
+                <div class="pad-btn" data-pad="wavelength" data-key="2">2</div>
+                <div class="pad-btn" data-pad="wavelength" data-key="3">3</div>
 
-            <div class="pad-btn pad-label-btn" id="backspace">Backspace</div>
-            <div class="pad-btn" id="key4">4</div>
-            <div class="pad-btn" id="key5">5</div>
-            <div class="pad-btn" id="key6">6</div>
+                <div class="pad-btn pad-label-btn" data-pad="wavelength" data-key="Backspace">Backspace</div>
+                <div class="pad-btn" data-pad="wavelength" data-key="4">4</div>
+                <div class="pad-btn" data-pad="wavelength" data-key="5">5</div>
+                <div class="pad-btn" data-pad="wavelength" data-key="6">6</div>
 
-            <div class="pad-btn pad-label-btn" id="clear">Clear</div>
-            <div class="pad-btn" id="key7">7</div>
-            <div class="pad-btn" id="key8">8</div>
-            <div class="pad-btn" id="key9">9</div>
+                <div class="pad-btn pad-label-btn" data-pad="wavelength" data-key="Clear">Clear</div>
+                <div class="pad-btn" data-pad="wavelength" data-key="7">7</div>
+                <div class="pad-btn" data-pad="wavelength" data-key="8">8</div>
+                <div class="pad-btn" data-pad="wavelength" data-key="9">9</div>
 
-            <div class="pad-btn pad-label-btn" id="cancel">Cancel</div>
-            <div class="pad-btn" id="key0">0</div>
-            <div class="pad-btn" id="dot">.</div>
-            <div class="pad-btn" id="plus-minus">+/-</div>
+                <div class="pad-btn pad-label-btn" data-pad="wavelength" data-key="Cancel">Cancel</div>
+                <div class="pad-btn" data-pad="wavelength" data-key="0">0</div>
+                <div class="pad-btn" data-pad="wavelength" data-key=".">.</div>
+                <div class="pad-btn" data-pad="wavelength" data-key="+/-">+/-</div>
 
-            <div class="pad-btn pad-label-btn" id="ok">OK</div>
+                <div class="pad-btn pad-label-btn" data-pad="wavelength" data-key="OK">OK</div>
+              </div>
+              <button id="wavelength-settings" class="settings-btn">Wavelength Settings</button>
+              <div class="settings-count">Clicked: <span id="wavelength-settings-count">0</span> times</div>
+            </div>
+
+            <div class="keypad-group">
+              <div class="keypad-title">Power</div>
+              <div class="keypad" id="power-keypad">
+                <div class="pad-display" id="power-display"></div>
+                <div class="pad-btn" data-pad="power" data-key="1">1</div>
+                <div class="pad-btn" data-pad="power" data-key="2">2</div>
+                <div class="pad-btn" data-pad="power" data-key="3">3</div>
+
+                <div class="pad-btn pad-label-btn" data-pad="power" data-key="Backspace">Backspace</div>
+                <div class="pad-btn" data-pad="power" data-key="4">4</div>
+                <div class="pad-btn" data-pad="power" data-key="5">5</div>
+                <div class="pad-btn" data-pad="power" data-key="6">6</div>
+
+                <div class="pad-btn pad-label-btn" data-pad="power" data-key="Clear">Clear</div>
+                <div class="pad-btn" data-pad="power" data-key="7">7</div>
+                <div class="pad-btn" data-pad="power" data-key="8">8</div>
+                <div class="pad-btn" data-pad="power" data-key="9">9</div>
+
+                <div class="pad-btn pad-label-btn" data-pad="power" data-key="Cancel">Cancel</div>
+                <div class="pad-btn" data-pad="power" data-key="0">0</div>
+                <div class="pad-btn" data-pad="power" data-key=".">.</div>
+                <div class="pad-btn" data-pad="power" data-key="+/-">+/-</div>
+
+                <div class="pad-btn pad-label-btn" data-pad="power" data-key="OK">OK</div>
+              </div>
+              <button id="power-settings" class="settings-btn">Power Settings</button>
+              <div class="settings-count">Clicked: <span id="power-settings-count">0</span> times</div>
+            </div>
           </div>
 
-          <div class="keypad-count">
-            Clear clicked: <span id="clear-count">0</span> times |
-            OK clicked: <span id="ok-count">0</span> times
+          <div class="shutter-row">
+            <button id="button4" class="system-shutter">System Shutter</button>
+            <button id="laserIrButton" class="system-shutter">Laser IR</button>
           </div>
-
-          <button id="button4" class="system-shutter">System Shutter</button>
         </div>
 
         <div class="viewer-status">Size:2048x2048 &nbsp; 0.249µm/pixel &nbsp; XY=(38,1352) &nbsp; Int:1155</div>
@@ -686,61 +748,77 @@
 
 
   // ---------------------------------------------------------------
-  // Single numeric keypad, adapted from pico_emerald.html.
+  // Two independent numeric keypads: Wavelength and Power.
   // ---------------------------------------------------------------
-  let keypad1Input = '';
-  let clearCount = 0;
-  let okCount = 0;
-
-  function updateKeypadDisplay(){
-    const display = document.getElementById('display1');
-    if(display) display.innerText = keypad1Input;
-  }
-
-  function handleKeypadInput(key){
-    if(key === 'Backspace'){
-      keypad1Input = keypad1Input.slice(0, -1);
-    }else if(key === 'Clear' || key === 'Cancel'){
-      keypad1Input = '';
-    }else if(key === '+/-'){
-      if(keypad1Input.startsWith('-')){
-        keypad1Input = keypad1Input.slice(1);
-      }else if(keypad1Input.length > 0){
-        keypad1Input = '-' + keypad1Input;
-      }else{
-        keypad1Input = '-';
-      }
-    }else{
-      keypad1Input += key;
-    }
-    updateKeypadDisplay();
-  }
-
-  const keypadBindings = {
-    key1:'1', key2:'2', key3:'3',
-    key4:'4', key5:'5', key6:'6',
-    key7:'7', key8:'8', key9:'9',
-    key0:'0', dot:'.', 'plus-minus':'+/-',
-    backspace:'Backspace', cancel:'Cancel'
+  const keypadState = {
+    wavelength: '',
+    power: ''
   };
 
-  Object.entries(keypadBindings).forEach(([id, key]) => {
-    const el = document.getElementById(id);
-    if(el) el.addEventListener('click', () => handleKeypadInput(key));
+  function updateKeypadDisplay(pad){
+    const display = document.getElementById(pad + '-display');
+    if(display) display.innerText = keypadState[pad];
+  }
+
+  function handleKeypadInput(pad, key){
+    let value = keypadState[pad];
+
+    if(key === 'Backspace'){
+      value = value.slice(0, -1);
+    }else if(key === 'Clear' || key === 'Cancel'){
+      value = '';
+    }else if(key === '+/-'){
+      if(value.startsWith('-')){
+        value = value.slice(1);
+      }else if(value.length > 0){
+        value = '-' + value;
+      }else{
+        value = '-';
+      }
+    }else if(key !== 'OK'){
+      value += key;
+    }
+
+    keypadState[pad] = value;
+    updateKeypadDisplay(pad);
+  }
+
+  document.querySelectorAll('.pad-btn[data-pad][data-key]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pad = btn.dataset.pad;
+      const key = btn.dataset.key;
+      handleKeypadInput(pad, key);
+
+      // Preserve the original special behavior only for Wavelength OK.
+      if(pad === 'wavelength' && key === 'OK'){
+        handleSystemShutterTemporary();
+      }
+    });
   });
 
-  const clearBtn = document.getElementById('clear');
-  if(clearBtn){
-    clearBtn.addEventListener('click', () => {
-      handleKeypadInput('Clear');
-      clearCount++;
-      document.getElementById('clear-count').innerText = clearCount;
+  let wavelengthSettingsCount = 0;
+  let powerSettingsCount = 0;
+
+  const wavelengthSettingsBtn = document.getElementById('wavelength-settings');
+  if(wavelengthSettingsBtn){
+    wavelengthSettingsBtn.addEventListener('click', () => {
+      wavelengthSettingsCount++;
+      document.getElementById('wavelength-settings-count').innerText = wavelengthSettingsCount;
+    });
+  }
+
+  const powerSettingsBtn = document.getElementById('power-settings');
+  if(powerSettingsBtn){
+    powerSettingsBtn.addEventListener('click', () => {
+      powerSettingsCount++;
+      document.getElementById('power-settings-count').innerText = powerSettingsCount;
     });
   }
 
   // ---------------------------------------------------------------
   // System Shutter behavior based on pico_emerald.html.
-  // Direct click toggles active state.
+  // Direct click toggles active state. Wavelength OK can also
+  // temporarily illuminate it, matching the original mockup.
   // ---------------------------------------------------------------
   let systemShutterActive = false;
   let shutterTimeout;
@@ -760,28 +838,25 @@
     clearTimeout(shutterTimeout);
     systemShutterButton.classList.add('active');
 
-    // Same 5–10 second temporary active interval used by pico_emerald.html.
     const randomTime = Math.floor(Math.random() * 5000) + 5000;
 
     shutterTimeout = setTimeout(function(){
-      // Do not force it off if the user manually toggled it on.
       if(!systemShutterActive){
         systemShutterButton.classList.remove('active');
       }
     }, randomTime);
   }
 
-  const okBtn = document.getElementById('ok');
-  if(okBtn){
-    okBtn.addEventListener('click', () => {
-      okCount++;
-      document.getElementById('ok-count').innerText = okCount;
-      handleSystemShutterTemporary();
+  // Laser IR is intentionally simple: clicking only toggles its color.
+  const laserIrButton = document.getElementById('laserIrButton');
+  if(laserIrButton){
+    laserIrButton.addEventListener('click', function(){
+      this.classList.toggle('active');
     });
   }
 
   document.querySelectorAll('button').forEach(btn=>{
-    if(btn === lsmStartBtn || btn === systemShutterButton) return;
+    if(btn === lsmStartBtn || btn === systemShutterButton || btn === laserIrButton) return;
 
     btn.addEventListener('click', ()=>{
       if(!btn.disabled){
