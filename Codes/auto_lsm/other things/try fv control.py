@@ -15,7 +15,7 @@ for window in windows:
 
 
 fv = Desktop(backend="uia").window(
-    title_re=".*FV.*"
+    title_re="OLYMPUS FV31S-SW"
 )
 
 fv.print_control_identifiers()

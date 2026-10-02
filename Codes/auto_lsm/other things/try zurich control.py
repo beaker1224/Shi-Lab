@@ -3,7 +3,7 @@ import sys
 
 
 app = Application(backend="uia").connect(
-    title_re=".*Zurich.*"
+    title_re=".*ziControl.*"
 )
 
 window = app.top_window()
