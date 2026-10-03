@@ -226,6 +226,7 @@ def main():
             'frame off position': frame_off_position,
             'frame on position': frame_on_position,
             'frame numberpad position': frame_numberpad_position,
+
             'resolution dropdown position': resolution_dropdown_position,
             'resolution choice 64 position': resolution_choice_64_position,
             'resolution choice 128 position': resolution_choice_128_position,
@@ -261,7 +262,7 @@ def main():
         lsm_position = tuple(config['lsm button position'])
         lsm_off_color = tuple(config['lsm button off color'])
         lsm_colorbar_position = tuple(config['lsm colorbar position'])
-        lsm_colorbar_off = tuple(config['lsm_colorbar off color'])
+        lsm_colorbar_off = tuple(config['lsm colorbar off color'])
         lsm_filename_position = tuple(config['file name editor position'])
         frame_off_position = tuple(config['frame off position'])
         frame_on_position = tuple(config['frame on position'])

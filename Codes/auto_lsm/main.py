@@ -19,6 +19,9 @@ def load_from_json(file_name):
     with open(file_name, 'r') as file:
         return json.load(file)
 
+def get_pixel_color(x, y):
+    return pyautogui.pixel(x, y)
+
 # Global variables
 fv_layout = load_from_json("FV_layout.json")
 frame_on_position = tuple(fv_layout['frame on position'])
@@ -29,14 +32,30 @@ pico_emerald_layout = load_from_json("pico_emerald_layout.json")
 shutter_position = tuple(pico_emerald_layout['shutter_position'])
 shutter_on_color = tuple(pico_emerald_layout['shutter_on_color'])
 
-def get_pixel_color(x, y):
-    return pyautogui.pixel(x, y)
-
 # ==================== FV helpers ==========================
+def resolution_clicker(resolution):
+    """
+    Click the resolution dropdown and select the desired resolution.
+    choices are: "64x64", "128x128", "256x256", "512x512", "1024x1024", "2048x2048", "4096x4096"
+    """
+    if resolution is None:
+        return
+    
+    resolution_str = str(resolution).split('x')[0]  # Extract the number part, e.g., "64" from "64x64"
+
+    # Click the resolution dropdown
+    pyautogui.click(fv_layout['resolution dropdown position'])
+    time.sleep(0.5)  # Wait for the dropdown to open
+
+    # Click the desired resolution choice based on the provided resolution
+    resolution_key = f"resolution choice {resolution_str} position"
+    pyautogui.click(fv_layout[resolution_key])
+    time.sleep(0.5)  # Wait for the selection to register
+    
 def average_clicker(average):
     if int(average) <= 1:
         pyautogui.click(frame_off_position)
-    if not int(average) == 0:
+    else:
         pyautogui.click(frame_on_position)
         pyautogui.click(frame_numberpad_position)
         pyautogui.hotkey('ctrl', 'a')
@@ -105,16 +124,16 @@ def shutter_backOn():
 
 
 def main():
-    print("before you use this script, make sure that both softwares are not covered by each other, "
+    print("Before you use this script, make sure that both softwares are not covered by each other, "
     "and max the window of pico_emerald")
 
-    if not (os.path.exists('pico_emerald_layout.json') or os.path.exists('wavelength_power_keypad.json')):
-        input("pico emerald software layout did not setup! press 'enter' to quit")
-        pyautogui.hotkey('ctrl', 'c')
+    if not (os.path.exists('pico_emerald_layout.json') and os.path.exists('wavelength_power_keypad.json')):
+        input("pico-emerald software layout did not setup! press 'enter' to quit")
+        exit(1)
 
     if not os.path.exists('FV_layout.json'):
         input("fv-30s software layout did not setup! press 'enter' to quit")
-        pyautogui.hotkey('ctrl', 'c')
+        exit(1)
 
     while True:
         try:
@@ -126,8 +145,6 @@ def main():
             print("Invalid input. Please enter an integer.")
 
 #    print(order) this make sure the order is stored as a value we want
-            
-
     while True:
         try:
             # Get user input and try to convert it to an integer
@@ -145,9 +162,11 @@ def main():
     powers = tuple(parameters['power'])
     averages = tuple(parameters['average'])
     channels = tuple(parameters['channel'])
+    resolutions = tuple(parameters['resolution'])
+    dwell_times = tuple(parameters['dwell time'])
 
     print(order, '-', wavelengths[0], '-', powers[0], 'mW-avg', averages[0], '-zoom', zoom)
-    input("this will be how the name looks like as files, press 'enter' to advance,\n press ctrl + c to quit when you think something went wrong ")
+    input("This will be how the name looks like as files, press 'enter' to advance,\n press ctrl + c to quit when you think something went wrong ")
 
     try:
         lsm_start = tuple(fv_layout['lsm button position'])
@@ -166,23 +185,19 @@ def main():
     # system shutter, so this program will crash
     input("Press 'enter' to start the auto lsm system")
 
-
 # Actual Performance of the auto lsm system
     i = 0
 
     while i < len(wavelengths):
-        if not i == 0:
-            if not int(averages[i]) == int(averages[i-1]):
-                average_clicker(averages[i])
+            
 
-
-       # part 1, when the first time using the script when the parameters are setup by the user 
+       # part 1, first aquisition, when the first time using the script when the parameters are setup by the user 
         if i == 0:
             average_clicker(averages[i])
+            resolution_clicker(resolutions[i])
             name_typer(order, wavelengths[i], powers[i], averages[i], zoom)
             pico_emeraldWatch_1.change_IR(channels[i])
             set_channels(channels[i])
-
 
             if shutter_backOn():
                 pyautogui.click(*lsm_start)
@@ -195,12 +210,23 @@ def main():
                     time.sleep(0.5) # the color of the button is checked every 0.5 second
                 i += 1
 
-        # part 2, changing the IR, power, and then the wavelength, and the name of the file, and channels
-        if powers[i] == powers[i-1]:
-            pass
-        else:
+        # part 2, second aquisition, changing the IR, power, and then the wavelength, and the name of the file, and channels
+        if i >= len(wavelengths):
+            break # if there is only one set of parameters
+
+            # update average if necessary
+        if int(averages[i]) != int(averages[i-1]):
+            average_clicker(averages[i])
+
+            # update resolution if necessary
+        if resolutions[i] != resolutions[i-1]:
+            resolution_clicker(resolutions[i])
+
+        if powers[i] != powers[i-1]:
             pico_emeraldWatch_1.change_power_to(powers[i])
             time.sleep(0.25)
+        else:
+            pass
 
         pico_emeraldWatch_1.change_IR(channels[i])
         pico_emeraldWatch_1.change_wavelength_to(wavelengths[i])

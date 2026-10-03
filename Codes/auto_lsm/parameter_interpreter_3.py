@@ -77,25 +77,28 @@ def parse_channels(channel_str: str, section_num: int) -> list[int]:
     return channels
 
 def parse_resolution(res_str: str) -> str:
-    """
-    Accepts: '512', '512x512', '512*512', ' 512 X 512 '
-    Returns normalized string format: '512x512'
-    """
+    '''
+    Parse and validate the resolution string. Accepts formats like "64", "64x64", or "  64 x 64  ".
+    Returns the standardized format "64x64".
+    '''
     clean = res_str.strip().lower()
-    
-    # Matches patterns like '512x512', '512*512', '512 x 512'
-    match_2d = re.match(r'^(\d+)\s*[*xX]\s*(\d+)$', clean)
-    if match_2d:
-        w, h = match_2d.groups()
-        return f"{w}x{h}"
+    clean = clean.replace(" ", "").replace("*", "x")
 
-    # Matches a single number like '512' -> converts to '512x512'
     if clean.isdigit():
-        return f"{clean}x{clean}"
+        clean = f"{clean}x{clean}"
 
-    raise ValueError(
-        f"Invalid resolution format: '{res_str}'. Accepted formats: '512' or '512x512'."
-    )
+    valid = {
+        "64x64", "128x128", "256x256",
+        "512x512", "1024x1024",
+        "2048x2048", "4096x4096"
+    }
+
+    if clean not in valid:
+        raise ValueError(
+            f"Unsupported resolution: {res_str}"
+        )
+
+    return clean
 
 def prompt_exit_error(message: str) -> None:
     """Display an error message and cleanly wait for user input before exiting."""
