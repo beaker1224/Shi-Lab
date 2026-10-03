@@ -49,6 +49,10 @@ def get_resolution_dropdown_position():
     input("Hover your mouse on the resolution dropdown, and press 'enter'")
     return pyautogui.position()
 
+def get_resolution_choice_position(choice_number: str):
+    input(f"Hover your mouse on the resolution choice {choice_number}, and press 'enter'")
+    return pyautogui.position()
+
 def get_checkbox_position(channel_number):
     print(f"This step is for channel {channel_number} checkbox position.")
     input(f"Make sure the checkbox {channel_number} is UNCHECKED. Hover your mouse over the TOP-LEFT CORNER of thecheckbox {channel_number} and press 'enter'")
@@ -183,6 +187,14 @@ def main():
         frame_off_position = get_frame_off_position()
         frame_on_position = get_frame_on_position()
         frame_numberpad_position = get_frame_numberpad_position()
+        resolution_dropdown_position = get_resolution_dropdown_position()
+        resolution_choice_64_position = get_resolution_choice_position("64x64")
+        resolution_choice_128_position = get_resolution_choice_position("128x128")
+        resolution_choice_256_position = get_resolution_choice_position("256x256")
+        resolution_choice_512_position = get_resolution_choice_position("512x512")
+        resolution_choice_1024_position = get_resolution_choice_position("1024x1024")
+        resolution_choice_2048_position = get_resolution_choice_position("2048x2048")
+        resolution_choice_4096_position = get_resolution_choice_position("4096x4096")
 
         channel_1_checkbox_position = get_checkbox_position(1)
         channel_1_unchecked_strip = get_checkbox_strip(
@@ -214,6 +226,14 @@ def main():
             'frame off position': frame_off_position,
             'frame on position': frame_on_position,
             'frame numberpad position': frame_numberpad_position,
+            'resolution dropdown position': resolution_dropdown_position,
+            'resolution choice 64 position': resolution_choice_64_position,
+            'resolution choice 128 position': resolution_choice_128_position,
+            'resolution choice 256 position': resolution_choice_256_position,
+            'resolution choice 512 position': resolution_choice_512_position,
+            'resolution choice 1024 position': resolution_choice_1024_position,
+            'resolution choice 2048 position': resolution_choice_2048_position,
+            'resolution choice 4096 position': resolution_choice_4096_position,
 
             'channel_1_checkbox_position': channel_1_checkbox_position,
             'channel_2_checkbox_position': channel_2_checkbox_position,
@@ -251,8 +271,14 @@ def main():
         channel_3_checkbox_position = tuple(config['channel_3_checkbox_position'])
         channel_4_checkbox_position = tuple(config['channel_4_checkbox_position'])
         channel_5_checkbox_position = tuple(config['channel_5_checkbox_position'])
-
-
+        resolution_dropdown_position = tuple(config['resolution dropdown position'])
+        resolution_choice_64_position = tuple(config['resolution choice 64 position'])
+        resolution_choice_128_position = tuple(config['resolution choice 128 position'])
+        resolution_choice_256_position = tuple(config['resolution choice 256 position'])
+        resolution_choice_512_position = tuple(config['resolution choice 512 position'])
+        resolution_choice_1024_position = tuple(config['resolution choice 1024 position'])
+        resolution_choice_2048_position = tuple(config['resolution choice 2048 position'])
+        resolution_choice_4096_position = tuple(config['resolution choice 4096 position'])
         
     print('lsm button position: ' + str(lsm_position),
         'lsm button off color: ' + str(lsm_off_color),
@@ -266,7 +292,15 @@ def main():
         'channel 2 checkbox position: ' + str(channel_2_checkbox_position),
         'channel 3 checkbox position: ' + str(channel_3_checkbox_position),
         'channel 4 checkbox position: ' + str(channel_4_checkbox_position),
-        'channel 5 checkbox position: ' + str(channel_5_checkbox_position))
+        'channel 5 checkbox position: ' + str(channel_5_checkbox_position),
+        'resolution dropdown position: ' + str(resolution_dropdown_position),
+        'resolution choice 64 position: ' + str(resolution_choice_64_position),
+        'resolution choice 128 position: ' + str(resolution_choice_128_position),
+        'resolution choice 256 position: ' + str(resolution_choice_256_position),
+        'resolution choice 512 position: ' + str(resolution_choice_512_position),
+        'resolution choice 1024 position: ' + str(resolution_choice_1024_position),
+        'resolution choice 2048 position: ' + str(resolution_choice_2048_position),
+        'resolution choice 4096 position: ' + str(resolution_choice_4096_position))
 
     input("Display for information, press 'enter' when you want to exist and finish updating FV layout setting")
 

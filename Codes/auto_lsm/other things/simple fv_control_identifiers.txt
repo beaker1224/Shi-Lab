@@ -1,0 +1,448 @@
+Control Identifiers:
+
+Dialog - 'OLYMPUS FV31S-SW'    (L-9, T-9, R2569, B1389)
+['OLYMPUS FV31S-SW', 'OLYMPUS FV31S-SWDialog', 'Dialog']
+child_window(title="OLYMPUS FV31S-SW", control_type="Window")
+   | 
+   | Pane - ''    (L0, T57, R2560, B1380)
+   | ['Pane', 'Pane0', 'Pane1']
+   | child_window(auto_id="787986", control_type="Pane")
+   |    | 
+   |    | Pane - ''    (L0, T57, R2560, B1380)
+   |    | ['Pane2']
+   |    | child_window(auto_id="133132", control_type="Pane")
+   |    |    | 
+   |    |    | Pane - ''    (L0, T57, R2560, B1380)
+   |    |    | ['Pane3']
+   |    |    | child_window(auto_id="198658", control_type="Pane")
+   |    |    |    | 
+   |    |    |    | Pane - ''    (L0, T57, R2560, B103)
+   |    |    |    | ['Pane4']
+   |    |    |    | child_window(auto_id="263282", control_type="Pane")
+   |    |    |    |    | 
+   |    |    |    |    | Pane - ''    (L0, T57, R2560, B103)
+   |    |    |    |    | ['Pane5']
+   |    |    |    |    | child_window(auto_id="526340", control_type="Pane")
+   |    |    |    |    |    | 
+   |    |    |    |    |    | Pane - ''    (L2340, T57, R2560, B103)
+   |    |    |    |    |    | ['Pane6']
+   |    |    |    |    |    | child_window(auto_id="526344", control_type="Pane")
+   |    |    |    | 
+   |    |    |    | Pane - ''    (L0, T103, R2560, B1380)
+   |    |    |    | ['Pane7']
+   |    |    |    | child_window(auto_id="460830", control_type="Pane")
+   |    |    |    |    | 
+   |    |    |    |    | Pane - 'Viewer'    (L0, T103, R2560, B1380)
+   |    |    |    |    | ['ViewerPane', 'Pane8', 'Viewer']
+   |    |    |    |    | child_window(title="Viewer", auto_id="526350", control_type="Pane")
+   |    |    |    |    |    | 
+   |    |    |    |    |    | Pane - ''    (L0, T103, R2560, B1380)
+   |    |    |    |    |    | ['Pane9']
+   |    |    |    |    |    | child_window(auto_id="591882", control_type="Pane")
+   |    |    |    |    |    |    | 
+   |    |    |    |    |    |    | TabControl - '1-791.3nm-250mW-zoom2.0'    (L0, T103, R2560, B1380)
+   |    |    |    |    |    |    | ['1-791.3nm-250mW-zoom2.0TabControl', 'TabControl', '1-791.3nm-250mW-zoom2.0', '1-791.3nm-250mW-zoom2.00', '1-791.3nm-250mW-zoom2.01', 'TabControl0', 'TabControl1']
+   |    |    |    |    |    |    | child_window(title="1-791.3nm-250mW-zoom2.0", auto_id="657726", control_type="Tab")
+   |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    | Toolbar - ''    (L2507, T105, R2553, B127)
+   |    |    |    |    |    |    |    | ['ToolbarMaximize', 'Toolbar', 'Toolbar0', 'Toolbar1']
+   |    |    |    |    |    |    |    | child_window(auto_id="721496", control_type="ToolBar")
+   |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    | Button - 'Minimize'    (L2507, T105, R2530, B127)
+   |    |    |    |    |    |    |    |    | ['MinimizeButton', 'Button', 'Minimize', 'Button0', 'Button1', 'MinimizeButton0', 'MinimizeButton1', 'Minimize0', 'Minimize1']
+   |    |    |    |    |    |    |    |    | child_window(title="Minimize", control_type="Button")
+   |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    | Button - 'Maximize'    (L2530, T105, R2553, B127)
+   |    |    |    |    |    |    |    |    | ['MinimizeButton', 'Button', 'Minimize', 'Button0', 'Button1', 'MinimizeButton0', 'MinimizeButton1', 'Minimize0', 'Minimize1']
+   |    |    |    |    |    |    |    |    | child_window(title="Maximize", control_type="Button")
+   |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    | Pane - ''    (L3, T129, R2557, B1377)
+   |    |    |    |    |    |    |    | ['Pane10']
+   |    |    |    |    |    |    |    | child_window(auto_id="591956", control_type="Pane")
+   |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    | Pane - '1-791.3nm-250mW-zoom2.0'    (L3, T129, R2557, B1377)
+   |    |    |    |    |    |    |    |    | ['1-791.3nm-250mW-zoom2.02', 'Pane11', '1-791.3nm-250mW-zoom2.0Pane']
+   |    |    |    |    |    |    |    |    | child_window(title="1-791.3nm-250mW-zoom2.0", auto_id="459702", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    | Pane - ''    (L3, T129, R2557, B1377)
+   |    |    |    |    |    |    |    |    |    | ['Pane12']
+   |    |    |    |    |    |    |    |    |    | child_window(auto_id="525242", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L3, T129, R2557, B1377)
+   |    |    |    |    |    |    |    |    |    |    | ['Pane13']
+   |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="329822", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L3, T129, R436, B1377)
+   |    |    |    |    |    |    |    |    |    |    |    | ['Pane14']
+   |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="590172", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L3, T129, R436, B1377)
+   |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane15']
+   |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="655998", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    | TabControl - '  LUT  '    (L3, T129, R436, B1377)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    | ['  LUT  TabControl', 'TabControl2', '  LUT  ', '  LUT  0', '  LUT  1']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(title="  LUT  ", auto_id="394748", control_type="Tab")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Toolbar - ''    (L381, T130, R412, B152)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Toolbar2']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="460874", control_type="ToolBar")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Button - 'Show List'    (L381, T130, R412, B152)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Show List', 'Button3', 'Show ListButton']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(title="Show List", control_type="Button")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L5, T155, R434, B1375)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane16']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="1313156", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L5, T155, R434, B1375)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane17']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="1313100", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L10, T160, R429, B1370)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane18']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="656248", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L10, T160, R429, B1370)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane19']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="199188", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L15, T165, R233, B189)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane20']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="330232", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L15, T194, R243, B237)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane21']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="133676", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L15, T242, R233, B366)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane22']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="199152", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L22, T249, R226, B359)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane23']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="133648", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L15, T371, R409, B589)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane24']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="133656", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L22, T378, R52, B403)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane25']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="199178", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L57, T380, R308, B580)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane26']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="133664", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L313, T378, R357, B582)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane27']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="133666", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L362, T378, R402, B403)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane28']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="133668", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L42, T557, R52, B582)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane29']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="133672", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L362, T557, R372, B582)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane30']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="199206", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L15, T594, R335, B733)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane31']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="264708", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L20, T599, R330, B680)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane32']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="395572", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Edit - ''    (L148, T610, R206, B631)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Edit', 'Edit0', 'Edit1']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="199182", control_type="Edit")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Edit - ''    (L266, T610, R324, B631)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Edit2']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="199180", control_type="Edit")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Edit - ''    (L148, T648, R206, B669)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Edit3']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="592158", control_type="Edit")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Edit - ''    (L266, T648, R324, B669)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Edit4']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="198296", control_type="Edit")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L48, T685, R301, B728)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane33']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="199142", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L15, T738, R386, B857)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane34']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="461274", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Edit - ''    (L217, T749, R275, B770)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Edit5']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="199146", control_type="Edit")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Edit - ''    (L217, T787, R275, B808)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Edit6']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="199140", control_type="Edit")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Edit - ''    (L217, T825, R275, B846)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Edit7']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="1049536", control_type="Edit")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L30, T862, R315, B895)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane35']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="132310", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | TabItem - '  Reference  '    (L3, T129, R107, B152)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['  Reference  ', 'TabItem', '  Reference  TabItem', 'TabItem0', 'TabItem1']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(title="  Reference  ", control_type="TabItem")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | TabItem - '  LUT  '    (L107, T129, R164, B152)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['  Reference  ', 'TabItem', '  Reference  TabItem', 'TabItem0', 'TabItem1']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(title="  LUT  ", control_type="TabItem")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | TabItem - '  Grid/Profile  '    (L164, T129, R282, B152)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['  Reference  ', 'TabItem', '  Reference  TabItem', 'TabItem0', 'TabItem1']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(title="  Grid/Profile  ", control_type="TabItem")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | TabItem - '  Property  '    (L282, T129, R378, B152)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['  Reference  ', 'TabItem', '  Reference  TabItem', 'TabItem0', 'TabItem1']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(title="  Property  ", control_type="TabItem")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | TabItem - '  Display  '    (L0, T0, R0, B0)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['  Reference  ', 'TabItem', '  Reference  TabItem', 'TabItem0', 'TabItem1']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(title="  Display  ", control_type="TabItem")
+   |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L439, T129, R2557, B1377)
+   |    |    |    |    |    |    |    |    |    |    |    | ['Pane36']
+   |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="525844", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L441, T129, R2557, B177)
+   |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane37']
+   |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="722858", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L442, T130, R2556, B176)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane38']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="657806", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L453, T134, R489, B172)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane39']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="329824", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L453, T139, R489, B167)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane40']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="395372", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L506, T130, R678, B176)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane41']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="263126", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L506, T135, R678, B171)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane42']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="786478", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L695, T130, R2556, B176)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane43']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="395342", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L695, T135, R1139, B171)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane44']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="985440", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L1144, T135, R1310, B171)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane45']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="723288", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L441, T177, R2557, B1377)
+   |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane46']
+   |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="524990", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L441, T177, R2557, B1377)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane47']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="919946", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L441, T177, R2557, B1377)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane48']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="525198", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L441, T182, R2557, B237)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane49']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="197382", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L442, T183, R2556, B236)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane50']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="723268", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L453, T186, R683, B232)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane51']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="328646", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L453, T196, R487, B222)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane52']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="262384", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L492, T196, R526, B222)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane53']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="262854", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L531, T196, R591, B221)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane54']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="197386", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Edit - ''    (L532, T198, R568, B219)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Edit8']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="197394", control_type="Edit")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L596, T196, R611, B221)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane55']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="459704", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L616, T196, R642, B222)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane56']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="1049968", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L647, T191, R683, B227)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane57']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="590812", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L700, T183, R2556, B236)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane58']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="197402", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L700, T197, R738, B222)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane59']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="1182118", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L743, T193, R806, B226)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane60']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="393988", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L811, T188, R1030, B231)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane61']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="459414", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L827, T193, R958, B226)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane62']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="657822", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L963, T193, R1025, B226)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane63']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="657824", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L441, T237, R2557, B1350)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane64']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="920034", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | TabControl - '  Tile  '    (L441, T237, R2557, B1350)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['TabControl3', '  Tile  ', '  Tile  TabControl', '  Tile  0', '  Tile  1']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(title="  Tile  ", auto_id="393500", control_type="Tab")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L443, T263, R2555, B1348)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane65']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="1377480", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L443, T263, R2555, B1348)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane66']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="460876", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L443, T263, R2555, B306)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane67']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="525258", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L443, T263, R2555, B306)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane68']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="526650", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L443, T263, R2555, B306)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane69']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="657804", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L443, T306, R2555, B1348)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane70']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="656122", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L445, T308, R2553, B1346)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane71']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="327924", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L445, T310, R2553, B335)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane72']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="329840", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L995, T337, R2002, B1344)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane73']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="1182032", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | TabItem - '  Tile  '    (L441, T237, R495, B260)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['  Tile  2', 'TabItem6', '  Tile  TabItem']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(title="  Tile  ", control_type="TabItem")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | TabItem - '  Single  '    (L495, T237, R571, B260)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['  Tile  2', 'TabItem6', '  Tile  TabItem']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(title="  Single  ", control_type="TabItem")
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L441, T1348, R2557, B1375)
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | ['Pane74']
+   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="853256", control_type="Pane")
+   |    |    |    |    |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    |    |    |    |    | Pane - ''    (L436, T129, R439, B1377)
+   |    |    |    |    |    |    |    |    |    |    |    | ['Pane75']
+   |    |    |    |    |    |    |    |    |    |    |    | child_window(auto_id="525506", control_type="Pane")
+   |    |    |    |    |    |    |    | 
+   |    |    |    |    |    |    |    | TabItem - '1-791.3nm-250mW-zoom2.0'    (L1, T104, R269, B127)
+   |    |    |    |    |    |    |    | ['1-791.3nm-250mW-zoom2.03', '1-791.3nm-250mW-zoom2.0TabItem', 'TabItem8']
+   |    |    |    |    |    |    |    | child_window(title="1-791.3nm-250mW-zoom2.0", control_type="TabItem")
+   | 
+   | TitleBar - ''    (L20, T-6, R2560, B29)
+   | ['TitleBar']
+   |    | 
+   |    | Menu - 'System'    (L0, T0, R46, B28)
+   |    | ['SystemMenu', 'System', 'Menu', 'System0', 'System1', 'Menu0', 'Menu1']
+   |    | child_window(title="System", auto_id="MenuBar", control_type="MenuBar")
+   |    |    | 
+   |    |    | MenuItem - 'System'    (L0, T0, R46, B28)
+   |    |    | ['MenuItem', 'SystemMenuItem', 'System2', 'MenuItem0', 'MenuItem1']
+   |    |    | child_window(title="System", control_type="MenuItem")
+   |    | 
+   |    | Button - 'Minimize'    (L2380, T0, R2440, B28)
+   |    | ['MinimizeButton2', 'Button4', 'Minimize2']
+   |    | child_window(title="Minimize", control_type="Button")
+   |    | 
+   |    | Button - 'Restore'    (L2440, T0, R2499, B28)
+   |    | ['Restore', 'Button5', 'RestoreButton']
+   |    | child_window(title="Restore", control_type="Button")
+   |    | 
+   |    | Button - 'Close'    (L2499, T0, R2560, B28)
+   |    | ['CloseButton', 'Button6', 'Close']
+   |    | child_window(title="Close", control_type="Button")
+   | 
+   | Menu - 'Application'    (L0, T29, R2560, B56)
+   | ['Application', 'Menu2', 'ApplicationMenu']
+   | child_window(title="Application", auto_id="MenuBar", control_type="MenuBar")
+   |    | 
+   |    | MenuItem - 'File'    (L0, T29, R46, B56)
+   |    | ['MenuItem2', 'FileMenuItem', 'File']
+   |    | child_window(title="File", control_type="MenuItem")
+   |    | 
+   |    | MenuItem - 'Tool Window'    (L46, T29, R172, B56)
+   |    | ['MenuItem3', 'Tool Window', 'Tool WindowMenuItem']
+   |    | child_window(title="Tool Window", control_type="MenuItem")
+   |    | 
+   |    | MenuItem - 'Tools'    (L172, T29, R235, B56)
+   |    | ['Tools', 'MenuItem4', 'ToolsMenuItem']
+   |    | child_window(title="Tools", control_type="MenuItem")
+   |    | 
+   |    | MenuItem - 'Window'    (L235, T29, R321, B56)
+   |    | ['MenuItem5', 'Window', 'WindowMenuItem']
+   |    | child_window(title="Window", control_type="MenuItem")
+   |    | 
+   |    | MenuItem - 'Help'    (L321, T29, R378, B56)
+   |    | ['MenuItem6', 'Help', 'HelpMenuItem']
+   |    | child_window(title="Help", control_type="MenuItem")

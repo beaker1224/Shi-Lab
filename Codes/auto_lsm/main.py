@@ -9,7 +9,6 @@ except ImportError as e:
     input(e)
 
 pyautogui.FAILSAFE = False
-
 # Get the directory of the current script
 script_dir = os.path.dirname(os.path.realpath(__file__))
 # Change the working directory to the script's directory
@@ -20,6 +19,12 @@ def load_from_json(file_name):
     with open(file_name, 'r') as file:
         return json.load(file)
 
+# Global variables
+fv_layout = load_from_json("FV_layout.json")
+frame_on_position = tuple(fv_layout['frame on position'])
+frame_off_position = tuple(fv_layout['frame off position'])
+frame_numberpad_position = tuple(fv_layout['frame numberpad position'])
+
 pico_emerald_layout = load_from_json("pico_emerald_layout.json")
 shutter_position = tuple(pico_emerald_layout['shutter_position'])
 shutter_on_color = tuple(pico_emerald_layout['shutter_on_color'])
@@ -27,14 +32,7 @@ shutter_on_color = tuple(pico_emerald_layout['shutter_on_color'])
 def get_pixel_color(x, y):
     return pyautogui.pixel(x, y)
 
-# FV helpers
-# the average clicker to click average number
-# os.system('cls')
-# averages = tuple(load_from_json("parameters.json")['average'])
-fvFile = load_from_json("FV_layout.json")
-frame_on_position = tuple(fvFile['frame on position'])
-frame_off_position = tuple(fvFile['frame off position'])
-frame_numberpad_position = tuple(fvFile['frame numberpad position'])
+# ==================== FV helpers ==========================
 def average_clicker(average):
     if int(average) <= 1:
         pyautogui.click(frame_off_position)
@@ -48,21 +46,17 @@ def click_channel(channel_number):
     """
     Click one channel checkbox using its saved position.
     """
-
     FV_layout = load_from_json("FV_layout.json")
-
     position = tuple(
         FV_layout[f'channel_{channel_number}_checkbox_position']
     )
 
-    # Click slightly inside the checkbox instead of exactly
-    # on the saved top-left corner
     x, y = position
 
+    # Click slightly inside the checkbox instead of exactly
+    # on the saved top-left corner
     pyautogui.click(x + 7, y + 7)
-
-    time.sleep(0.3)
-
+    time.sleep(0.1)
 
 def set_channels(desired_channels):
     """
@@ -78,29 +72,12 @@ def set_channels(desired_channels):
         CH4 -> OFF
         CH5 -> ON
     """
-
-    # print("\nSetting channels...")
-
     for channel in range(1, 6):
-
         currently_checked = FVWatch_2.checkbox_is_checked(channel)
-
         should_be_checked = channel in desired_channels
 
-        # print(
-        #     f"CH{channel}: "
-        #     f"current={currently_checked}, "
-        #     f"desired={should_be_checked}"
-        # )
-
-        # Only click when current state does not match desired state
         if currently_checked != should_be_checked:
-
-            # print(f" -> Clicking CH{channel}")
-
             click_channel(channel)
-
-    # print("\nFinished setting channels.")
 
 def name_typer(order, wavelength, power, average, zoom):
     name = f"{order}-{wavelength}nm-{power}mW-avg{average}-zoom{zoom}"
@@ -112,11 +89,10 @@ def name_typer(order, wavelength, power, average, zoom):
     pyautogui.hotkey('ctrl', 'a')
     pyautogui.typewrite(name)
 
-# synchronization helpers
-# will return true once the shutter is turned back on, check every 0.5 second
+# ==================== pico emerald helpers ==========================
 def shutter_backOn():
     '''
-    This function checks the shutter color change every 0.75 second, 
+    This function checks the shutter color change every 0.5 second, 
     and returns a boolean True when the color changed to the color on
     for the system shutter.
 
@@ -125,11 +101,12 @@ def shutter_backOn():
         current_shutter_color = get_pixel_color(*shutter_position)
         if tuple(current_shutter_color) == shutter_on_color:
             return True
-        time.sleep(0.75)  # Check the shutter every 0.75 second
+        time.sleep(0.5)  # Check the shutter every 0.5 second
 
 
 def main():
-    print("before you use this script, make sure that both softwares are not covered by each other, and max the window of pico_emerald")
+    print("before you use this script, make sure that both softwares are not covered by each other, "
+    "and max the window of pico_emerald")
 
     if not (os.path.exists('pico_emerald_layout.json') or os.path.exists('wavelength_power_keypad.json')):
         input("pico emerald software layout did not setup! press 'enter' to quit")
@@ -172,12 +149,11 @@ def main():
     print(order, '-', wavelengths[0], '-', powers[0], 'mW-avg', averages[0], '-zoom', zoom)
     input("this will be how the name looks like as files, press 'enter' to advance,\n press ctrl + c to quit when you think something went wrong ")
 
-    FV_layout = load_from_json("FV_layout.json")
     try:
-        lsm_start = tuple(FV_layout['lsm button position'])
-        lsm_off_color = tuple(FV_layout['lsm button off color'])
-        lsm_colorbar_off_color = tuple(FV_layout['lsm colorbar off color'])
-        lsm_colorbar_position = tuple(FV_layout['lsm colorbar position'])
+        lsm_start = tuple(fv_layout['lsm button position'])
+        lsm_off_color = tuple(fv_layout['lsm button off color'])
+        lsm_colorbar_off_color = tuple(fv_layout['lsm colorbar off color'])
+        lsm_colorbar_position = tuple(fv_layout['lsm colorbar position'])
     except KeyError:
         input("FVWatch_2 did not run, FV_layout did not setup correctly, press 'ctrl+c' to exit, press 'enter' to setup")
         FVWatch_2.main()
@@ -248,6 +224,5 @@ def main():
     pico_emeraldWatch_1.change_power_to(powers[0])
     time.sleep(0.25)
     pico_emeraldWatch_1.change_wavelength_to(wavelengths[0])
-
 
 main()

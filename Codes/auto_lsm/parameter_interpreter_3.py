@@ -1,5 +1,41 @@
 import json
 import os
+import pandas as pd
+
+
+# Define ANSI color codes
+CYAN = '\033[96m'
+GREEN = '\033[92m'
+RESET = '\033[0m'
+
+def table_stdout(data):
+    """Print parameter rows as a bordered table without extra dependencies."""
+    table = pd.DataFrame(data, columns=['wavelength', 'power', 'average', 'channel'])
+    table = table.rename(columns={'channel': 'channels'})
+    table['channels'] = table['channels'].apply(
+        lambda channels: ', '.join(f'CH{channel}' for channel in channels)
+    )
+
+    headers = list(table.columns)
+    rows = table.astype(str).values.tolist()
+
+    # Determine column widths based on longest element (header or data)
+    col_widths = [
+        max(len(str(val)) for val in [header] + [row[i] for row in rows])
+        for i, header in enumerate(headers)
+    ]
+
+    # Border templates
+    sep_line = "+" + "+".join("-" * (w + 2) for w in col_widths) + "+"
+    row_fmt = "| " + " | ".join(f"{{:<{w}}}" for w in col_widths) + " |"
+
+    # Print table
+    print(sep_line)
+    print(row_fmt.format(*headers))
+    print(sep_line)
+    for row in rows:
+        print(row_fmt.format(*row))
+    print(sep_line)
 
 def save_to_json(file_name, data):
     with open(file_name, 'w') as file:
@@ -75,12 +111,14 @@ def interpreter():
             data['average'].append(lines[i + 2].strip())
             
             data['channel'].append(channels)
-            print("end of section interpretation: ", section)
+            # print("end of section interpretation: ", section)
             section += 1
             # Move to the next section after the current set of 4 lines
             i += 4
 
-    print("total data input: ", data)
+    print("======================= total parameter input: =======================")
+    table_stdout(data)
+    print("total number of parameter sets interpreted: ", len(data['wavelength']))
     input("please double check the parameters you input, press 'enter' to advance")
     save_to_json(json_file,data)
 # this will directly ask how user want to set up things, should be avaliable in the future

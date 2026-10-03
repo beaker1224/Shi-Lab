@@ -20,7 +20,7 @@ fv = Desktop(backend="uia").window(
 
 fv.print_control_identifiers()
 
-with open("fv_control_identifiers.txt", "w") as f:
+with open("simple fv_control_identifiers.txt", "w") as f:
     old_stdout = sys.stdout
     sys.stdout = f
 
