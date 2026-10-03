@@ -1,9 +1,6 @@
 import pyautogui
-import os
+import os, time
 import json
-import zlib
-
-
 
 def get_lsm_colorbar_position():
     """
@@ -50,8 +47,14 @@ def get_resolution_dropdown_position():
     return pyautogui.position()
 
 def get_resolution_choice_position(choice_number: str):
-    input(f"Hover your mouse on the resolution choice {choice_number}, and press 'enter'")
-    return pyautogui.position()
+    print(f"\nPrepare to record resolution {choice_number}.")
+    print(f"You have 5 seconds to switch to FV31S and open the dropdown after pressing 'enter'.")    
+    input("Press 'enter' to start the 5-second countdown...")
+
+    time.sleep(5)
+    position = pyautogui.position()
+    print(f"Recorded {choice_number}")
+    return position
 
 def get_checkbox_position(channel_number):
     print(f"This step is for channel {channel_number} checkbox position.")
@@ -166,27 +169,94 @@ def load_from_json(file_name):
     with open(file_name, 'r') as file:
         return json.load(file)
 
-    
 def main():
     json_file = "FV_layout.json"
-    if os.path.exists(json_file):
-        user_choice = input("Update settings on the LSM positions? (yes/no): ").lower()
-        if user_choice == 'yes':
-            update_required = True
-        else:
-            update_required = False
-    else:
-        update_required = True
 
-    if update_required:
+    # Load existing configuration
+    if os.path.exists(json_file):
+        config = load_from_json(json_file)
+    else:
+        config = {}
+
+    # Available configuration groups
+    groups = {
+        "2": "LSM",
+        "3": "Averaging",
+        "4": "Resolution",
+        "5": "Channels"
+    }
+
+    # Selection menu
+    if not config:
+        print("No existing configuration. All settings are required.")
+        selected = set(groups.values())
+
+    else:
+        print("\nWhich settings would you like to update?")
+        print("1. All Settings")
+
+        for number, name in groups.items():
+            print(f"{number}. {name}")
+
+        print("0. Exit")
+        print("You may select multiple groups, e.g., 2,4")
+
+        while True:
+            choice = input("\nSelection: ").strip()
+
+            if choice == "0":
+                return
+
+            if choice == "1":
+                selected = set(groups.values())
+                break
+
+            numbers = [
+                x.strip() for x in choice.split(",")
+            ]
+
+            if numbers and all(x in groups for x in numbers):
+                selected = {
+                    groups[x] for x in numbers
+                }
+                break
+
+            print("Invalid selection. Please try again.")
+
+    # IMPORTANT:
+    # All four groups must be at this indentation level.
+    # They are INSIDE main(), but OUTSIDE the else block.
+
+    # Group 1: LSM
+    if "LSM" in selected:
         lsm_position = get_lsm_button_position()
         lsm_off_color = get_pixel_color(*lsm_position)
         lsm_colorbar_position = get_lsm_colorbar_position()
         lsm_colorbar_off = get_pixel_color(*lsm_colorbar_position)
         lsm_filename_position = get_filename_position()
+
+        config.update({
+            'lsm button position': lsm_position,
+            'lsm button off color': lsm_off_color,
+            'lsm colorbar position': lsm_colorbar_position,
+            'lsm colorbar off color': lsm_colorbar_off,
+            'file name editor position': lsm_filename_position
+        })
+
+    # Group 2: Averaging
+    if "Averaging" in selected:
         frame_off_position = get_frame_off_position()
         frame_on_position = get_frame_on_position()
         frame_numberpad_position = get_frame_numberpad_position()
+
+        config.update({
+            'frame off position': frame_off_position,
+            'frame on position': frame_on_position,
+            'frame numberpad position': frame_numberpad_position
+        })
+
+    # Group 3: Resolution
+    if "Resolution" in selected:
         resolution_dropdown_position = get_resolution_dropdown_position()
         resolution_choice_64_position = get_resolution_choice_position("64x64")
         resolution_choice_128_position = get_resolution_choice_position("128x128")
@@ -196,6 +266,19 @@ def main():
         resolution_choice_2048_position = get_resolution_choice_position("2048x2048")
         resolution_choice_4096_position = get_resolution_choice_position("4096x4096")
 
+        config.update({
+            'resolution dropdown position': resolution_dropdown_position,
+            'resolution choice 64 position': resolution_choice_64_position,
+            'resolution choice 128 position': resolution_choice_128_position,
+            'resolution choice 256 position': resolution_choice_256_position,
+            'resolution choice 512 position': resolution_choice_512_position,
+            'resolution choice 1024 position': resolution_choice_1024_position,
+            'resolution choice 2048 position': resolution_choice_2048_position,
+            'resolution choice 4096 position': resolution_choice_4096_position
+        })
+
+    # Group 4: Channels
+    if "Channels" in selected:
         channel_1_checkbox_position = get_checkbox_position(1)
         channel_1_unchecked_strip = get_checkbox_strip(
             channel_1_checkbox_position
@@ -217,94 +300,34 @@ def main():
             channel_5_checkbox_position
         )
 
-        save_to_json(json_file, {
-            'lsm button position': lsm_position,
-            'lsm button off color': lsm_off_color,
-            'lsm colorbar position': lsm_colorbar_position,
-            'lsm colorbar off color': lsm_colorbar_off,
-            'file name editor position': lsm_filename_position,
-            'frame off position': frame_off_position,
-            'frame on position': frame_on_position,
-            'frame numberpad position': frame_numberpad_position,
-
-            'resolution dropdown position': resolution_dropdown_position,
-            'resolution choice 64 position': resolution_choice_64_position,
-            'resolution choice 128 position': resolution_choice_128_position,
-            'resolution choice 256 position': resolution_choice_256_position,
-            'resolution choice 512 position': resolution_choice_512_position,
-            'resolution choice 1024 position': resolution_choice_1024_position,
-            'resolution choice 2048 position': resolution_choice_2048_position,
-            'resolution choice 4096 position': resolution_choice_4096_position,
-
+        config.update({
             'channel_1_checkbox_position': channel_1_checkbox_position,
             'channel_2_checkbox_position': channel_2_checkbox_position,
             'channel_3_checkbox_position': channel_3_checkbox_position,
             'channel_4_checkbox_position': channel_4_checkbox_position,
             'channel_5_checkbox_position': channel_5_checkbox_position,
-
             'channel_1_unchecked_strip': channel_1_unchecked_strip,
             'channel_2_unchecked_strip': channel_2_unchecked_strip,
             'channel_3_unchecked_strip': channel_3_unchecked_strip,
             'channel_4_unchecked_strip': channel_4_unchecked_strip,
             'channel_5_unchecked_strip': channel_5_unchecked_strip,
-
             'checkbox strip width': 12,
             'checkbox strip height': 3,
             'checkbox strip x offset': 2,
-            'checkbox strip y offset': 5,
+            'checkbox strip y offset': 5
         })
-        
-        print("\nConfig file 'FV_layout.json' has been updated with the new settings. \n")
 
+    # Save configuration
+    save_to_json(json_file, config)
 
-    else:
-        config = load_from_json(json_file)
-        lsm_position = tuple(config['lsm button position'])
-        lsm_off_color = tuple(config['lsm button off color'])
-        lsm_colorbar_position = tuple(config['lsm colorbar position'])
-        lsm_colorbar_off = tuple(config['lsm colorbar off color'])
-        lsm_filename_position = tuple(config['file name editor position'])
-        frame_off_position = tuple(config['frame off position'])
-        frame_on_position = tuple(config['frame on position'])
-        frame_numberpad_position = tuple(config['frame numberpad position'])
-        channel_1_checkbox_position = tuple(config['channel_1_checkbox_position'])
-        channel_2_checkbox_position = tuple(config['channel_2_checkbox_position'])
-        channel_3_checkbox_position = tuple(config['channel_3_checkbox_position'])
-        channel_4_checkbox_position = tuple(config['channel_4_checkbox_position'])
-        channel_5_checkbox_position = tuple(config['channel_5_checkbox_position'])
-        resolution_dropdown_position = tuple(config['resolution dropdown position'])
-        resolution_choice_64_position = tuple(config['resolution choice 64 position'])
-        resolution_choice_128_position = tuple(config['resolution choice 128 position'])
-        resolution_choice_256_position = tuple(config['resolution choice 256 position'])
-        resolution_choice_512_position = tuple(config['resolution choice 512 position'])
-        resolution_choice_1024_position = tuple(config['resolution choice 1024 position'])
-        resolution_choice_2048_position = tuple(config['resolution choice 2048 position'])
-        resolution_choice_4096_position = tuple(config['resolution choice 4096 position'])
-        
-    print('lsm button position: ' + str(lsm_position),
-        'lsm button off color: ' + str(lsm_off_color),
-        'lsm colorbar position: ' + str(lsm_colorbar_position),
-        'lsm_colorbar off color: ' + str(lsm_colorbar_off),
-        'file name editor position: ' + str(lsm_filename_position),
-        'frame off position: ' + str(frame_off_position),
-        'frame on position: ' + str(frame_on_position),
-        'frame numberpad position: ' + str(frame_numberpad_position),
-        'channel 1 checkbox position: ' + str(channel_1_checkbox_position),
-        'channel 2 checkbox position: ' + str(channel_2_checkbox_position),
-        'channel 3 checkbox position: ' + str(channel_3_checkbox_position),
-        'channel 4 checkbox position: ' + str(channel_4_checkbox_position),
-        'channel 5 checkbox position: ' + str(channel_5_checkbox_position),
-        'resolution dropdown position: ' + str(resolution_dropdown_position),
-        'resolution choice 64 position: ' + str(resolution_choice_64_position),
-        'resolution choice 128 position: ' + str(resolution_choice_128_position),
-        'resolution choice 256 position: ' + str(resolution_choice_256_position),
-        'resolution choice 512 position: ' + str(resolution_choice_512_position),
-        'resolution choice 1024 position: ' + str(resolution_choice_1024_position),
-        'resolution choice 2048 position: ' + str(resolution_choice_2048_position),
-        'resolution choice 4096 position: ' + str(resolution_choice_4096_position))
+    print("\nConfiguration successfully saved.")
+    print(
+        "Updated groups:",
+        ", ".join(
+            name for name in groups.values()
+            if name in selected
+        )
+    )
 
-    input("Display for information, press 'enter' when you want to exist and finish updating FV layout setting")
-
-# this will make sure when the py script is called directly, the above function will run
 if __name__ == "__main__":
     main()

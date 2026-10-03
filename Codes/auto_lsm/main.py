@@ -65,9 +65,8 @@ def click_channel(channel_number):
     """
     Click one channel checkbox using its saved position.
     """
-    FV_layout = load_from_json("FV_layout.json")
     position = tuple(
-        FV_layout[f'channel_{channel_number}_checkbox_position']
+        fv_layout[f'channel_{channel_number}_checkbox_position']
     )
 
     x, y = position
