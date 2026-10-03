@@ -1,6 +1,6 @@
 try:
     import pyautogui
-    import os
+    import os, sys
     import parameter_interpreter_3
     import pico_emeraldWatch_1, FVWatch_2
     import time
@@ -22,7 +22,7 @@ def load_from_json(file_name):
 def get_pixel_color(x, y):
     return pyautogui.pixel(x, y)
 
-# Global variables
+# Global layout variables
 fv_layout = load_from_json("FV_layout.json")
 frame_on_position = tuple(fv_layout['frame on position'])
 frame_off_position = tuple(fv_layout['frame off position'])
@@ -52,7 +52,12 @@ def resolution_clicker(resolution):
     pyautogui.click(fv_layout[resolution_key])
     time.sleep(0.5)  # Wait for the selection to register
     
-def average_clicker(average):
+def average_clicker(average) -> None:
+    """
+    Click the average number input and set the desired average.
+    0 or 1 will be frame off button
+    others will be frame on button with number input
+    """
     if int(average) <= 1:
         pyautogui.click(frame_off_position)
     else:
@@ -121,10 +126,9 @@ def shutter_backOn():
             return True
         time.sleep(0.5)  # Check the shutter every 0.5 second
 
-
 def main():
     print("Before you use this script, make sure that both softwares are not covered by each other, "
-    "and max the window of pico_emerald")
+    "and max the window of pico_emerald (if this is what you did for setting up the layout)")
 
     if not (os.path.exists('pico_emerald_layout.json') and os.path.exists('wavelength_power_keypad.json')):
         input("pico-emerald software layout did not setup! press 'enter' to quit")
@@ -246,8 +250,61 @@ def main():
                 time.sleep(0.5) # the color of the button is checked every 0.5 second
         i += 1
 
-    pico_emeraldWatch_1.change_power_to(powers[0])
-    time.sleep(0.25)
-    pico_emeraldWatch_1.change_wavelength_to(wavelengths[0])
+    average_clicker(0)
 
-main()
+if __name__ == "__main__":
+    default_wavelength = 791.3
+    default_power = 300
+
+    return_to_default = input(
+        "Do you want to return to default wavelength (791.3) "
+        "and power (300) after acquisition? (y/n): "
+    ).strip().lower()
+
+    if return_to_default not in ("y", "yes"):
+        while True:
+            try:
+                default_wavelength = float(
+                    input(
+                        "Please enter the default wavelength "
+                        "(e.g., 791.3): "
+                    ).strip()
+                )
+                break
+            except ValueError:
+                print("Invalid wavelength. Please enter a number.")
+
+        while True:
+            try:
+                default_power = int(
+                    input(
+                        "Please enter the default power "
+                        "(e.g., 300): "
+                    ).strip()
+                )
+                break
+            except ValueError:
+                print("Invalid power. Please enter an integer.")
+
+    while True:
+        # Run acquisition
+        main()
+        # Return Pico Emerald to default settings
+        pico_emeraldWatch_1.change_power_to(default_power)
+        time.sleep(0.25)
+        pico_emeraldWatch_1.change_wavelength_to(default_wavelength)
+
+        # Ask whether to repeat
+        while True:
+            ans = input(
+                "\nDo you want to run the program again? (y/n): ").strip().lower()
+
+            if ans in ("y", "yes"):
+                os.system("cls")
+                break
+            
+            elif ans in ("n", "no", ""):
+                sys.exit(0)
+
+            else:
+                print("Invalid input. Please enter y or n.")

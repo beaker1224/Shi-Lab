@@ -224,7 +224,7 @@ def change_wavelength_to(wavelength):
     """
     ### pass in must be strings of wavelength
 
-    this function intake a string of wavelength, stripe the spaces
+    this function intake a float or string of wavelength, stripe the spaces
     for example, input as "791.3", it will be converted into a tuple of 
     ("7","9","1",".","3"), then click on the wavelength setting, then click "clear" then
     on each of the number one by one with a delay of 0.2, then click on "enter" to finish the change
