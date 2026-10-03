@@ -10,6 +10,7 @@ Make sure the local machine has following packages installed:
 1. [pyautogui](https://pyautogui.readthedocs.io/en/latest/)
 2. [Pillow](https://pypi.org/project/pillow/)
 3. [openCV](https://opencv.org/) (this is optional but maybe will be utilized in the future)
+4. 
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install those packages stated above
 

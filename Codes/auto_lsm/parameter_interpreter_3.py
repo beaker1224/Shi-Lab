@@ -1,21 +1,18 @@
 import json
-import os
+import os, sys
 import pandas as pd
-
-
-# Define ANSI color codes
-CYAN = '\033[96m'
-GREEN = '\033[92m'
-RESET = '\033[0m'
+from pathlib import Path
+import re
 
 def table_stdout(data):
     """Print parameter rows as a bordered table without extra dependencies."""
-    table = pd.DataFrame(data, columns=['wavelength', 'power', 'average', 'channel'])
+    table = pd.DataFrame(data, columns=['wavelength', 'power', 'average', 'channel', 'resolution', 'dwell time'])
     table = table.rename(columns={'channel': 'channels'})
     table['channels'] = table['channels'].apply(
         lambda channels: ', '.join(f'CH{channel}' for channel in channels)
     )
 
+    table = table.fillna('-')
     headers = list(table.columns)
     rows = table.astype(str).values.tolist()
 
@@ -46,17 +43,68 @@ def load_from_json(file_name):
         return json.load(file)
 
 def create_empty_txt(file_name):
-    with open(file_name, 'w') as file:
-        return
-#def main():
+    """Create an empty template text file with brief formatting instructions."""
+    template = (
+        "# Parameter input file\n"
+        "# Format per block:\n"
+        "# Line 1: Wavelength (float)\n"
+        "# Line 2: Power (int)\n"
+        "# Line 3: Average (string/float)\n"
+        "# Line 4: Channels (comma-separated, e.g., CH1, CH2)\n"
+        "# Line 5: Resolution (optional)\n"
+        "# Line 6: Dwell Time (optional)\n"
+        "# Separate each block with '--'\n\n"
+    )
+    Path(file_name).write_text(template, encoding='utf-8')
 
-# Get the directory of the current script
-script_dir = os.path.dirname(os.path.realpath(__file__))
-# Change the working directory to the script's directory
-os.chdir(script_dir)
+def parse_channels(channel_str: str, section_num: int) -> list[int]:
+    """Parse and validate comma-separated channels (e.g., 'CH1, CH2' or '1, 2')."""
+    raw_tokens = [tok.strip() for tok in channel_str.split(',') if tok.strip()]
+    if not raw_tokens:
+        raise ValueError(f"Channel line is empty.")
 
+    channels = []
+    for tok in raw_tokens:
+        clean = tok.upper().replace("CH", "").strip()
+        if not clean.isdigit():
+            raise ValueError(f"Invalid channel '{tok}'. Must be in the format 'CH1' to 'CH5'.")
+        
+        ch_num = int(clean)
+        if ch_num not in {1, 2, 3, 4, 5}:
+            raise ValueError(f"Invalid channel 'CH{ch_num}'. Only channels CH1 to CH5 are allowed.")
+        
+        channels.append(ch_num)
+    return channels
 
-def interpreter():
+def parse_resolution(res_str: str) -> str:
+    """
+    Accepts: '512', '512x512', '512*512', ' 512 X 512 '
+    Returns normalized string format: '512x512'
+    """
+    clean = res_str.strip().lower()
+    
+    # Matches patterns like '512x512', '512*512', '512 x 512'
+    match_2d = re.match(r'^(\d+)\s*[*xX]\s*(\d+)$', clean)
+    if match_2d:
+        w, h = match_2d.groups()
+        return f"{w}x{h}"
+
+    # Matches a single number like '512' -> converts to '512x512'
+    if clean.isdigit():
+        return f"{clean}x{clean}"
+
+    raise ValueError(
+        f"Invalid resolution format: '{res_str}'. Accepted formats: '512' or '512x512'."
+    )
+
+def prompt_exit_error(message: str) -> None:
+    """Display an error message and cleanly wait for user input before exiting."""
+    print(f"\n[Formatting Error]: {message}")
+    print("For formatting guidance, please see 'readMe.md'.")
+    input("Press Enter to exit...")
+    sys.exit(1)
+
+def interpreter() -> None:
     '''
     This function interprets the parameters from 'parameters.txt' and saves them into 'parameters.json'.
     It reads the parameters in groups of four lines, where each group represents a set of parameters:
@@ -64,6 +112,8 @@ def interpreter():
     2. Power (int)
     3. Average (string)
     4. Channels (comma-separated string, e.g., "CH1,CH2,CH3")
+    5. Resolution (optional)
+    6. Dwell Time (optional)
     The function checks for the existence of 'parameters.json' and 'parameters.txt'. 
     If 'parameters.json' does not exist, it creates an empty one. 
     If 'parameters.txt' does not exist, it creates an empty one and prompts the user to input parameters.
@@ -74,54 +124,95 @@ def interpreter():
         save_to_json(json_file, {})
     if not os.path.exists(txt_file):
         create_empty_txt(txt_file)
-        input("nothing input into 'parameters.txt', press 'enter' to exit")
+        print(f"Created template file '{txt_file}'.")
+        input("Nothing input into 'parameters.txt'. Please populate it and press Enter to exit...")
         return
     # Initialize a dictionary with keys and empty lists
     data = {
         'wavelength': [],
         'power': [],
         'average': [],
-        'channel': []
+        'channel': [],
+        'resolution': [],
+        'dwell time': []
     }
 
-    with open(txt_file, 'r') as file:
-        lines = file.readlines()  # Read all lines at once
-        i = 0  # Initialize line index
-        section = 1
-        while i < len(lines):
-            line = lines[i].strip()  # Remove leading/trailing whitespace
-            if line == '--':
-                # Skip the separator and move to the next section
-                i += 1
-                continue
-            if i + 4 > len(lines):
-                input("there is a formatting error in 'parameters.txt', for more detail please see 'readMe.md', press 'enter' to exist")
+    try:
+        content = Path(txt_file).read_text(encoding='utf-8')
+    except Exception as err:
+        prompt_exit_error(f"Could not read '{txt_file}': {err}")
 
-            channel_line = lines[i + 3].strip()
-            channels = [
-                int(channel.strip().upper().replace("CH", "")) for channel in channel_line.split(",") if channel.strip()
-            ]
-            for channel in channels:
-                if channel not in (1, 2, 3, 4, 5):
-                    raise ValueError(
-                        f"Invalid channel CH{channel}. Valid channels are CH1 to CH5."
-                    )
-            data['wavelength'].append(float(lines[i].strip()))
-            data['power'].append(int(lines[i + 1].strip()))
-            data['average'].append(lines[i + 2].strip())
-            
-            data['channel'].append(channels)
-            # print("end of section interpretation: ", section)
-            section += 1
-            # Move to the next section after the current set of 4 lines
-            i += 4
+    raw_sections = content.split('--')
+    section_count = 0
 
-    print("======================= total parameter input: =======================")
+    last_resolution = None
+    last_dwell_time = None
+
+    for raw_block in raw_sections:
+        # Strip trailing/leading spaces, drop blank lines, and ignore comment lines (#)
+        lines = [
+            line.strip() 
+            for line in raw_block.splitlines() 
+            if line.strip() and not line.strip().startswith('#')
+        ]
+
+        if not lines:
+            continue  # Blank block or trailing separator
+
+        section_count += 1
+
+        if len(lines) < 4:
+            prompt_exit_error(
+                f"Section {section_count} only has {len(lines)} line(s). "
+                "Each set of parameters must have at least 4 lines: Wavelength, Power, Average, Channels."
+            )
+
+        try:
+            wavelength = float(lines[0])
+            power = int(lines[1])
+            average = lines[2]
+            channels = parse_channels(lines[3], section_count)
+
+            # Optional 5th and 6th lines
+            if len(lines) >= 5 and lines[4].strip():
+                resolution = parse_resolution(lines[4])
+                last_resolution = resolution
+            else:
+                resolution = last_resolution
+
+            # Dwell Time: parse if provided and update last seen, otherwise carry forward
+            if len(lines) >= 6 and lines[5].strip():
+                dwell_time = float(lines[5])
+                last_dwell_time = dwell_time
+            else:
+                dwell_time = last_dwell_time
+
+        except ValueError as err:
+            prompt_exit_error(f"Section {section_count} parsing error - {err}")
+
+        # Store validated parameters
+        data['wavelength'].append(wavelength)
+        data['power'].append(power)
+        data['average'].append(average)
+        data['channel'].append(channels)
+        data['resolution'].append(resolution)
+        data['dwell time'].append(dwell_time)
+
+    if section_count == 0:
+        prompt_exit_error(f"No parameter blocks were found in '{txt_file}'.")
+
+    print("\n======================= total parameter input: =======================")
     table_stdout(data)
-    print("total number of parameter sets interpreted: ", len(data['wavelength']))
-    input("please double check the parameters you input, press 'enter' to advance")
-    save_to_json(json_file,data)
+    print("total number of parameter sets interpreted:", len(data['wavelength']))
+    input("\nPlease double check the parameters above. Press Enter to confirm")
+    
+    save_to_json(json_file, data)
 # this will directly ask how user want to set up things, should be avaliable in the future
+
+# Get the directory of the current script
+script_dir = os.path.dirname(os.path.realpath(__file__))
+# Change the working directory to the script's directory
+os.chdir(script_dir)
 
 if __name__ == "__main__":
     #main()

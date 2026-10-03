@@ -1,16 +1,27 @@
 --
 787.1
 600
-on
+0
 CH4
 --
 791.3
 300
-off
+2
 CH2,CH3
+--
+862
+600
+3
+ch3, CH4
+512
 
-this should be two setting format, 
-the first one is wavelength of 787.1, with power of 600mw, and will be averaged
-the second one is wavelength of 791.3, with power of 300mw, and will not be averaged
 Make Sure that there is a leading -- (two dashes) in the front of each set!
+formatting should looks like the following:
+
+wavelength
+power
+average
+channel number, separated by ","
+[optional] resolution (choices: 64, 128, 256, 320, 512, 640, 800, 1024, 2048, 4096)
+[optional] dwell time (don't put yet, working on it)
 
