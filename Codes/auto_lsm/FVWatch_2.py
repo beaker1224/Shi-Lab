@@ -132,6 +132,10 @@ def checkbox_changed_pixel_count(
     x_offset = config.get('checkbox strip x offset', 2)
     y_offset = config.get('checkbox strip y offset', 5)
 
+    current_position = pyautogui.position()
+    pyautogui.moveTo(0, 0)
+    time.sleep(0.1)
+
     current_strip = get_checkbox_strip(
         checkbox_position,
         width=width,
@@ -139,6 +143,8 @@ def checkbox_changed_pixel_count(
         x_offset=x_offset,
         y_offset=y_offset,
     )
+
+    pyautogui.moveTo(current_position)
 
     return count_changed_pixels(
         reference_strip,
@@ -279,26 +285,36 @@ def main():
 
     # Group 4: Channels
     if "Channels" in selected:
+        # since the color of the checkbox will change based on hoving, gather the position first, then the strip
         channel_1_checkbox_position = get_checkbox_position(1)
+        channel_2_checkbox_position = get_checkbox_position(2)
+        channel_3_checkbox_position = get_checkbox_position(3)
+        channel_4_checkbox_position = get_checkbox_position(4)
+        channel_5_checkbox_position = get_checkbox_position(5)
+
+        input("Remove the cursor from the checkbox. Press 'Enter' to proceed to the next step")
+        
+        current_position = pyautogui.position()
+        pyautogui.moveTo(0,0)
+        time.sleep(0.5)
+
         channel_1_unchecked_strip = get_checkbox_strip(
             channel_1_checkbox_position
         )
-        channel_2_checkbox_position = get_checkbox_position(2)
         channel_2_unchecked_strip = get_checkbox_strip(
             channel_2_checkbox_position
         )
-        channel_3_checkbox_position = get_checkbox_position(3)
         channel_3_unchecked_strip = get_checkbox_strip(
             channel_3_checkbox_position
         )
-        channel_4_checkbox_position = get_checkbox_position(4)
         channel_4_unchecked_strip = get_checkbox_strip(
             channel_4_checkbox_position
         )
-        channel_5_checkbox_position = get_checkbox_position(5)
         channel_5_unchecked_strip = get_checkbox_strip(
             channel_5_checkbox_position
         )
+
+        pyautogui.moveTo(current_position)
 
         config.update({
             'channel_1_checkbox_position': channel_1_checkbox_position,
@@ -312,9 +328,9 @@ def main():
             'channel_4_unchecked_strip': channel_4_unchecked_strip,
             'channel_5_unchecked_strip': channel_5_unchecked_strip,
             'checkbox strip width': 12,
-            'checkbox strip height': 3,
-            'checkbox strip x offset': 2,
-            'checkbox strip y offset': 5
+            'checkbox strip height': 8,
+            'checkbox strip x offset': 3,
+            'checkbox strip y offset': 3
         })
 
     # Save configuration
@@ -331,3 +347,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    input("Finish Config. Press 'Enter' to exit")

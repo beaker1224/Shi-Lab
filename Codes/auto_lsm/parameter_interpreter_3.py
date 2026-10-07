@@ -3,6 +3,7 @@ import os, sys
 import pandas as pd
 from pathlib import Path
 import re
+from typing import List
 
 def table_stdout(data):
     """Print parameter rows as a bordered table without extra dependencies."""
@@ -57,7 +58,7 @@ def create_empty_txt(file_name):
     )
     Path(file_name).write_text(template, encoding='utf-8')
 
-def parse_channels(channel_str: str, section_num: int) -> list[int]:
+def parse_channels(channel_str: str, section_num: int) -> List[int]: # fixed here, python 3.7 only support List[] from typing, no list[]
     """Parse and validate comma-separated channels (e.g., 'CH1, CH2' or '1, 2')."""
     raw_tokens = [tok.strip() for tok in channel_str.split(',') if tok.strip()]
     if not raw_tokens:
