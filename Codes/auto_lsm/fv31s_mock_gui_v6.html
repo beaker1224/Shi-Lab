@@ -91,6 +91,10 @@
     background:#111315;
     border-color:#8b9196;
   }
+
+  .channel-check:hover{
+    border-color:#2a82c9;
+  }
   .channel-check:checked::after{
     content:"✓";
     position:absolute;
@@ -680,6 +684,47 @@
   speed.addEventListener('input', updateSpeed);
   speed.addEventListener('change', updateSpeed);
 
+  // Make track clicks move only ONE discrete step left or right.
+  // Dragging the thumb still works normally and snaps to step=1 values.
+  let speedPointerDownValue = null;
+  let speedPointerDownX = null;
+
+  speed.addEventListener('pointerdown', (event) => {
+    speedPointerDownValue = Number(speed.value);
+    speedPointerDownX = event.clientX;
+  });
+
+  speed.addEventListener('pointerup', (event) => {
+    if(speedPointerDownValue === null || speedPointerDownX === null) return;
+
+    const moved = Math.abs(event.clientX - speedPointerDownX);
+
+    // If the pointer barely moved, treat this as a track click, not a drag.
+    if(moved < 4){
+      const rect = speed.getBoundingClientRect();
+
+      // Approximate the thumb center from the CURRENT discrete value before the click.
+      const min = Number(speed.min);
+      const max = Number(speed.max);
+      const ratio = (speedPointerDownValue - min) / (max - min);
+      const thumbX = rect.left + ratio * rect.width;
+
+      let nextValue = speedPointerDownValue;
+
+      if(event.clientX < thumbX){
+        nextValue = Math.max(min, speedPointerDownValue - 1);
+      }else if(event.clientX > thumbX){
+        nextValue = Math.min(max, speedPointerDownValue + 1);
+      }
+
+      speed.value = nextValue;
+      updateSpeed();
+    }
+
+    speedPointerDownValue = null;
+    speedPointerDownX = null;
+  });
+
   const lsmStartBtn = document.getElementById('lsmStartBtn');
   const scanProgress = document.getElementById('scanProgress');
 
@@ -817,8 +862,8 @@
 
   // ---------------------------------------------------------------
   // System Shutter behavior based on pico_emerald.html.
-  // Direct click toggles active state. Wavelength OK can also
-  // temporarily illuminate it, matching the original mockup.
+  // Direct click toggles active state. If System Shutter is ON,
+  // Wavelength OK temporarily turns it OFF for 3–6 seconds.
   // ---------------------------------------------------------------
   let systemShutterActive = false;
   let shutterTimeout;
@@ -835,16 +880,22 @@
   function handleSystemShutterTemporary(){
     if(!systemShutterButton) return;
 
-    clearTimeout(shutterTimeout);
-    systemShutterButton.classList.add('active');
+    // Wavelength OK only affects the shutter when it is already ON.
+    // Temporarily turn it OFF for a random 3–6 seconds, then restore it ON.
+    if(systemShutterActive){
+      clearTimeout(shutterTimeout);
 
-    const randomTime = Math.floor(Math.random() * 5000) + 5000;
+      systemShutterButton.classList.remove('active');
 
-    shutterTimeout = setTimeout(function(){
-      if(!systemShutterActive){
-        systemShutterButton.classList.remove('active');
-      }
-    }, randomTime);
+      const randomTime = Math.floor(Math.random() * 3001) + 3000;
+
+      shutterTimeout = setTimeout(function(){
+        // Restore only if the logical shutter state is still ON.
+        if(systemShutterActive){
+          systemShutterButton.classList.add('active');
+        }
+      }, randomTime);
+    }
   }
 
   // Laser IR is intentionally simple: clicking only toggles its color.

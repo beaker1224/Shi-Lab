@@ -251,6 +251,7 @@ def main():
         i += 1
 
     average_clicker(0)
+    set_channels(5)
 
 if __name__ == "__main__":
     default_wavelength = 791.3
