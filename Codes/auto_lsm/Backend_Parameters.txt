@@ -1,0 +1,1 @@
+1. the pixel size for the check boxes for the channels are 10x10 pixels

@@ -327,10 +327,10 @@ def main():
             'channel_3_unchecked_strip': channel_3_unchecked_strip,
             'channel_4_unchecked_strip': channel_4_unchecked_strip,
             'channel_5_unchecked_strip': channel_5_unchecked_strip,
-            'checkbox strip width': 12,
+            'checkbox strip width': 8,
             'checkbox strip height': 8,
-            'checkbox strip x offset': 3,
-            'checkbox strip y offset': 3
+            'checkbox strip x offset': 1,
+            'checkbox strip y offset': 1
         })
 
     # Save configuration

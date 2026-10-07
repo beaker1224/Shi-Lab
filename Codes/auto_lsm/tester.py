@@ -5,11 +5,13 @@ import time
 
 CONFIG_FILE = "FV_layout.json"
 
-# Capture a region large enough to contain the entire checkbox.
-CAPTURE_WIDTH = 20
-CAPTURE_HEIGHT = 20
+# Checkbox is approximately 10 x 10 pixels.
+# Capture a little extra around it in case the saved top-left is off by 1-2 pixels.
+CAPTURE_WIDTH = 14
+CAPTURE_HEIGHT = 14
 
-# Difference threshold for one RGB pixel.
+# A pixel is considered changed when the total RGB difference
+# between unchecked and checked states exceeds this value.
 TOLERANCE = 30
 
 
@@ -20,8 +22,9 @@ def load_from_json(file_name):
 
 def capture_checkbox(position):
     """
-    Capture a full checkbox-sized area starting from its saved top-left corner.
+    Capture a region around the checkbox starting from the saved top-left position.
     """
+
     x, y = position
 
     image = pyautogui.screenshot(
@@ -46,7 +49,8 @@ def count_changed_pixels(
     tolerance=30
 ):
     """
-    Compare a candidate sub-region between unchecked and checked images.
+    Count pixels that differ significantly between unchecked
+    and checked checkbox images within a candidate region.
     """
 
     changed = 0
@@ -89,7 +93,9 @@ for channel in range(1, 6):
 print("\nMake sure CH1-CH5 are ALL UNCHECKED.")
 input("Press Enter when ready...")
 
-# Move mouse away so hover color does not interfere.
+previous_mouse_position = pyautogui.position()
+
+# Move mouse away so hover rendering disappears.
 pyautogui.moveTo(100, 100)
 time.sleep(0.5)
 
@@ -122,23 +128,28 @@ for channel in range(1, 6):
 
 print("Checked images captured.")
 
+# Restore mouse after screenshots are finished.
+pyautogui.moveTo(previous_mouse_position)
+
 
 # ---------------------------------------------------------
-# Automatically search different strip sizes and offsets
+# Automatically search candidate regions
 # ---------------------------------------------------------
 
 results = []
 
-for x_offset in range(0, 9):
+# Since checkbox is ~10x10, offsets larger than about 4 pixels
+# are unlikely to be useful.
+for x_offset in range(0, 5):
 
-    for y_offset in range(0, 9):
+    for y_offset in range(0, 5):
 
-        for width in range(4, 20):
+        # Test realistic widths/heights.
+        for width in range(4, 11):
 
-            for height in range(2, 20):
+            for height in range(4, 11):
 
-                # Make sure the candidate region stays inside
-                # our 20 x 20 captured image.
+                # Candidate region must stay inside captured image.
                 if x_offset + width > CAPTURE_WIDTH:
                     continue
 
@@ -163,35 +174,41 @@ for x_offset in range(0, 9):
 
                 area = width * height
 
-                # Percentage of candidate pixels that change.
                 changed_ratios = [
                     count / area
                     for count in changed_counts
                 ]
 
-                # We care strongly about the WORST channel.
-                # If CH3 only shows a tiny difference, this
-                # configuration should not rank highly.
+                # Worst performing channel is most important.
+                minimum_changed = min(changed_counts)
                 minimum_ratio = min(changed_ratios)
+
+                average_changed = (
+                    sum(changed_counts)
+                    / len(changed_counts)
+                )
+
                 average_ratio = (
                     sum(changed_ratios)
                     / len(changed_ratios)
                 )
 
-                minimum_changed = min(changed_counts)
-
                 results.append({
                     "x_offset": x_offset,
                     "y_offset": y_offset,
+
                     "width": width,
                     "height": height,
+
                     "area": area,
 
                     "counts": changed_counts,
 
                     "minimum_changed": minimum_changed,
+                    "average_changed": average_changed,
+
                     "minimum_ratio": minimum_ratio,
-                    "average_ratio": average_ratio
+                    "average_ratio": average_ratio,
                 })
 
 
@@ -199,24 +216,36 @@ for x_offset in range(0, 9):
 # Rank combinations
 # ---------------------------------------------------------
 
+# Priority:
+#
+# 1. Highest worst-channel changed count
+# 2. Highest worst-channel changed ratio
+# 3. Highest average changed count
+# 4. Larger region if otherwise similar
+#
+# This helps avoid a situation where CH3 is weak even though
+# the other four channels look excellent.
+
 results.sort(
     key=lambda result: (
+        result["minimum_changed"],
         result["minimum_ratio"],
-        result["average_ratio"],
-        result["minimum_changed"]
+        result["average_changed"],
+        result["area"]
     ),
     reverse=True
 )
 
 
 # ---------------------------------------------------------
-# Display best 20
+# Display best results
 # ---------------------------------------------------------
 
 print("\n")
-print("=" * 80)
+print("=" * 85)
 print("BEST CHECKBOX DETECTION REGIONS")
-print("=" * 80)
+print("=" * 85)
+
 
 for rank, result in enumerate(results[:20], start=1):
 
@@ -226,24 +255,35 @@ for rank, result in enumerate(results[:20], start=1):
         f"({result['x_offset']}, {result['y_offset']})"
         f"\n  size   = "
         f"{result['width']} x {result['height']}"
-        f"\n  area   = {result['area']} pixels"
+        f"\n  area   = "
+        f"{result['area']} pixels"
     )
 
     print(
-        "  changed pixels:",
-        ", ".join(
+        "  changed pixels: "
+        + ", ".join(
             f"CH{i + 1}={count}"
             for i, count in enumerate(result["counts"])
         )
     )
 
     print(
-        f"  worst-channel changed ratio = "
+        f"  worst channel changed pixels = "
+        f"{result['minimum_changed']}"
+    )
+
+    print(
+        f"  worst channel changed ratio  = "
         f"{result['minimum_ratio']:.2%}"
     )
 
     print(
-        f"  average changed ratio       = "
+        f"  average changed pixels       = "
+        f"{result['average_changed']:.2f}"
+    )
+
+    print(
+        f"  average changed ratio        = "
         f"{result['average_ratio']:.2%}"
     )
 
@@ -255,9 +295,9 @@ for rank, result in enumerate(results[:20], start=1):
 best = results[0]
 
 print("\n")
-print("=" * 80)
+print("=" * 85)
 print("RECOMMENDED SETTINGS")
-print("=" * 80)
+print("=" * 85)
 
 print(
     f"""
@@ -267,5 +307,19 @@ print(
 'checkbox strip y offset': {best['y_offset']}
 """
 )
+
+print(
+    "Changed pixels for best region:"
+)
+
+for channel, count in enumerate(
+    best["counts"],
+    start=1
+):
+    print(
+        f"CH{channel}: "
+        f"{count} / {best['area']} pixels changed"
+    )
+
 
 input("\nPress Enter to exit.")
