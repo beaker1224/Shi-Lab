@@ -126,6 +126,31 @@ def shutter_backOn():
             return True
         time.sleep(0.5)  # Check the shutter every 0.5 second
 
+
+def ask_yes_no(prompt, default=None):
+    while True:
+        ans = input(prompt).strip().lower()
+        if ans in ("y", "yes"):
+            return True
+        if ans in ("n", "no"):
+            return False
+        if ans == "" and default is not None:
+            return default
+        print("Invalid input. Please enter y or n.")
+
+
+def ask_number(prompt, cast=float, lo=None, hi=None):
+    while True:
+        try:
+            value = cast(input(prompt).strip())
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+            continue
+        if (lo is not None and value < lo) or (hi is not None and value > hi):
+            print(f"Please enter a value between {lo} and {hi}.")
+            continue
+        return value
+
 def main():
     print("Before you use this script, make sure that both softwares are not covered by each other, "
     "and max the window of pico_emerald (if this is what you did for setting up the layout)")
@@ -251,61 +276,33 @@ def main():
         i += 1
 
     average_clicker(0)
-    set_channels(5)
+    set_channels([5])
 
 if __name__ == "__main__":
-    default_wavelength = 791.3
-    default_power = 300
+    DEFAULT_WAVELENGTH = 791.3
+    DEFAULT_POWER = 300
 
-    return_to_default = input(
-        "Do you want to return to default wavelength (791.3) "
-        "and power (300) after acquisition? (y/n): "
-    ).strip().lower()
+    return_after = ask_yes_no(
+        "Return to a set wavelength and power after each acquisition? (y/n): "
+    )
 
-    if return_to_default not in ("y", "yes"):
-        while True:
-            try:
-                default_wavelength = float(
-                    input(
-                        "Please enter the default wavelength "
-                        "(e.g., 791.3): "
-                    ).strip()
-                )
-                break
-            except ValueError:
-                print("Invalid wavelength. Please enter a number.")
-
-        while True:
-            try:
-                default_power = int(
-                    input(
-                        "Please enter the default power "
-                        "(e.g., 300): "
-                    ).strip()
-                )
-                break
-            except ValueError:
-                print("Invalid power. Please enter an integer.")
+    target_wavelength, target_power = DEFAULT_WAVELENGTH, DEFAULT_POWER
+    if return_after and not ask_yes_no(
+        f"Use the defaults ({DEFAULT_WAVELENGTH} nm, power {DEFAULT_POWER})? (y/n): "
+    ):
+        # add lo=..., hi=... with your laser's allowed range
+        target_wavelength = ask_number("Wavelength to return to (e.g., 791.3): ", float)
+        target_power = ask_number("Power to return to (e.g., 300): ", int)
 
     while True:
-        # Run acquisition
-        main()
-        # Return Pico Emerald to default settings
-        pico_emeraldWatch_1.change_power_to(default_power)
-        time.sleep(0.25)
-        pico_emeraldWatch_1.change_wavelength_to(default_wavelength)
+        try:
+            main()
+        finally:
+            if return_after:
+                pico_emeraldWatch_1.change_power_to(target_power)
+                time.sleep(0.25)
+                pico_emeraldWatch_1.change_wavelength_to(target_wavelength)
 
-        # Ask whether to repeat
-        while True:
-            ans = input(
-                "\nDo you want to run the program again? (y/n): ").strip().lower()
-
-            if ans in ("y", "yes"):
-                os.system("cls")
-                break
-            
-            elif ans in ("n", "no", ""):
-                sys.exit(0)
-
-            else:
-                print("Invalid input. Please enter y or n.")
+        if not ask_yes_no("\nRun the program again? (y/n): ", default=False):
+            sys.exit(0)
+        os.system("cls")

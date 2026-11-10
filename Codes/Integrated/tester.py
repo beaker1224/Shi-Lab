@@ -1,7 +1,6 @@
 from helpers.mask import thresholding_mask, apply_mask
 from helpers.oir2tiff import oir_to_tiff
-from helpers.quantitative import mask_prm_srs, compute_turnover
-from helpers.redox import process_images
+from helpers.quantitative import compute_turnover
 from pathlib import Path
 # from helpers.calibration import tiff_to_png_with_bar, calibration_bar
 import os, glob
@@ -41,22 +40,17 @@ import requests
 # for f in folders:
 #     apply_mask(f)
 
-folders = [r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\LYni\high\1-CH_lipid subtypes\1-CH",
-           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\LYni\low\2-CH_lipid subtypes\2-CH",
-           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\LYni\low\3-CH_lipid subtypes\3-CH",
-           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\DMSO\high\2-CH_lipid subtypes\2-CH",
-           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\DMSO\high\4-CH_lipid subtypes\4-CH",
-           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\DMSO\low\2-CH_lipid subtype\2-CH",
-           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\BCR-ACL\High\1-CH_lipid subtypes\1-CH",
-           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\without Methanol Wash\BCR-ACL\Low\2-CH_lipid subtypes\2-CH",
-           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\with Methanol Wash\BCR-ABL\high\2-CH_lipid subtype",
-           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\with Methanol Wash\BCR-ABL\high\3-CH_lipid subtype\3-CH",
-           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\with Methanol Wash\DMSO\high\1-CH_lipid subtype\1-CH",
-           r"D:\study\Shi_Lab\Data\2025-05-25 Cancer Stiffness\with Methanol Wash\LYni\high\1-CH_lipid subtype\1-CH"
+folders = [r"D:\Chrome\Workspace\Projects\Rapamycin_2\D10\D10_Gut\ctrl",
+           r"D:\Chrome\Workspace\Projects\Rapamycin_2\D10\D10_Gut\met",
+           r"D:\Chrome\Workspace\Projects\Rapamycin_2\D10\D10_Gut\rapa",
+           r"D:\Chrome\Workspace\Projects\Rapamycin_2\D40\D40_Gut\ctrl",
+           r"D:\Chrome\Workspace\Projects\Rapamycin_2\D40\D40_Gut\met",
+           r"D:\Chrome\Workspace\Projects\Rapamycin_2\D40\D40_Gut\rapa",
            ]
 
 for f in folders:
-    mask_prm_srs(Path(f))
+    # thresholding_mask(f)
+    apply_mask(f)
 
 def notify_done_ntfy(title = "Task Complete", message = "Your task has finished running."):
     """Send a notification using ntfy.sh service."""
@@ -67,4 +61,6 @@ def notify_done_ntfy(title = "Task Complete", message = "Your task has finished 
         headers={"Title": title, 
                  "Priority": "5"},
                  timeout=20)
-    response.raise_for_status()    
+    response.raise_for_status()
+
+# notify_done_ntfy(title = "Task Complete", message = "Your task has finished running.")

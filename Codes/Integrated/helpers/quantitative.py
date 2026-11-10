@@ -1,338 +1,308 @@
 """
-Mask TIFF images in one or more folders using a fractional threshold.
+quantitative.py -- ratio maps (CD/CH, unsaturation, redox), masked with create_mask's masks.
 
-For each input folder:
-- Reads all *.tif / *.tiff images (non-recursive by default).
-- Computes an absolute threshold from a fraction in [0, 1].
-- Sets all pixels BELOW that threshold to 0; preserves dtype and size.
-- Saves outputs (same filenames) in a "prm_srs_masked" subfolder.
+Pipeline:
+    1. create_mask.thresholding_mask(folder)   ->  <ROI>-mask.tif for every ROI
+    2. quantitative.quantify(folder)           ->  <ROI>-<ratio>.tif for every ROI
 
-Examples
---------
-# One threshold for all folders:
-python mask_tiffs.py /path/to/folder1 /path/to/folder2 --frac 0.8
+File naming (the same ROI convention as create_mask.py: ROI = text before the first "-"):
+    <ROI>-<wavelength>nm-<anything>.tif      e.g. 1-841.8nm-scan.tif
+    <ROI>-...fad....tif / <ROI>-...nadh....tif   e.g. 1-fad.tif, 1-NADH-ctrl.tif
+    <ROI>-mask.tif                           made by create_mask.py
+Outputs go next to the inputs as <ROI>-<ratio name>.tif (float32).
 
-# Ask interactively per folder (no --frac):
-python mask_tiffs.py /path/to/folder1 /path/to/folder2
+Each ratio in RATIOS is computed for every ROI that has all of its images:
+    uns_sat        787.6 nm / 797.2 nm
+    CD_CH-protein  841.8 nm / 791.3 nm
+    CD_CH-lipid    844.6 nm / 794.6 nm
+    redox_ratio    FAD / (FAD + NADH)
+Ratios are computed from the raw images; the mask only decides which pixels are kept.
 
-# Recursive search and overwrite existing outputs:
-python mask_tiffs.py /path/to/folder --frac 0.75 --recursive --overwrite
+Usage:
+    from quantitative import quantify, compute_turnover, compute_redox
+    quantify(r"D:/data/session1")                        # every ratio that applies
+    quantify(r"D:/data/session1", recursive=True)        # ... in subfolders too
+    compute_turnover(r"D:/data/session1")                # CD/CH + uns_sat only
+    compute_redox(r"D:/data/gut/Ctrl2/tiff_files")       # redox only (searches subfolders)
+
+    python quantitative.py D:/data/session1 D:/data/session2 --recursive
+    python quantitative.py D:/data/session1 --ratios redox_ratio --outside nan
 """
 from __future__ import annotations
+
 import argparse
-import os, re
+import re
 from pathlib import Path
-from typing import Iterable, List, Tuple, Dict
+
 import numpy as np
 import tifffile as tiff
 
 
-def list_tiffs(folder: Path, recursive: bool = False) -> List[Path]:
-    patterns = ["*.tif", "*.tiff", "*.TIF", "*.TIFF"]
-    folder = Path(folder)
-    if recursive:
-        files = [p for pat in patterns for p in folder.rglob(pat)]
-    else:
-        files = [p for pat in patterns for p in folder.glob(pat)]
-    # Deduplicate while preserving order
-    seen = set()
-    out = []
-    for f in files:
-        if f.is_file() and f not in seen:
-            seen.add(f)
-            out.append(f)
-    return out
+# Naming rules and the mask file name live in mask.py (same folder as this file)
+if __package__:   # imported as part of a package, e.g. "from helpers.quantitative import ..."
+    from .mask import MASK_SUFFIX, ROI_PATTERN, _find_tiffs, _natural_key
+else:             # run directly, e.g. "python quantitative.py ..." inside helpers/
+    from mask import MASK_SUFFIX, ROI_PATTERN, _find_tiffs, _natural_key
 
-# -----------------------------CD CH----------------------------
+# ---------------------------------------------------------------------------
+# Ratio definitions -- add or edit entries here.
+#   name: (numerator channels, denominator channels); channels listed together are summed.
+#   A channel is a wavelength (e.g. "841.8", found as "-841.8nm" in the file name)
+#   or a named channel ("fad", "nadh").
+# ---------------------------------------------------------------------------
+RATIOS: dict[str, tuple[tuple[str, ...], tuple[str, ...]]] = {
+    "uns_sat":       (("787.6",), ("797.2",)),
+    "CD_CH-protein": (("841.8",), ("791.3",)),
+    "CD_CH-lipid":   (("844.6",), ("794.6",)),
+    "redox_ratio":   (("fad",),   ("fad", "nadh")),   # FAD / (FAD + NADH)
+}
+CD_CH_RATIOS = ("uns_sat", "CD_CH-protein", "CD_CH-lipid")
+REDOX_RATIOS = ("redox_ratio",)
+
+# How channels are recognised in a file name (the part after "<ROI>-")
+NAMED_CHANNEL_RE = re.compile(r"(?<![a-z])(fad|nadh)(?![a-z])", re.IGNORECASE)
+WAVELENGTH_RE = re.compile(r"(?:^|-)(\d+(?:\.\d+)?)nm(?![a-z])", re.IGNORECASE)
+SKIP_NAME_RE = re.compile(r"masked", re.IGNORECASE)   # e.g. 1-fad-masked.tif: an output, not an input
+EXTRA_SKIP_DIRS = {"prm_srs_masked"}                  # left over from the old threshold-masking step
 
 
-# Match: <ROI>-<wavelength>nm-<anything>.tif[f]
-NAME_RE = re.compile(
-    r"^(?P<roi>\d+)-(?P<wl>787\.6|791\.3|794\.6|797\.2|841\.8|844\.6|862(?:\.0)?)nm-.*\.(?:tif|tiff)$",
-    re.IGNORECASE,
-)
+# ---------------------------------------------------------------------------
+# Finding the images
+# ---------------------------------------------------------------------------
+def _norm_channel(c: str) -> str:
+    """'862.0' -> '862', '791.3' -> '791.3', 'FAD' -> 'fad'."""
+    try:
+        return f"{float(c):g}"
+    except ValueError:
+        return c.lower()
 
-# Match mask: <ROI>-mask.tif[f]
-MASK_RE = re.compile(r"^(?P<roi>\d+)-mask\.(?:tif|tiff)$", re.IGNORECASE)
 
-# Ratio definitions: (output_suffix, numerator_wl, denominator_wl)
-RATIOS: Tuple[Tuple[str, float, float], ...] = (
-    ("uns_sat",        787.6, 797.2),
-    ("CD_CH-protein",  841.8, 791.3),
-    ("CD_CH-lipid",    844.6, 794.6),
-)
+def _label(c: str) -> str:
+    return c.upper() if c.isalpha() else f"{c} nm"
 
-def parse_name(p: Path):
-    m = NAME_RE.match(p.name)
-    if not m:
-        return None
-    return m.group("roi"), float(m.group("wl"))
 
-def parse_mask_name(p: Path):
-    m = MASK_RE.match(p.name)
-    if not m:
-        return None
-    return m.group("roi")
+def channel_of(rest: str) -> str | None:
+    """Channel of a file, from the part of its name after '<ROI>-'. Named channels win,
+    so '1-fad-890nm.tif' is FAD, not 890 nm."""
+    m = NAMED_CHANNEL_RE.search(rest)
+    if m:
+        return m.group(1).lower()
+    m = WAVELENGTH_RE.search(rest)
+    if m:
+        return _norm_channel(m.group(1))
+    return None
 
+
+def find_channels(root, recursive: bool = False) -> dict[tuple[Path, str], dict[str, Path]]:
+    """Group the input TIFFs under `root` by (folder, ROI) -> {channel: path}.
+
+    Skips masks, previous ratio outputs, '*masked*' files and the processed / prm_srs_masked
+    folders. If a ROI has two images of the same channel, the first is used.
+    """
+    root = Path(root)
+    outputs = {n.lower() for n in RATIOS}
+    groups: dict[tuple[Path, str], dict[str, Path]] = {}
+    for p in _find_tiffs(root, recursive):
+        if any(d.lower() in EXTRA_SKIP_DIRS for d in p.relative_to(root).parts[:-1]):
+            continue
+        m = ROI_PATTERN.match(p.name)
+        if not m:
+            continue
+        roi = m.group(1)
+        rest = p.stem[len(roi) + 1:]
+        if (p.stem.lower() == f"{roi}{MASK_SUFFIX}".lower() or rest.lower() in outputs
+                or SKIP_NAME_RE.search(rest)):
+            continue
+        ch = channel_of(rest)
+        if ch is None:
+            continue
+        chans = groups.setdefault((p.parent, roi), {})
+        if ch in chans:
+            print(f"[warn] {p.parent.name} / ROI {roi}: two {_label(ch)} images "
+                  f"({chans[ch].name}, {p.name}); using {chans[ch].name}")
+            continue
+        chans[ch] = p
+    return groups
+
+
+# ---------------------------------------------------------------------------
+# Maths
+# ---------------------------------------------------------------------------
 def safe_divide(numer: np.ndarray, denom: np.ndarray, zero_value: float = 0.0) -> np.ndarray:
-    """Elementwise numer/denom with divide-by-zero handling. Returns float32."""
-    numer = numer.astype(np.float32, copy=False)
-    denom = denom.astype(np.float32, copy=False)
-    out = np.empty_like(numer, dtype=np.float32)
-    nz = denom != 0.0
-    np.divide(numer, denom, out=out, where=nz)
-    out[~nz] = zero_value
+    """Elementwise numer / denom; `zero_value` where denom == 0. Returns float64."""
+    out = np.full(np.broadcast(numer, denom).shape, zero_value, dtype=np.float64)
+    np.divide(numer, denom, out=out, where=denom != 0)
     return out
 
-def load_tiff_2d(path: Path) -> np.ndarray:
-    arr = tiff.imread(path)
-    if arr.ndim != 2:
-        raise ValueError(f"Expected 2D TIFF, got shape {arr.shape} at {path.name}")
-    return arr
 
-def apply_mask_CD(arr: np.ndarray, mask: np.ndarray, mask_out_value: float = 0.0) -> np.ndarray:
-    """
-    Apply mask to arr. Any pixel where mask <= 0 is set to mask_out_value.
-    Mask can be binary {0,1} or {0,255} or any positive/zero image.
-    """
-    if mask.shape != arr.shape:
-        raise ValueError(f"Mask shape {mask.shape} does not match image {arr.shape}")
-    m = mask > 0
-    out = arr.copy()
-    out[~m] = mask_out_value
-    return out
+def _load_plane(path: Path) -> np.ndarray:
+    """Read a single-channel 2-D image; for a stack, use its first plane."""
+    a = np.squeeze(tiff.imread(str(path)))
+    if a.ndim == 2:
+        return a
+    if a.ndim == 3 and a.shape[-1] in (3, 4):
+        raise ValueError(f"{path.name} looks like an RGB image {a.shape}; "
+                         "ratios need single-channel images")
+    print(f"    [note] {path.name} is a stack {a.shape}; using its first plane")
+    return a.reshape(-1, *a.shape[-2:])[0]
 
-def compute_turnover(
-    folder: str | Path,
+
+# ---------------------------------------------------------------------------
+# Main entry point
+# ---------------------------------------------------------------------------
+def quantify(
+    folder,
+    ratios=None,
     recursive: bool = False,
     overwrite: bool = True,
-    zero_value: float = 0.0,       # value used where denominator==0
-    mask_out_value: float = 0.0,   # value used outside mask (set to np.nan if preferred)
-) -> None:
+    require_mask: bool = True,
+    outside: float = 0.0,
+    zero_value: float = 0.0,
+) -> list[Path]:
     """
-    Finds TIFFs via list_tiffs(), groups by ROI, computes:
-      787.6/797.2 -> ROI-uns_sat.tif
-      841.8/791.3 -> ROI-CD_CH-protein.tif
-      844.6/794.6 -> ROI-CD_CH-lipid.tif
-    If ROI-mask.tif[f] exists, it is applied to the ratio result.
-    Saves outputs as float32 TIFFs in the SAME folder.
+    Compute ratio maps for every ROI under `folder` and save <ROI>-<ratio>.tif next to the inputs.
+
+    Args:
+        folder: Folder with the images and the <ROI>-mask.tif files from create_mask.py.
+        ratios: Names from RATIOS to compute (default: all; each runs only where its images exist).
+        recursive: Also process subfolders. Each folder is handled on its own.
+        overwrite: Replace existing outputs (default). False keeps them.
+        require_mask: Skip ROIs without <ROI>-mask.tif (default). False computes them unmasked.
+        outside: Value written outside the mask, e.g. 0.0 (default) or np.nan.
+        zero_value: Value where the denominator is 0 inside the mask.
+
+    Returns:
+        Paths of the ratio images written.
     """
-    folder = Path(folder)
-    if not folder.is_dir():
-        raise NotADirectoryError(folder)
+    root = Path(folder)
+    if not root.is_dir():
+        raise NotADirectoryError(root)
+    names = list(RATIOS) if ratios is None else [ratios] if isinstance(ratios, str) else list(ratios)
+    unknown = [n for n in names if n not in RATIOS]
+    if unknown:
+        raise ValueError(f"Unknown ratio(s) {unknown}; choose from {list(RATIOS)}")
+    defs = {n: (tuple(map(_norm_channel, RATIOS[n][0])), tuple(map(_norm_channel, RATIOS[n][1])))
+            for n in names}
 
-    paths = list_tiffs(folder, recursive=recursive)
+    groups = find_channels(root, recursive)
+    written: list[Path] = []
+    n_roi = 0
+    for sub, roi in sorted(groups, key=lambda k: (_natural_key(str(k[0])), _natural_key(k[1]))):
+        chans = groups[(sub, roi)]
+        todo, partial = [], []
+        for name, (num, den) in defs.items():
+            needed = set(num) | set(den)
+            have = needed & chans.keys()
+            if have == needed:
+                todo.append(name)
+            elif have:  # some but not all images of this ratio: worth a warning
+                partial.append((name, sorted(needed - have)))
+        if not todo and not partial:
+            continue  # none of the requested ratios apply to this ROI
 
-    # Collect: ROI -> wavelength -> path, and ROI -> mask path
-    by_roi: Dict[str, Dict[float, Path]] = {}
-    masks: Dict[str, Path] = {}
-    seen_for_roi_wl: set[tuple[str, float]] = set()
-
-    for p in paths:
-        m_roi = parse_mask_name(p)
-        if m_roi:
-            if m_roi in masks:
-                print(f"[warn] Duplicate mask for ROI {m_roi}: {p.name} (keeping first)")
-            else:
-                masks[m_roi] = p
+        n_roi += 1
+        where = f"ROI {roi}" if sub == root else f"{sub.relative_to(root).as_posix()} / ROI {roi}"
+        print(f"\n[{where}]")
+        for name, missing in partial:
+            print(f"  [skip] {name}: missing " + ", ".join(_label(c) for c in missing))
+        if not todo:
             continue
 
-        parsed = parse_name(p)
-        if not parsed:
-            continue
-        roi, wl = parsed
-        key = (roi, wl)
-        if key in seen_for_roi_wl:
-            print(f"[warn] Duplicate for ROI {roi}, {wl} nm: {p.name} (keeping first)")
-            continue
-        seen_for_roi_wl.add(key)
-        by_roi.setdefault(roi, {})[wl] = p
-
-    if not by_roi:
-        print("[info] No matching TIFFs found.")
-        return
-
-    for roi, wl_map in sorted(by_roi.items(), key=lambda kv: int(kv[0])):
-        print(f"\n[ROI {roi}]")
-        # Load mask once per ROI (optional)
-        roi_mask = None
-        if roi in masks:
+        mask_path = sub / f"{roi}{MASK_SUFFIX}.tif"
+        mask = None
+        if mask_path.exists():
             try:
-                roi_mask = load_tiff_2d(masks[roi])
+                mask = np.squeeze(tiff.imread(str(mask_path))) > 0
             except Exception as e:
-                print(f"  [warn] Could not load mask {masks[roi].name}: {e}. Proceeding without mask.")
-
-        for out_suffix, num_wl, den_wl in RATIOS:
-            num_p = wl_map.get(num_wl)
-            den_p = wl_map.get(den_wl)
-            out_path = (folder / f"{roi}-{out_suffix}.tif")
-
-            if num_p is None or den_p is None:
-                missing = []
-                if num_p is None: missing.append(str(num_wl))
-                if den_p is None: missing.append(str(den_wl))
-                print(f"  [skip] Missing wavelength(s): {', '.join(missing)} nm")
+                print(f"  [warn] could not read {mask_path.name}: {e}")
+        if mask is None:
+            if require_mask:
+                print(f"  [skip] no {mask_path.name}; make it with create_mask.thresholding_mask(), "
+                      "or pass require_mask=False to compute without a mask")
                 continue
+            print(f"  [warn] no {mask_path.name}; ratios are UNMASKED")
 
+        planes: dict[str, np.ndarray] = {}
+        for name in todo:
+            num, den = defs[name]
+            out_path = sub / f"{roi}-{name}.tif"
             if out_path.exists() and not overwrite:
                 print(f"  [skip] {out_path.name} exists (overwrite=False)")
                 continue
-
-            numer = load_tiff_2d(num_p)
-            denom = load_tiff_2d(den_p)
-            if numer.shape != denom.shape:
-                print(f"  [skip] Shape mismatch {numer.shape} vs {denom.shape} for {num_p.name} / {den_p.name}")
+            try:
+                for c in (*num, *den):
+                    if c not in planes:
+                        planes[c] = _load_plane(chans[c]).astype(np.float64)
+            except Exception as e:
+                print(f"  [fail] {name}: could not read {chans[c].name}: {e}")
+                continue
+            shapes = {_label(c): planes[c].shape for c in dict.fromkeys((*num, *den))}
+            if mask is not None:
+                shapes["mask"] = mask.shape
+            if len(set(shapes.values())) > 1:
+                print(f"  [skip] {name}: image sizes differ: "
+                      + ", ".join(f"{k} {v}" for k, v in shapes.items()))
                 continue
 
-            ratio = safe_divide(numer, denom, zero_value=zero_value)
+            ratio = safe_divide(sum(planes[c] for c in num), sum(planes[c] for c in den), zero_value)
+            if mask is not None:
+                ratio[~mask] = outside
+            tiff.imwrite(str(out_path), ratio.astype(np.float32))
+            written.append(out_path)
 
-            # Apply mask if present and shape matches
-            if roi_mask is not None:
-                if roi_mask.shape == ratio.shape:
-                    ratio = apply_mask_CD(ratio, roi_mask, mask_out_value=mask_out_value)
-                else:
-                    print(f"  [warn] Mask shape {roi_mask.shape} != image {ratio.shape}; skipping mask for this ROI.")
+            top = " + ".join(_label(c) for c in num)
+            bottom = " + ".join(_label(c) for c in den)
+            formula = f"{top} / ({bottom})" if len(den) > 1 else f"{top} / {bottom}"
+            print(f"  [ok] {name} = {formula} -> {out_path.name}"
+                  + ("" if mask is not None else "  (unmasked)"))
 
-            tiff.imwrite(out_path, ratio, dtype=np.float32)
-            print(f"  [ok] {num_wl} / {den_wl} → {out_path.name}" + (" (masked)" if roi_mask is not None else ""))
-
-# --------------------------- PRM SRS ----------------------------
-def compute_abs_threshold(img: np.ndarray, frac: float) -> float:
-    """
-    Convert a fractional threshold in [0,1] to an absolute value suitable for img's dtype.
-
-    Rules:
-    - Integer dtype: use dtype max (e.g., 255 for uint8, 65535 for uint16).
-    - Float dtype: if data looks normalized (0..1), use 1.0; else use the image's max.
-    """
-    if np.issubdtype(img.dtype, np.integer):
-        maxv = np.iinfo(img.dtype).max
-        return float(frac * maxv)
-    else:
-        # float or other: decide based on observed range
-        imax = float(np.nanmax(img))
-        imin = float(np.nanmin(img))
-        # If data already 0..1 (common), use 1.0; else scale to the observed max
-        base = 1.0 if 0.0 <= imin <= 1.0 and 0.0 <= imax <= 1.0 else (imax if imax > 0 else 1.0)
-        return float(frac * base)
+    if not n_roi:
+        print(f"[info] No images for {', '.join(names)} found in {root}")
+    return written
 
 
-def apply_mask_PRM(img: np.ndarray, thr: float) -> np.ndarray:
-    """
-    Set values strictly below threshold to 0, keep others unchanged. Preserves dtype.
-    Works for nD arrays (2D images, 3D stacks, multi-channel, etc.).
-    """
-    # Build a boolean mask of pixels to keep
-    keep = img >= thr
-    # For integer arrays, direct where() preserves dtype; for float, same.
-    return np.where(keep, img, np.zeros(1, dtype=img.dtype))
+def compute_turnover(folder, recursive: bool = False, overwrite: bool = True,
+                     zero_value: float = 0.0, mask_out_value: float = 0.0,
+                     require_mask: bool = True) -> list[Path]:
+    """CD/CH and unsaturation ratios only (same name and arguments as the old function)."""
+    return quantify(folder, ratios=CD_CH_RATIOS, recursive=recursive, overwrite=overwrite,
+                    require_mask=require_mask, outside=mask_out_value, zero_value=zero_value)
 
 
-def mask_prm_srs(folder: Path, frac: float = 0.8, out_subdir: str = "prm_srs_masked",
-                recursive: bool = False, overwrite: bool = False) -> Tuple[int, int]:
-    """
-    Process all TIFFs in a folder, thresholding all the tiffs with a default value of 0.8
+def compute_redox(folder, recursive: bool = True, overwrite: bool = True,
+                  require_mask: bool = True, outside: float = 0.0) -> list[Path]:
+    """Redox ratio FAD / (FAD + NADH) only (what redox.py did); searches subfolders by default."""
+    return quantify(folder, ratios=REDOX_RATIOS, recursive=recursive, overwrite=overwrite,
+                    require_mask=require_mask, outside=outside)
 
-    Args:
-        folder (Path): Path to the root PRM-SRS output folder
-        frac (float): default: 0.8. A number that the threshold should be
-        out_subdir (str): a name for the output folder, default:"prm_srs_masked"
-        recursive (bool): default: False. If the script will recursive search for its subfolder for tiff images
-        overwrite (bool): default: False. If the output has similar file name, if the old file be overwritten 
 
-    Returns
-    -------
-    (num_processed, num_skipped)
-    """
-    folder = Path(folder)
-    files = list_tiffs(folder, recursive=recursive)
-    out_dir = folder / out_subdir
-    out_dir.mkdir(parents=True, exist_ok=True)
+# ---------------------------------------------------------------------------
+# Command line
+# ---------------------------------------------------------------------------
+def main(argv=None) -> None:
+    p = argparse.ArgumentParser(
+        description="Ratio maps (CD/CH, unsaturation, redox) masked with create_mask's <ROI>-mask.tif.")
+    p.add_argument("folders", nargs="+", type=Path, help="One or more folders to process.")
+    p.add_argument("--ratios", nargs="+", choices=list(RATIOS), default=None,
+                   help="Only these ratios (default: every ratio whose images are present).")
+    p.add_argument("-r", "--recursive", action="store_true", help="Also process subfolders.")
+    p.add_argument("--no-overwrite", action="store_true", help="Keep existing outputs.")
+    p.add_argument("--allow-unmasked", action="store_true",
+                   help="Also compute ROIs that have no <ROI>-mask.tif (output is unmasked).")
+    p.add_argument("--outside", type=float, default=0.0,
+                   help="Value outside the mask, e.g. 0 (default) or nan.")
+    args = p.parse_args(argv)
 
-    n_ok = 0
-    n_skip = 0
-
-    for src in files:
-        dst = out_dir / src.name
-        if dst.exists() and not overwrite:
-            n_skip += 1
+    total = 0
+    for folder in args.folders:
+        if not folder.is_dir():
+            print(f"[warn] Not a folder, skipping: {folder}")
             continue
-        try:
-            img = tiff.imread(src)
-            thr = compute_abs_threshold(img, frac)
-            masked = apply_mask_PRM(img, thr)
-            # Write with same dtype; compress modestly to save space
-            tiff.imwrite(dst, masked, compression="zlib")
-            n_ok += 1
-        except Exception as exc:
-            print(f"[ERROR] {src} -> {dst}: {exc}")
-            n_skip += 1
-    return n_ok, n_skip
-
-
-def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="Mask TIFF images below a fractional threshold.")
-    p.add_argument("folders", nargs="+", type=Path,
-                   help="One or more folders containing .tif/.tiff images.")
-    p.add_argument("--frac", type=float, default=None,
-                   help="Threshold fraction in [0,1]. If omitted, you'll be prompted per folder.")
-    p.add_argument("--recursive", action="store_true",
-                   help="Search for TIFFs in subfolders recursively.")
-    p.add_argument("--overwrite", action="store_true",
-                   help="Overwrite existing outputs if present.")
-    p.add_argument("--out-subdir", default="prm_srs_masked",
-                   help='Name of output subfolder (default: "prm_srs_masked").')
-    return p.parse_args()
-
-
-def main():
-    args = parse_args()
-
-    # Validate folders
-    folders: List[Path] = []
-    for f in args.folders:
-        if not f.exists() or not f.is_dir():
-            print(f"[WARN] Skipping non-existent or non-directory: {f}")
-            continue
-        folders.append(f)
-    if not folders:
-        raise SystemExit("No valid folders provided.")
-
-    # Determine per-folder threshold fractions
-    fracs: List[float] = []
-    if args.frac is not None:
-        if not (0.0 <= args.frac <= 1.0):
-            raise SystemExit("--frac must be between 0 and 1")
-        fracs = [args.frac] * len(folders)
-    else:
-        # Prompt interactively per folder
-        for f in folders:
-            while True:
-                try:
-                    s = input(f"Enter threshold fraction [0..1] for {f}: ").strip()
-                    val = float(s)
-                    if 0.0 <= val <= 1.0:
-                        fracs.append(val)
-                        break
-                except Exception:
-                    pass
-                print("  Invalid input. Please enter a number between 0 and 1 (e.g., 0.8).")
-
-    # Process
-    total_ok = 0
-    total_skip = 0
-    for f, frac in zip(folders, fracs):
-        print(f"\n[INFO] Folder: {f}")
-        print(f"[INFO] Threshold fraction: {frac}")
-        n_ok, n_skip = mask_prm_srs(
-            f, frac, out_subdir=args.out_subdir,
-            recursive=args.recursive, overwrite=args.overwrite
-        )
-        print(f"[DONE] Wrote: {n_ok}, Skipped: {n_skip}")
-        total_ok += n_ok
-        total_skip += n_skip
-
-    print(f"\n[SUMMARY] Total wrote: {total_ok}, total skipped: {total_skip}")
+        print(f"\n=== {folder}")
+        total += len(quantify(folder, ratios=args.ratios, recursive=args.recursive,
+                              overwrite=not args.no_overwrite,
+                              require_mask=not args.allow_unmasked, outside=args.outside))
+    print(f"\n[summary] wrote {total} ratio image(s)")
 
 
 if __name__ == "__main__":

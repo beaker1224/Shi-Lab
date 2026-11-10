@@ -2,6 +2,8 @@ import pyautogui
 import os, time
 import json
 
+pyautogui.FAILSAFE = False
+
 def get_lsm_colorbar_position():
     """
     Gets the position of the colorbar.
@@ -70,7 +72,7 @@ def get_pixel_strip(x,y, width = 15, height = 10):
     '''
     return [pyautogui.pixel(x+i, y+j) for i in range(width) for j in range(height)]
 
-def get_checkbox_strip(checkbox_position, width=12, height=3, x_offset=2, y_offset=5):
+def get_checkbox_strip(checkbox_position, width=9, height=6, x_offset=0, y_offset=0):
     """
     Capture a very small horizontal strip from inside a checkbox.
 
@@ -127,10 +129,10 @@ def checkbox_changed_pixel_count(
         f'channel_{channel_number}_unchecked_strip'
     ]
 
-    width = config.get('checkbox strip width', 12)
-    height = config.get('checkbox strip height', 3)
-    x_offset = config.get('checkbox strip x offset', 2)
-    y_offset = config.get('checkbox strip y offset', 5)
+    width = config.get('checkbox strip width', 9)
+    height = config.get('checkbox strip height', 6)
+    x_offset = config.get('checkbox strip x offset', 0)
+    y_offset = config.get('checkbox strip y offset', 0)
 
     current_position = pyautogui.position()
     pyautogui.moveTo(0, 0)
@@ -327,10 +329,10 @@ def main():
             'channel_3_unchecked_strip': channel_3_unchecked_strip,
             'channel_4_unchecked_strip': channel_4_unchecked_strip,
             'channel_5_unchecked_strip': channel_5_unchecked_strip,
-            'checkbox strip width': 8,
-            'checkbox strip height': 8,
-            'checkbox strip x offset': 1,
-            'checkbox strip y offset': 1
+            'checkbox strip width': 9,
+            'checkbox strip height': 6,
+            'checkbox strip x offset': 0,
+            'checkbox strip y offset': 0
         })
 
     # Save configuration
